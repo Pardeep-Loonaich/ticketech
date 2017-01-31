@@ -1,0 +1,460 @@
+﻿
+function formattedException(exception) {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function: formattedException
+  Description: Formats the information available in exception object in a
+               string & returns in for printing purpose 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  strException = "";
+  for (prop in exception)
+    strException = strException + prop + ": " + exception[prop] + "\n\n"
+
+  return strException;
+}
+
+function syncPOSProcess(processName) {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function: syncPOSProcess
+  Description: Synchornizes the POSApplication process (i.e) wait until the 
+               explorer process to settle down
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  if(processName == undefined)
+    processName = "POSApplication";
+
+  Indicator.PushText("Waiting for operation to complete...");
+  Delay(500);
+  snooze =0 ;
+
+  while (Sys.WaitProcess(processName, 1000).Exists && Sys.Process(processName).CPUUsage != 0 && snooze < 50) {
+    Delay(500);
+    snooze++;
+  }
+  
+  Indicator.Clear();
+     
+}
+
+function logTime(message, stTime) {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function: logTime
+  Description: Calculates the execution time of a function
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  try {
+          
+    if(stTime != undefined && message != undefined) {
+      var timeInterval = aqConvert.DateTimetoStr(aqDateTime.TimeInterval(stTime, aqDateTime.Now())).split(" ")[1];
+      if(timeInterval == undefined)
+        Project.Variables.eventTime = Project.Variables.eventTime + message+ " - 0:00:00\n";
+      else    
+        Project.Variables.eventTime = Project.Variables.eventTime + message+ " - " + aqConvert.VartoStr(timeInterval.split(":")[0]-12) + ":" + timeInterval.split(":")[1] + ":" + timeInterval.split(":")[2]+ "\n";
+    }
+    
+  } //End try
+  
+  catch(exception) {
+    throw exception
+  } //End catch
+  
+} //logTime
+
+function closePOSProcess() {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function: closePOSProcess
+  Description: Closes the POSApplication window in the desktop
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+  //Counter variable
+  var winPOSApp;
+  var counter;
+  
+  Indicator.PushText("Closing all explorer windows....");
+  
+  winPOSApp = Sys.FindAllChildren("ProcessName","POSApplication").toArray(); 
+  
+  for(counter = 0; counter < winPOSApp.length; counter++) {
+  if(winPOSApp[counter].Exists) //Verify if the Explorer Window exists
+    winPOSApp[counter].Terminate(); //Close the Window if it exists
+  }
+    
+  Sys.Refresh();
+
+  winPOSApp = null;
+  Indicator.Clear();
+  Delay(2000, "Waiting for POSApplication to start.");
+}
+
+function compareObjects(expected, actual, ignoreProps) {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~s
+  Function: compareObjects
+  Description: compares the vaules in the properties of 2 similar objects
+               and returns the difference, if any 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+  
+  var prop;
+  var strDiff = "Difference:-\n--------------\n";
+  var diffFound = false;
+  
+  if (ignoreProps !== undefined && ignoreProps !== null && ignoreProps !== "") {
+    ignoreProps = ignoreProps.replace(/ ,/g, ",");
+    ignoreProps = ignoreProps.replace(/, /g, ",");
+    ignoreProps = ignoreProps + ",";
+    ignoreProps = ignoreProps.toUpperCase();
+  }
+  else
+    ignoreProps = "";
+  
+  //Compares the property values with the keys of the property
+  for (prop in expected) {
+    
+    if (ignoreProps.indexOf(prop.toUpperCase()) >= 0)
+      continue;
+      
+    if (prop in actual) {
+    
+      expValue = expected[prop];
+      actValue = actual[prop]; 
+ 
+      if (expValue !== null && expValue === "(automatic)")
+        continue;
+      
+      if(expValue == null) {
+        if (expValue != actValue) {
+          strDiff = strDiff + "\n\n*) " + prop + ":[D]  " + expValue + "(expected)  " + actValue + "(actual)\n";
+          diffFound = true;
+        }
+        else
+          strDiff = strDiff + "\n*) " + prop + ":  " + expValue;
+      }
+      else {      
+        if (aqString.Compare(expValue.toString(), actValue.toString(), false) !== 0) {
+          strDiff = strDiff + "\n\n*) " + prop + ":[D]  " + expValue + "(expected)  " + actValue + "(actual)\n";
+          diffFound = true;
+        }
+        else
+          strDiff = strDiff + "\n*) " + prop + ":  " + expValue;
+      }
+    }
+  }
+  
+  if (diffFound)
+    return strDiff
+  else
+    return "";
+  
+}
+
+function getOSInformation(){
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
+Function: getOSInformation
+Description: To get the Information of Operating Systems                      
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+  try {
+  
+    //Variable Declaration
+    var OSInfo; //Stores the OS information 
+    var info; //Stores the information to be returned
+  
+    OSInfo = Sys.OSInfo; //Obtains the OSInfo object
+
+    info = "Name: " + OSInfo.Name + " "; //Obtains information on the running operating system
+  
+    if (OSInfo.Windows64bit)
+      info = info + "64-bit version";
+    else
+      info = info + "32-bit version";
+
+    info = info + ", Service Pack Version: " + OSInfo.ServicePackVersion;
+  
+    return info;
+  
+    } //End try
+  
+    catch (exception) {
+      throw exception;
+    } //End catch
+  
+} //getOSInformation
+
+function getDotNetVersion() {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
+Function: getDotNetVersion
+Description: To get the Dot net version installed                       
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/  
+
+  try {
+  
+    //Variable Declaration
+    var dotNetInfo; //Stores the dotNet information
+    
+    dotNetInfo = "Microsoft .Net Framework Version: " + dotNET.System.Environment.Version.Major + "." + dotNET.System.Environment.Version.Minor + "." + dotNET.System.Environment.Version.Build; //Get Microsoft .Net Framework Version
+    
+    return dotNetInfo; 
+  
+  } //End try
+  
+    catch (exception) {
+      throw exception;
+    } //End catch
+    
+} //getDotNetVersion
+
+function getJavaVersion() {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
+Function: getJavaVersion
+Description: To get the Java version installed                       
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/  
+  
+  try {
+  
+    //Variable Declaration
+    var javaInfo = "Java is not installed in this machine."; //Stores the Java information
+    
+    //Get Java Version 
+    if (aqFileSystem.Exists(Sys.OSInfo.SystemDirectory+"\\java.exe")) {
+      javaInfo = aqFileSystem.GetFileInfo(Sys.OSInfo.SystemDirectory+"\\java.exe");
+      javaInfo = "Java Version: " + javaInfo.VersionInfo.ProductMajorVersion + "." + javaInfo.VersionInfo.ProductMinorVersion + "." + javaInfo.VersionInfo.ProductBuildVersion
+    } 
+    
+    return javaInfo;
+   
+  } //End try
+  
+  catch (exception) {
+    throw exception;
+  } //End catch
+    
+} //getJavaVersion
+
+function editXMLFile (data) {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function: editXMLFile
+  Description: Edits the the XML File
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+  
+  //Variable Declaration
+  var writeOnFile; //Store the pointer to the XML file
+  var fileContent; //Stores the content of the XML file
+  var errorMsg; //Stores the error message to be returned
+  var findString; //Stores the value returned by aqString.Find method
+    
+  try {
+    
+    errorMsg = {
+                  Exists : false,
+                  Message : ""
+               };
+               
+    if (!aqFile.Exists(data.XMLFilePath)) { //Checks for the existance of XML file
+      errorMsg.Exists = true;
+      errorMsg.Message = "XML file does not exists in specified location"
+      return errorMsg;
+    }
+  
+    fileContent = aqFile.ReadWholeTextFile(data.XMLFilePath, aqFile.ctANSI); //Reads the whole text file and stores it in the variable
+    findString = aqString.Find(fileContent, data.StringToReplace, 0, false); //Finds the string to replace exists in the XML file
+  
+    if (findString === -1) { //Checks if XML file has the string to replace
+      errorMsg.Exists = true;
+      errorMsg.Message = "The specified string does not exists in the XML file.";
+      return errorMsg;
+    }
+  
+    fileContent = aqString.Replace(fileContent, data.StringToReplace, data.NewString, false); //Replaces the string that to be replaced with new string
+    writeOnFile = aqFile.OpenTextFile(data.XMLFilePath, aqFile.faWrite, aqFile.ctANSI, true); //Opns the XML file
+    writeOnFile.write(fileContent); //Writes in the XML file with the replacement done
+  
+    fileContent = aqFile.ReadWholeTextFile(data.XMLFilePath, aqFile.ctANSI); //Reads the XML file content
+    findString = aqString.Find(fileContent, data.NewString, 0, false); //Finds the string in the XML file
+  
+    if (findString === -1) { //Checks if XML file is replaced with the new string
+      errorMsg.Exists = true;
+      errorMsg.Message = "The modified string does not exists in the XML file.";
+      return errorMsg;
+    }
+    
+    findString = aqString.Find(fileContent, data.StringToReplace, 0, false); //Finds the string in the XML file
+  
+    if (findString !== -1) { //Checks if the replaced string exists in XML file
+      errorMsg.Exists = true;
+      errorMsg.Message = "The string to replace exists in the XML file.";
+      return errorMsg;
+    }
+    
+    wShell = new ActiveXObject("Wscript.Shell"); //Initiates ActiveX object      
+    fileName = "TestFile" + aqString.Replace(aqDateTime.Time(), ":", "") + ".xml";  //Assignining folder name
+    
+    filePath = wShell.SpecialFolders("Desktop") + "\\" + fileName; //Assigning folder path
+    aqFile.Create(filePath); //Creates 1 file in the specified path
+    aqFile.WriteToTextFile(filePath, fileContent, 22, true); //Creates a invalid xml file with the modified content
+        
+    if (!aqFile.Exists(filePath)) { //Checks for the existance of XML file
+      errorMsg.Exists = true;
+      errorMsg.Message = "XML file does not created in specified location"
+      return errorMsg;
+    } 
+    
+    return filePath;
+  
+  } //End try
+  
+  catch(exception) {
+    throw exception 
+  } //End catch
+  
+  finally {
+    if (errorMsg.Exists)
+      return errorMsg;
+    else 
+      return filePath;
+  }
+ 
+} //editXMLFile
+
+function fetchUserPassword(userName, projectSuite) {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function: fetchUserPassword
+  Description: Fetches decrypted Password from Project/ProjectSuiteVariables
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+  
+  try {
+    if(userName == undefined || userName == "" || userName == null)
+      userName = Sys.UserName;
+    
+    if (projectSuite == true)
+      return ProjectSuite.Variables.GetVariableDefaultValue(aqString.Replace(userName, ".", "_")).Decryptedvalue;
+    else
+      return Project.Variables.GetVariableDefaultValue(aqString.Replace(userName, ".", "_")).Decryptedvalue;      
+  }
+  catch(exception) {
+    throw exception 
+  } //End catch
+  
+}
+  
+function launchApp()  {
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function: launchApp
+  Description: Launches a instance of POS app
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  try {
+
+  if(! appExists("PosApplication")) {
+    
+    Indicator.PushText("Launching POS application...");
+    TestedApps.PosApplication.Run(); //Run the POS app
+    Delay(5000, "The POS app is being launched");
+    
+    if(appExists("PosApplication"))
+      Log.Message("Launching POS app is successful.");
+    else
+      Log.Message("Launching POS app is unsuccessful.");
+  }
+  
+  else  {
+    Log.Message("The POS app is already running.");
+  }
+  
+  } //End try
+  
+  catch(exception) {
+    throw exception;
+  } //End catch
+
+}
+
+function appExists(appName)  {
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function   : appExists
+  Description: Checks the existance of app process
+  Input      : Appliaction process name.
+  Output     : Returns true if the process exists else return false.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  try {
+
+  if(Sys.WaitProcess(appName, 5000).Exists) {
+    return true;
+  }
+  
+  else  {
+    return false;
+  }
+  
+  } //End try
+  
+  catch(exception) {
+    throw exception;
+  } //End catch
+
+}
+
+function closeApp(appName) {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function   : closeApp
+  Description: Closes all existing given app process
+  Input      : Appliaction process name.
+  Output     : None
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+  
+  //Variable Declaration
+  var winApp;
+  var counter;
+  
+  try {
+  
+  Indicator.PushText("Closing apps....");
+  
+  winApp = Sys.FindAllChildren("ProcessName",appName).toArray(); 
+  
+  for(counter = 0; counter < winApp.length; counter++) {
+    if(winApp[counter].Exists) //Verify if the app process exists
+      winApp[counter].Terminate(); //Close the app process if it exists
+  }
+    
+  Sys.Refresh();
+  Delay(2000, "Waiting for app to close.");
+  
+  } //End try
+  
+  catch(exception) {
+    throw exception;
+  } //End catch
+  
+} //closeApp
+
+function exeCommand(keyName)  {
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function   : exeCommand
+  Description: Checks the existance of app process
+  Input      : Key name.
+  Output     : Returns the key vaule if exists
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  var iniRoot;
+  
+  try {
+  
+   iniRoot = Storages.INI(ProjectSuite.Path + "Common\\Keyconfiguration.ini"); //Stores the ini root    
+   return "\""+iniRoot.GetSubSection("KeyConstant").GetOption(keyName, "Not Exists")+"\"";
+  
+  } //End try
+  
+  catch(exception) {
+    throw exception;
+  } //End catch
+
+} //exeCommand

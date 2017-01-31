@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Root signature="{9252F941-DB23-4FCA-AA50-858B33BB4A19}" version="11.40">
+	<children>
+		<child name="EventHandlers" key="{29ADBEC3-9281-4905-85F0-E09D3DD7D0E4}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="EventHandlers.sj" />
+		</child>
+		<child name="Utility" key="{294D48B4-5E11-40F3-88D6-0E0D069BE2A0}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="Utility.sj" />
+		</child>
+		<child name="PunchOutTest" key="{C14968EE-A84F-47C0-85E6-9E40BCC2C4F9}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="PunchOutTest.sj" />
+		</child>
+		<child name="MainDriver" key="{CC34F278-B098-401C-B68B-D45BCDDA2DA2}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="MainDriver.sj" />
+		</child>
+		<child name="EndToEndTest" key="{10C371CB-248E-4F9A-A5FA-08657276C70E}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="EndToEndTest.sj" />
+		</child>
+		<child name="PunchInTest" key="{250C68BE-523E-45BF-B762-A76F546EF2F6}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="PunchInTest.sj" />
+		</child>
+		<child name="PunchPanel" key="{03BF0A66-27C0-4E5D-825F-46A7467C95AE}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="PunchPanel.sj" />
+		</child>
+		<child name="MainDialog" key="{71CA7E3D-13AA-4DE7-8EAC-99B316E09792}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="MainDialog.sj" />
+		</child>
+		<child name="OptionsPanel" key="{7769951D-E5C5-428E-AE89-B25ED92E3078}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="OptionsPanel.sj" />
+		</child>
+		<child name="TicketingPanel" key="{3AA42384-67DF-4260-A0F9-CE4F77895B2C}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="TicketingPanel.sj" />
+		</child>
+		<child name="MainOptionsPanel" key="{22D2160F-F655-4075-B631-696A9CE4F8BE}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="MainOptionsPanel.sj" />
+		</child>
+		<child name="MainScreen" key="{63C9BF0D-02A2-43DE-A895-79E2E36B5F25}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="MainScreen.sj" />
+		</child>
+		<child name="InformationScreen" key="{558E0466-52A4-418E-BAF7-342F0AB174D9}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="InformationScreen.sj" />
+		</child>
+		<child name="EmployeeInfoForm" key="{EC8D3AFF-A3DA-471E-BF2E-E3FB176AC32D}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="EmployeeInfoForm.sj" />
+		</child>
+		<child name="NumericPanel" key="{CC80720D-B4C3-4CBA-8FD1-E881874AA594}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="NumericPanel.sj" />
+		</child>
+		<child name="EmployeeInfoScreen" key="{3534F8FC-D09E-4B16-AF9A-82E3604A9383}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="EmployeeInfoScreen.sj" />
+		</child>
+		<child name="NavigationPanel" key="{AB6DA8BB-2939-4D3F-81FE-81B8BAE0F0EB}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="NavigationPanel.sj" />
+		</child>
+		<child name="UserInfoForm" key="{B17996EA-3B99-4942-A9BC-6346C0670764}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="UserInfoForm.sj" />
+		</child>
+		<child name="UserIdentificationScreen" key="{A9221999-0EF4-4B3C-BE45-D7A7A90BCC2D}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="UserIdentificationScreen.sj" />
+		</child>
+	</children>
+	<folders>
+		<folder caption="Tests" description="A logical folder that is used to organize project items and elements." moniker="">
+			<references>
+				<ref key="{C14968EE-A84F-47C0-85E6-9E40BCC2C4F9}" />
+				<ref key="{10C371CB-248E-4F9A-A5FA-08657276C70E}" />
+				<ref key="{250C68BE-523E-45BF-B762-A76F546EF2F6}" />
+			</references>
+		</folder>
+		<folder caption="Wrappers" description="A logical folder that is used to organize project items and elements." moniker="">
+			<folders>
+				<folder caption="WrapperHelpers" description="A logical folder that is used to organize project items and elements." moniker="">
+					<references>
+						<ref key="{03BF0A66-27C0-4E5D-825F-46A7467C95AE}" />
+						<ref key="{7769951D-E5C5-428E-AE89-B25ED92E3078}" />
+						<ref key="{3AA42384-67DF-4260-A0F9-CE4F77895B2C}" />
+						<ref key="{22D2160F-F655-4075-B631-696A9CE4F8BE}" />
+						<ref key="{63C9BF0D-02A2-43DE-A895-79E2E36B5F25}" />
+						<ref key="{558E0466-52A4-418E-BAF7-342F0AB174D9}" />
+						<ref key="{CC80720D-B4C3-4CBA-8FD1-E881874AA594}" />
+						<ref key="{3534F8FC-D09E-4B16-AF9A-82E3604A9383}" />
+						<ref key="{AB6DA8BB-2939-4D3F-81FE-81B8BAE0F0EB}" />
+						<ref key="{A9221999-0EF4-4B3C-BE45-D7A7A90BCC2D}" />
+					</references>
+				</folder>
+			</folders>
+			<references>
+				<ref key="{71CA7E3D-13AA-4DE7-8EAC-99B316E09792}" />
+				<ref key="{EC8D3AFF-A3DA-471E-BF2E-E3FB176AC32D}" />
+				<ref key="{B17996EA-3B99-4942-A9BC-6346C0670764}" />
+			</references>
+		</folder>
+		<folder caption="GenericUtils" description="A logical folder that is used to organize project items and elements." moniker="">
+			<references>
+				<ref key="{294D48B4-5E11-40F3-88D6-0E0D069BE2A0}" />
+			</references>
+		</folder>
+		<folder caption="Driver" description="A logical folder that is used to organize project items and elements." moniker="">
+			<references>
+				<ref key="{CC34F278-B098-401C-B68B-D45BCDDA2DA2}" />
+			</references>
+		</folder>
+	</folders>
+</Root>

@@ -1,0 +1,63 @@
+﻿
+
+/*************************************************************************************************************************************
+---------------------------------------------------[[SCRIPT DEVELOPMENT CHRONICLE]]---------------------------------------------------
+Test Module Name   : Smoke
+Developed By       : TT Team ASPIRE
+--------------------------------------------------------------------------------------------------------------------------------------
+**************************************************************************************************************************************/
+
+function SmokeTestDriver() {   
+                                                        
+/*===================================================================
+  Driver Script: This is driver script for Test Module - Smoke
+===================================================================*/
+
+  try { 
+    
+    TestLog.AddTestPlan("Smoke Test");
+    DataPool.FilePath = Project.Path + "TestData\\";
+    DataPool.FileName = "PunchOut.xls";
+    DataPool.SheetName = "Tests";
+    PunchOutTestData = DataPool.New();
+    
+    while (! DataPool.EOF) {      
+
+      if(DataPool.Item("Smoke") === "Yes"){
+      
+        while (! DataPool.EOF) {      
+
+          if(DataPool.Item("Smoke") === "Yes"){
+      
+            var tcNo = DataPool.Item("TestID");
+            tcNo = aqString.Replace(tcNo, ".", "_"); 
+            tcNo = tcNo.toUpperCase();
+            Indicator.PushText("TC#" + DataPool.Item("TestID"));
+        
+            TestLog.AddTestCase(DataPool.Item("TestID"), DataPool.Item("Title"), DataPool.Item("Steps"), DataPool.Item("ExpectedResult"));
+        
+            try { 
+              Runner.CallMethod("PunchOutTest." + tcNo); 
+              } 
+            catch(e) {}
+                 
+            Log.PopLogFolder();                
+          }// End If
+      
+          DataPool.Reset(PunchOutTestData);
+          DataPool.NextItem(); //moving to next given test item
+        }         
+      }                                                                             
+    }
+  }
+  catch (exception){
+    TestLog.Error(exception.description, Utility.formattedException(exception));
+  }
+  
+  finally {
+    DataPool.Close();    
+    Log.PopLogFolder();
+    PunchOutTestData = null;
+  }  
+
+} //SmokeTestDriver

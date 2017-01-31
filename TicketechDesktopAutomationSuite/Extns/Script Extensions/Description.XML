@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ScriptExtensionGroup Name = "Aspire Script Extensions">
+
+<Category Name="Runtime Objects">
+
+    <ScriptExtension Name = "Data Pool Extension" Author = "Aspire QA" Version = "1.0" HomePage = "www.aspiresys.com">
+      
+	  <Script Name = "NewDataPool.js">
+		
+		<RuntimeObject Name = "DataPool">
+			
+			<Method Name = "New" Routine = "newDataPool"> Activates the Datapool feature. </Method>
+			
+			<Method Name = "NextItem" Routine = "GetNextTestData"> Moves to the Next Data of Sheet Data. </Method>
+			
+			<Method Name = "Close" Routine = "closeConnection"> Closes the connection to data sheet </Method>
+			
+			<Method Name = "Reset" Routine = "resetConnection"> Resets connection to existing data sheet </Method>
+			
+			<Property Name = "FilePath" GetRoutine = "FilePath" SetRoutine = "SetFilePath"> Gets or Sets the FilePath. </Property>
+			
+			<Property Name = "FileName" GetRoutine = "FileName" SetRoutine = "SetFileName"> Gets or Sets the FileName. </Property>
+			
+			<Property Name = "SheetName" GetRoutine = "SheetName" SetRoutine = "SetSheetName"> Gets or Sets SheetName. </Property>
+			
+			<Property Name = "FieldCount" GetRoutine = "FieldCount" > Returns Field Count in TestData Sheet. </Property>
+			
+			<Property Name = "FieldName" GetRoutine = "FieldName" >Returns Field Name for given column index in Data Sheet. </Property>
+			
+			<Property Name = "FieldIndex" GetRoutine = "FieldIndex" >Returns Index for given ColumnName in Data Sheet .</Property>
+			
+			<Property Name = "Field" GetRoutine = "Field" > Gets the Field value for given ColumnName in Data Sheet. </Property>
+			
+			<Property Name = "Item" GetRoutine = "Item" > Gets the Field value for given ColumnName in Data Sheet. </Property>
+			
+			<Property Name = "Columns" GetRoutine = "Columns" > Gets the column names in Data Sheet. </Property>
+			
+			<Property Name = "EOF" GetRoutine = "EOF" >Returns End Of File status for Data Sheet. </Property>
+			
+			<Description>
+				Provides access to the aspire QA custom TestData reading features.
+			</Description>
+			
+		</RuntimeObject>
+      
+	  </Script>
+	
+		<Description>
+			Interface to custom Test Data driver by Aspire QA.
+		</Description>
+    
+	</ScriptExtension>
+
+    <ScriptExtension Name = "Test Log Extension" Author = "Aspire QA" Version = "1.0" HomePage = "www.aspiresys.com">
+      
+	  <Script Name = "ResultLog.js">
+         
+		 <RuntimeObject Name = "TestLog">
+		 
+			<Method Name = "AddProject" Routine = "AddProject"> Creates a new log level for the Project in Log. </Method>
+			
+			<Method Name = "AddTestPlan" Routine = "AddTestPlan"> Creates a log level for the Test plan in Log. </Method>
+			
+			<Method Name = "AddTestCase" Routine = "AddTestCase"> Creates a log level for the Test Case in TestResults.</Method>
+			
+			<Method Name = "AddTestDataInfo" Routine = "LogTestDataInfo"> Creates a log level for the TestData. </Method>
+			
+			<Method Name = "Pass" Routine = "LogPassResult"> Creates a pass log in pre-defined format. </Method>
+			
+			<Method Name = "Fail" Routine = "LogFailResult">  Creates a failure log in pre-defined format. </Method>
+			
+			<Method Name = "Message" Routine = "LogMessage">  Creates a message log in pre-defined format.  </Method>
+			
+			<Method Name = "Error" Routine = "LogError"> Creates a error log in pre-defined format. </Method>
+			
+			<Method Name = "Warning" Routine = "LogWarning"> Creates a warning log in pre-defined format. </Method>
+			
+			<Method Name = "Event" Routine = "LogEvent"> Creates a event log in pre-defined format. </Method>
+			
+			<Method Name = "Link" Routine = "LogLink"> Creates a link log in pre-defined format. </Method>
+
+			<Method Name = "Time" Routine = "LogTime"> Creates a time log in pre-defined format. </Method>
+
+			<Method Name = "Statistics" Routine = "LogStatisticsInfo"> Displays statistics of the log results. </Method>
+			
+			<Method Name = "GetMemCpuInfo" Routine = "GetMemCpuInfo"> Gets and displays Memory and CPU information of the process. </Method>
+
+			<Method Name = "PlanStatus" Routine = "LogPlanStatus"> Displays executed plan results. </Method>
+			
+			<Description>
+				Interface custom Result Logging features of Aspire QA.
+			</Description>
+			
+			</RuntimeObject>
+
+		</Script>
+
+		<Description>
+			Interface custom Result Logging features of Aspire QA.
+		</Description>
+
+	</ScriptExtension>      
+
+</Category>
+
+</ScriptExtensionGroup>

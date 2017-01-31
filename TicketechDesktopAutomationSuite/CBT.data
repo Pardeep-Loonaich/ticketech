@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Root Version="1">
+	<Providers>
+		<A609CA20xCE0Bx4080x93FCx121361DAEEF9 version="1">
+			<groups>
+				<Group0 Caption="EnvironmentList1" Key="5376A9A1x2AD8x45BFx9A03xFC191614711F" Enabled="True">
+					<Hosts />
+					<Tests />
+				</Group0>
+			</groups>
+		</A609CA20xCE0Bx4080x93FCx121361DAEEF9>
+	</Providers>
+</Root>

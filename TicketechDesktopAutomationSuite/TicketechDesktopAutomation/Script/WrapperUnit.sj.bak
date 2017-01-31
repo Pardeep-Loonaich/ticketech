@@ -1,0 +1,3441 @@
+﻿
+function formattedException(exception) {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~s
+  Function: formattedException
+  Description: Formats the information available in exception object in a
+               string & returns in for printing purpose 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  strException = "";
+  for (prop in exception)
+    strException = strException + prop + ": " + exception[prop] + "\n\n"
+
+  return strException;
+}
+
+function syncExplorerProcess(processName) {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function: syncExplorerProcess
+  Description: Synchornizes the explorer process (i.e) wait until the 
+               explorer process to settle down
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  if(processName == undefined)
+    processName = "Explorer";
+
+  Indicator.PushText("Waiting for operation to complete...");
+  Delay(500);
+  snooze =0 ;
+
+  while (Sys.WaitProcess(processName, 1000).Exists && Sys.Process(processName).CPUUsage != 0 && snooze < 50) {
+    Delay(500);
+    snooze++;
+  }
+  
+  Indicator.Clear();
+     
+}
+
+function logTime(message, stTime) {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function: logTime
+  Description: Calculates the execution time of a function
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  try {
+          
+    if(stTime != undefined && message != undefined) {
+      var timeInterval = aqConvert.DateTimetoStr(aqDateTime.TimeInterval(stTime, aqDateTime.Now())).split(" ")[1];
+      if(timeInterval == undefined)
+        Project.Variables.eventTime = Project.Variables.eventTime + message+ " - 0:00:00\n";
+      else    
+        Project.Variables.eventTime = Project.Variables.eventTime + message+ " - " + aqConvert.VartoStr(timeInterval.split(":")[0]-12) + ":" + timeInterval.split(":")[1] + ":" + timeInterval.split(":")[2]+ "\n";
+    }
+    
+  } //End try
+  
+  catch(exception) {
+    throw exception
+  } //End catch
+  
+} //logTime
+
+function getLoggedInUser(index) {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function: getLoggedInUser
+  Description: Return Logged In user of Vault
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+  if (index!==undefined && index !== null && index !== "")
+    idx = index
+  else
+    idx = 1
+      
+  userInst = Sys.Process("explorer", idx).FindChild(["WndClass", "Exists", "WndCaption"], ["Afx:*", true, "*"], 5, true) //Fetching the Instance
+  userInst = userInst.FindChild(["WndClass", "Exists", "WndCaption", "Index"], ["#32770", true, "", 2], 0, true)
+  
+  index = 0;
+  while (userInst.Window("Button", "*", index).WndCaption !== "Advanced Search" && index < 10)
+    index++;
+  
+  loogedInUser =  userInst.Window("Button", "*", index+1).WndCaption
+  return loogedInUser;
+}
+
+function closeExplorerProcess() {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~s
+  Function: closeAllExplorerWindows
+  Description: Closes all the explorer window in the desktop
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+  //Counter variable
+  var winExplorer;
+  var counter;
+  
+  Indicator.PushText("Closing all explorer windows....");
+  
+  winExplorer = Sys.FindAllChildren("ProcessName","Explorer").toArray(); 
+  
+  for(counter = 0; counter < winExplorer.length; counter++) {
+  if(winExplorer[counter].Exists) //Verify if the Explorer Window exists
+    winExplorer[counter].Terminate(); //Close the Window if it exists
+  }
+    
+  Sys.Refresh();
+
+  winExplorer = null;
+  Indicator.Clear();
+  Delay(2000, "Waiting for Explorer to start.");
+}
+
+function closeAllExplorerWindows() {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~s
+  Function: closeAllExplorerWindows
+  Description: Closes all the explorer window in the desktop
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+  //Counter variable
+  var winExplorer;
+  var counter;
+  var counter1;
+  
+// Indicator.PushText("Closing all explorer windows....");
+  if(Sys.OSInfo.Name == "Win10") { 
+  
+    winExplorer = Sys.FindAllChildren("ProcessName","Explorer").toArray(); 
+     for(counter1 = 0; counter1 < winExplorer.length; counter1++) {
+   
+     if(winExplorer[counter1].MemUsage < 250000){ // Check the explorer process CPU memory usage more than 200000 KB 
+   
+      mfilesExlporer = new VBArray(winExplorer[counter1].FindAllChildren(["WndClass","WndCaption"],["CabinetWClass","*"],10)).toArray()
+       for(counter = 0; counter < mfilesExlporer.length; counter++) {
+        if(mfilesExlporer[counter].Exists){ //Verify if the Explorer Window exists
+          mfilesExlporer[counter].Activate(); // Activate the window on screen
+          mfilesExlporer[counter].Close(); //Close the Window if it exists
+          }}}
+        else 
+         Utility.closeExplorerProcess(); // Terminate the explorer process
+       }
+      Sys.Refresh();
+      winExplorer = null;
+      mfilesExlporer = null;
+    //  Indicator.Clear();
+      Delay(2000, "Waiting for Explorer to start.");
+       }
+   else  
+      Utility.closeExplorerProcess(); // Terminate the explorer process 
+ }
+
+function launchExploreMFiles(path) {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function: launchExploreMFiles
+  Description: Launches a new MFiles explorer window
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  var explorerProcess = []; //Stores all the instances of explorer process
+  var explorerProcessCnt=0; //Stores the number of explorer process currently running
+  var cabinetWClass = []; //Stores the instances of all the 'CabinetWClass' windows in an array after launching new explorer
+  var prevCabinetWClass = []; //Stores instances of all the existing 'CabinetWClass' windows in an array before launching new explorer
+  var prevCabinetWClassCnt = 0; //Stores the number of instances of 'CabinetWClass' windows found before launching new explorer
+  var cabinetWClassCnt = 0; //Stores the number of instances of 'CabinetWClass' windows found after launching new explorer
+  var snooze = 0;
+  
+  try {
+
+    Indicator.PushText("Launching M-Files Explorer....");
+  
+    //Assigns Path and File name of the M-Files Application
+    if (path === undefined)
+      path = ProjectSuite.Variables.ClientAppPath + ProjectSuite.Variables.ClientAppName;
+
+    //Checks if Application exists in the path specified
+    if (! aqFile.Exists(path)) {
+      TestLog.Warning("Invalid Configuration. MFiles is not found in the specified location.");
+      Runner.Stop();
+    }
+
+    //loop to get all the instances of windows with 'CabinetWClass' as 'WndClass'
+    explorerProcess = Sys.FindAllChildren("ProcessName", "Explorer",1).toArray();
+    explorerProcessCnt = explorerProcess.length;
+    for( var i=0; i<explorerProcessCnt; i++ ) {
+      prevCabinetWClass = prevCabinetWClass.concat(explorerProcess[i].FindAllChildren("WndClass","CabinetWClass",1).toArray());
+      prevCabinetWClassCnt = prevCabinetWClass.length;
+    }
+  
+    //Launches new MFiles explorer
+    var ObjShellScript = new ActiveXObject("WScript.Shell");
+    ObjShellScript.Exec(path + " -explore");
+    Utility.syncExplorerProcess();
+  
+    //Snooze until the existance of newly launched explorer window
+    do {
+      cabinetWClass = [];
+      explorerProcess = Sys.FindAllChildren("ProcessName", "Explorer",1).toArray();
+      explorerProcessCnt = explorerProcess.length;
+      for( var i=0; i<explorerProcessCnt; i++ ) {
+        cabinetWClass = cabinetWClass.concat(explorerProcess[i].FindAllChildren("WndClass","CabinetWClass",1).toArray());
+        cabinetWClassCnt = cabinetWClass.length;
+      }
+      snooze++;
+      Delay(1000, "Waiting for explorer...");
+    } while( (cabinetWClassCnt !== (prevCabinetWClassCnt+1))  && (snooze < 120) )
+  
+    Delay(500, "Launching M-Files Explorer...")
+  } //End try
+  catch(exception) {
+    throw exception;
+  } //End catch
+  finally {
+    explorerProcess = null;
+    cabinetWClass = null;
+    prevCabinetWClass = null;
+    Indicator.Clear();
+  } //End finally
+  
+} //LaunchExploreMFiles
+
+function openVault(vaultName) {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~s
+  Function: openVault
+  Description: Logs Into the vault by doubleclicking on the vault item
+               displayed in the listing
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+  
+  //Variable Declaration
+  var vaultFound = false; //Stores boolean value based on vault existense
+  var errorMsg; //Stores error Message
+  var folderView; //Instance of MFShell
+  
+  //Variable Declaration to support Multi-language
+  var CMenuOpen = aqString.Replace(Utility.getCaption("IDS_MENUSTR_OPEN"), "&", "");
+  var BtnOK = Utility.getCaption("IDS_BTNTITLE_OK");  
+  var BtnCancel = Utility.getCaption("IDS_MENUSTR_CANCEL"); 
+  var ExplorerPane = Utility.getCaption("MS_MRLN_STR_EXPLORER_PANE");
+  var tabName  = Utility.getCaption("IDS_COLTITLE_NAME");
+  var listItems  = Utility.getCaption("MS_MRLN_ITEMSLIST");
+  var listHeader  = Utility.getCaption("MS_MRLN_HEADERLIST"); 
+  
+  try {
+  
+    //Launches MFShell if not exists
+    if (! Sys.WaitProcess("Explorer").WaitWindow("CabinetWClass", "M-Files (M:)", -1, 1000).Exists && ! Sys.WaitProcess("Explorer").WaitWindow("CabinetWClass", "M:\\", -1, 1000).Exists) {
+//      Utility.closeAllExplorerWindows(); //Close explorer windows
+//      Utility.syncExplorerProcess();
+      Utility.launchExploreMFiles(); //Launch MFShell
+      Utility.syncExplorerProcess();  
+    }
+    
+    //Checks for the existance of the M-Files explorer window
+    if (! Sys.Process("Explorer").WaitWindow("CabinetWClass", "M-Files (M:)", -1, 1000).Exists && !Sys.Process("Explorer").WaitWindow("CabinetWClass", "M:\\", -1, 1000).Exists) {
+      TestLog.Warning("Explore M-Files not found. Please start the app.");
+      return;
+    }
+    
+    vaultName = vaultName.toUpperCase();
+    
+    errorMsg = {  Exists : false,
+                  ErrorExists : false,
+                  VaultExists : vaultFound,
+                  Message : "-",
+                  Description :"-",  
+                  UserInformation : "-"  
+               };   
+         
+    //Sets the focus to the M-Files client explorer window
+    if(Sys.Process("Explorer").WaitWindow("CabinetWClass", "M-Files (M:)").Exists)
+      Sys.Process("Explorer").WaitWindow("CabinetWClass", "M-Files (M:)").SetFocus();
+    else
+      Sys.Process("Explorer").WaitWindow("CabinetWClass", "M:\\").SetFocus();
+    
+    //Right clicks in the vault if Operating system is WIN7 or WIN8
+    if (Sys.OSInfo.Name === "Win7" || aqString.Find(Sys.OSInfo.Name, "Win8") == 0 || aqString.Find(Sys.OSInfo.Name, "Win10") == 0) {   
+      
+      folderView = Sys.Process("Explorer").WaitWindow("CabinetWClass", "M-Files (M:)");
+      
+      if(! folderView.Exists)
+        folderView = Sys.Process("Explorer").WaitWindow("CabinetWClass", "M:\\");
+      
+      viewWnd = folderView.WaitWindow("ShellTabWindowClass", "*").WaitWindow("DUIViewWndClassName", "", 1)
+      headerList = viewWnd.Pane(ExplorerPane).WaitWindow("CtrlNotifySink", "", 3).WaitWindow("SHELLDLL_DefView", "ShellView", 1).List(listItems).List(listHeader).SplitButton(tabName)
+      headerList.DblClick(headerList.Width-1,0); //Double clicks in the divider of the column
+      
+      folderView = folderView.Window("ShellTabWindowClass", "*").Window("DUIViewWndClassName", "", 1).Window("DirectUIHWND", "", 1).FindChild("WndClass", "DirectUIHWND", 3);
+      vaultFound = folderView.TextObject(vaultName).Exists;
+      
+      if (vaultFound) {//Right clicks the vault if vault is found
+        folderView.TextObject(vaultName).ClickR(folderView.TextObject(vaultName).Width/2, folderView.TextObject(vaultName).Height/2);
+        snooze = 0;  
+    
+        while( !Sys.Process("explorer").WaitWindow("#32768", "", -1,500).Exists && snooze < 60 ) {//Checks the existence of popup menu
+          Delay(1000, "Right clicking vault...");
+          folderView.TextObject(vaultName).ClickR(folderView.TextObject(vaultName).Width/2, folderView.TextObject(vaultName).Height/2);
+          snooze++;
+        }
+      }     
+    }
+
+    else if (Sys.OSInfo.Name === "WinXP") { //Right clicks the vault if Operating system is WindowsXP
+    
+      folderView = Sys.Process("Explorer").WaitWindow("CabinetWClass", "M-Files*", -1, 100)
+      folderView = folderView.WaitWindow("SHELLDLL_DefView", "*", -1).WaitWindow("DUIViewWndClassName", "*", -1).WaitWindow("DirectUIHWND", "*", -1);
+      folderView = folderView.Window("CtrlNotifySink", "", 1).Window("SysListView32", "FolderView", 1);
+       
+      for (i=0; i<folderView.wItemCount; i++) //Loops to find if vault exists
+        if (vaultName.toUpperCase() === folderView.wItem(i, 0).toUpperCase()){ 
+          vaultFound = true;
+          break;
+        }
+    
+      if (vaultFound) {//Right clicks the vault if vault is found   
+        folderView.ClickItemR(vaultName);
+        snooze = 0;  
+    
+        while( !Sys.Process("explorer").WaitWindow("#32768", "", -1,500).Exists && snooze < 60 ) {//Checks the existence of popup menu
+          Delay(1000, "Right clicking vault...");
+          folderView.ClickItemR(vaultName);
+          snooze++;
+        }     
+      }
+    } 
+    
+   if (vaultFound) {
+      Delay(1500);
+      Sys.Keys("[Left][Left]");
+      
+      if (Sys.OSInfo.Name === "Win10") { //Click on the specified context menu option if Operating system is Windows10
+        Utility.popUpClick(CMenuOpen);
+		Delay(5000, "Opens " + vaultName + "...");      
+        Utility.syncExplorerProcess();
+      }
+      else {
+        Sys.Process("explorer").WaitWindow("#32768", "", -1,500).WaitTextObject(CMenuOpen, 500).Click();
+        Delay(5000, "Opens " + vaultName + "...");      
+      }
+   }
+    
+    dlgError = Sys.Process("Explorer").WaitWindow("#32770", "M-Files*", 1,1000); //Instance of Error message dialog
+    
+    if (dlgError.Exists) { //Checks for error message dialog appears      
+      errorMsg = {  ErrorExists : true,
+                    VaultExists : vaultFound,
+                    Exists  : "" ,
+                    Message : dlgError.WndCaption,
+                    Description :dlgError.Window("Static", "*", 2).WndCaption,  
+                    UserInformation : "-"  
+                 };
+                 
+      Sys.Process("Explorer").Window("#32770", "M-Files*", 1).Window("Button", BtnOK, 1).Click(); //Clicks Ok button in the error message diaog
+      Sys.Process("explorer").Window("#32770", "Log In to M-Files", 1).Window("Button", BtnCancel, 3).Click(); //Clicks Cancel button in the log-in to M-Files dialog
+    }
+    else {
+      errorMsg = {  ErrorExists : false,
+                    VaultExists : vaultFound,
+                    Exists  : "",
+                    Message : "No Message Dialog Opened",
+                    Description :"-",  
+                    UserInformation : "-"  
+                 };
+    }
+
+    errorMsg.Exists = errorMsg.ErrorExists && !vaultFound
+
+  } //End try
+  
+  catch (exception) { 
+    return exception; 
+  } //End catch
+  
+  finally {
+    
+    if (dlgError !== undefined && dlgError.Exists)
+      dlgError.Close();
+      
+    return errorMsg;
+      
+  } //End finally
+  
+} //openVault
+
+function compareObjects(expected, actual, ignoreProps) {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~s
+  Function: compareObjects
+  Description: compares the vaules in the properties of 2 similar objects
+               and returns the difference, if any 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+  
+  var prop;
+  var strDiff = "Difference:-\n--------------\n";
+  var diffFound = false;
+  
+  if (ignoreProps !== undefined && ignoreProps !== null && ignoreProps !== "") {
+    ignoreProps = ignoreProps.replace(/ ,/g, ",");
+    ignoreProps = ignoreProps.replace(/, /g, ",");
+    ignoreProps = ignoreProps + ",";
+    ignoreProps = ignoreProps.toUpperCase();
+  }
+  else
+    ignoreProps = "";
+  
+  //Compares the property values with the keys of the property
+  for (prop in expected) {
+    
+    if (ignoreProps.indexOf(prop.toUpperCase()) >= 0)
+      continue;
+      
+    if (prop in actual) {
+    
+      expValue = expected[prop];
+      actValue = actual[prop]; 
+ 
+      if (expValue !== null && expValue === "(automatic)")
+        continue;
+      
+      if(expValue == null) {
+        if (expValue != actValue) {
+          strDiff = strDiff + "\n\n*) " + prop + ":[D]  " + expValue + "(expected)  " + actValue + "(actual)\n";
+          diffFound = true;
+        }
+        else
+          strDiff = strDiff + "\n*) " + prop + ":  " + expValue;
+      }
+      else {      
+        if (aqString.Compare(expValue.toString(), actValue.toString(), false) !== 0) {
+          strDiff = strDiff + "\n\n*) " + prop + ":[D]  " + expValue + "(expected)  " + actValue + "(actual)\n";
+          diffFound = true;
+        }
+        else
+          strDiff = strDiff + "\n*) " + prop + ":  " + expValue;
+      }
+    }
+  }
+  
+  if (diffFound)
+    return strDiff
+  else
+    return "";
+  
+}
+
+function explorerMenuClick(mnuSeq, check, isClose, wndCaption, index, mnuExploreMFiles) {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function: explorerMenuClick
+  Description: Clicks on the given menu sequence in the explorer menu bar
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  try {
+  
+    //Variable Declaration
+    var btnCount; //Stores the number of button in the explorer menu
+    var btnCaption; //Stores the caption of the button
+    var mnuSeqFound = true; //Stores the boolean value based on the availablity of the menu sequence
+    var toolbarApplication = Utility.getCaption("IDS_TABTITLE_LEGACY");
+    
+    
+    if (mnuExploreMFiles === undefined || mnuExploreMFiles === null || mnuExploreMFiles === "" ) {
+    
+      if (Sys.OSInfo.Name === "WinXP")  { //Instance of Explorer menu if the operating system is Win-XP
+        if(wndCaption === undefined)  
+          if(index !== undefined)  
+            mnuExploreMFiles = Sys.Process("Explorer").Window("CabinetWClass", "*", index).Window("WorkerW", "", 1).Window("ReBarWindow32").Window("ToolbarWindow32", "*", 2);
+          else
+            mnuExploreMFiles = Sys.Process("Explorer").Window("CabinetWClass", "*").Window("WorkerW", "", 1).Window("ReBarWindow32").Window("ToolbarWindow32", "*", 2);  
+        else
+          if(index !== undefined) 
+            mnuExploreMFiles = Sys.Process("Explorer").Window("CabinetWClass", wndCaption, index).Window("WorkerW", "", 1).Window("ReBarWindow32").Window("ToolbarWindow32", "*", 2);
+          else
+            mnuExploreMFiles = Sys.Process("Explorer").Window("CabinetWClass", wndCaption).Window("WorkerW", "", 1).Window("ReBarWindow32").Window("ToolbarWindow32", "*", 2);  
+        }
+            
+      else if (Sys.OSInfo.Name === "Win7")  { //Instance of Explorer menu if the operating system is Win-7
+        if(wndCaption === undefined)  
+          if(index !== undefined)  
+            mnuExploreMFiles = Sys.Process("explorer").Window("CabinetWClass", "*", index).Window("ShellTabWindowClass", "*").Window("WorkerW", "", 1).Window("ReBarWindow32").Window("ToolbarWindow32", "*", 1);
+          else
+            mnuExploreMFiles = Sys.Process("explorer").Window("CabinetWClass", "*").Window("ShellTabWindowClass", "*").Window("WorkerW", "", 1).Window("ReBarWindow32").Window("ToolbarWindow32", "*", 1);
+        else
+          if(index !== undefined)  
+            mnuExploreMFiles = Sys.Process("explorer").Window("CabinetWClass", wndCaption, index).Window("ShellTabWindowClass", "*").Window("WorkerW", "", 1).Window("ReBarWindow32").Window("ToolbarWindow32", "*", 1);
+          else
+            mnuExploreMFiles = Sys.Process("explorer").Window("CabinetWClass", wndCaption).Window("ShellTabWindowClass", "*").Window("WorkerW", "", 1).Window("ReBarWindow32").Window("ToolbarWindow32", "*", 1);      
+      }
+    
+      else if (aqString.Find(Sys.OSInfo.Name, "Win8") == 0 || aqString.Find(Sys.OSInfo.Name, "Win10") == 0) { //Instance of Explorer menu if the operating system is Win-8
+        if(wndCaption === undefined) 
+          if(index !== undefined) 
+            mnuExploreMFiles = Sys.Process("explorer").Window("CabinetWClass", "*", index).Window("ShellTabWindowClass", "*", 1).Window("WorkerW", "", 1).Window("ReBarWindow32", "", 1).ToolWindow(toolbarApplication);
+          else
+            mnuExploreMFiles = Sys.Process("explorer").Window("CabinetWClass", "*").Window("ShellTabWindowClass", "*", 1).Window("WorkerW", "", 1).Window("ReBarWindow32", "", 1).ToolWindow(toolbarApplication); 
+        else
+          if(index !== undefined) 
+            mnuExploreMFiles = Sys.Process("explorer").Window("CabinetWClass", wndCaption, index).Window("ShellTabWindowClass", "*", 1).Window("WorkerW", "", 1).Window("ReBarWindow32", "", 1).ToolWindow(toolbarApplication);
+          else
+            mnuExploreMFiles = Sys.Process("explorer").Window("CabinetWClass", wndCaption).Window("ShellTabWindowClass", "*", 1).Window("WorkerW", "", 1).Window("ReBarWindow32", "", 1).ToolWindow(toolbarApplication);     
+      } 
+    }
+    
+    if (isClose === undefined || isClose === "" || isClose === null)
+      isClose = true
+      
+    mnuSeq = mnuSeq.replace(/>>/g, "|");
+    mnuSeq = mnuSeq.split("|");
+
+    for (var i=0; i<mnuSeq.length; i++)
+      mnuSeq[i] = aqString.Trim(mnuSeq[i])
+      
+    btnCount = mnuExploreMFiles.wButtonCount; //No of buttons in the explorer menu
+
+    for (i=0; i< btnCount; i++) {  //checking for existance of given main menu item
+      btnCaption = mnuExploreMFiles.wButtonText(i, true);
+      btnCaption = btnCaption.replace("&", "");
+      if (mnuSeq[0].toUpperCase() === btnCaption.toUpperCase())
+        break;
+    }
+
+    if (i === btnCount)
+      return false;
+
+    mnuExploreMFiles.ClickItem(mnuExploreMFiles.wButtonText(i, true)); //Clicks the menu item in the explorer menu
+    Delay(500);
+    mnuSeq.shift();
+    popupMnuSeq = mnuSeq.join("|");
+    ProjectSuite.Variables.overrideMenuEvents = true;
+
+    /*    
+        Closing submenu,  since sometimes
+        test complete automatically brings cursor to
+        middle of the menu causing opening of submenu, if any 
+    */
+
+    Delay(500)
+
+    mnuCollections = Sys.Process("Explorer").FindAllChildren("WndClass", "#32768", 1);
+    mnuCollections = (new VBArray(mnuCollections)).toArray();
+
+    if (mnuCollections.length > 1)
+      Sys.Keys("[Esc]");    
+
+    if (check === undefined || check === "" || check === null)
+      mnuExploreMFiles.PopupMenu.Click(popupMnuSeq); //Clicks menu item in the popup menu after clicking explorer menu
+    else
+      mnuExploreMFiles.PopupMenu.Check(popupMnuSeq, check); //Checks menu item in the popup menu after clicking explorer menu
+
+    while (Sys.Process("Explorer").WaitWindow("#32768").Exists && isClose) 
+      Sys.Keys("[Esc]");
+
+    return ProjectSuite.Variables.menuExists;
+
+  }
+
+  catch (exception) {
+    return false;
+  }
+
+  finally {
+    ProjectSuite.Variables.overrideMenuEvents = false;
+  }
+
+} //explorerMenuClick
+
+function loginAs(vaultName, userType, userName, password, forceRelaunch, forceLogout) {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function: loginAs
+  Description: Logs into a vault with specified paramters
+  Parameters: This method takes the following inputs:
+                -> vaultName : Name of the test vault
+                -> userType : Type of user
+                -> userName : Name of the user (In case of windows user domain Name\user name)
+                -> password : password for the user
+                -> forceRelaunch : Boolean variable to relaunch MFiles (default value is true)
+                -> forceLogout : Boolean variable to logs-out MFiles before log in (default value is true)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  //Variable Declaration
+  var errorMsg; //Stores description and existence of error message
+  var snooze; //Delays the execution until the operation completes
+  var folderView; //Stores instance of MFShell
+  var dlgLogIn; //Stores instance of MFiles login as dialog
+  var dlgWarning; //Stores instance of warning occurs while vault logs out
+  var dlgError; //Stores instance of Error message dialog
+  var dlgForceLogOut; //Stores instance of Force log out dialog
+  var vaultFound = false; //Stores boolen value on vault existense
+
+  try {
+  
+    //String Caption for multi-language support
+    var CMenuLogOut = aqString.Replace(Utility.getCaption("IDS_MENU_STRING_LOG_OUT_FROM_ALL_VAULTS"), "&", "");
+    var OneCheckedOut = Utility.getCaption("IDS_E_MFILES_SINGLE_CHECKEDOUT_DOCUMENT_ON_LOGOUT");
+    var ManyCheckedOut = Utility.getCaption("IDS_E_MFILES_CHECKEDOUT_DOCUMENTS_ON_LOGOUT_DESC");
+    var LogOutFromVault = Utility.getCaption("IDS_DLGTITLE_LOG_OUT_FROM_VAULT_X");
+    var CMenuLoginAs = aqString.Replace(Utility.getCaption("IDS_MENUSTR_LOGIN_TO_VAULT_AS"), "&", "");
+    var dlgLoginCaption = Utility.getCaption("IDD_DIALOG_LOGIN"); 
+    var BtnOK = Utility.getCaption("IDS_BTNTITLE_OK");
+    var CMenuLogin = aqString.Replace(Utility.getCaption("IDS_MENU_STRING_LOG_IN"), "&", "");
+    var BtnCancel = Utility.getCaption("IDS_MENUSTR_CANCEL");
+    var BtnForceLogOut = Utility.getCaption("IDS_BTNTITLE_FORCE_LOGOUT");
+    var ExplorerPane = Utility.getCaption("MS_MRLN_STR_EXPLORER_PANE");
+    var tabName  = Utility.getCaption("IDS_COLTITLE_NAME");
+    var listItems  = Utility.getCaption("MS_MRLN_ITEMSLIST");
+    var listHeader  = Utility.getCaption("MS_MRLN_HEADERLIST");
+                 
+    if (forceRelaunch === undefined || forceRelaunch === null || forceRelaunch === "") //Sets default value to parameter forceRelanch
+      forceRelaunch = true;
+      
+    if (forceLogout === undefined || forceLogout === null || forceLogout === "") //Sets default value to parameter forceLogout
+      forceLogout = true;
+      
+    if (userName === "" || userName === null) //Sets default value to parameter forceLogout
+      userName = undefined;
+      
+    errorMsg = {  Exists : false,
+                  ErrorExists : false,
+                  VaultExists : vaultFound,
+                  Message : "-",
+                  Description :"-",  
+                  UserInformation : "-"  
+                };
+             
+    if (forceRelaunch) { //Re-launches MFiles explorer if forceRelaunch parameter is true
+      closeAllExplorerWindows(); //Closes all explorer window
+      Utility.syncExplorerProcess();
+      launchExploreMFiles(); //Launches M-Files explorer
+      Utility.syncExplorerProcess();
+
+      snooze = 0;
+      while ((!Sys.Process("Explorer").WaitWindow("CabinetWClass", "M-Files (M:)").Exists || !Sys.Process("Explorer").WaitWindow("CabinetWClass", "M-Files (M:)").VisibleOnScreen) && (!Sys.Process("Explorer").WaitWindow("CabinetWClass", "M:\\").Exists || !Sys.Process("Explorer").WaitWindow("CabinetWClass", "M:\\").VisibleOnScreen) && snooze++<60)
+        Delay(1000, "Launching Explorer");
+    }
+    
+    if (! Sys.WaitProcess("Explorer").WaitWindow("CabinetWClass", "*", -1, 1000).Exists) { //Verify if MFShell exists
+      Utility.closeAllExplorerWindows();
+      Utility.syncExplorerProcess();
+      Delay(5000);
+      Utility.launchExploreMFiles(); //Launch MFShell
+      Utility.syncExplorerProcess();
+
+      snooze = 0;
+      while ((!Sys.Process("Explorer").WaitWindow("CabinetWClass", "M-Files (M:)").Exists || !Sys.Process("Explorer").WaitWindow("CabinetWClass", "M-Files (M:)").VisibleOnScreen) && (!Sys.Process("Explorer").WaitWindow("CabinetWClass", "M:\\").Exists || !Sys.Process("Explorer").WaitWindow("CabinetWClass", "M:\\").VisibleOnScreen) && snooze++<60)
+        Delay(1000, "Launching Explorer");
+    }
+      
+    if (Sys.OSInfo.Name === "Win7" || aqString.Find(Sys.OSInfo.Name, "Win8") == 0 || aqString.Find(Sys.OSInfo.Name, "Win10") == 0) { //Right clicks the vault if Operating system is Windows7   
+      folderView = Sys.Process("Explorer").WaitWindow("CabinetWClass", "M-Files (M:)");
+      if(! folderView.Exists)
+        folderView = Sys.Process("Explorer").WaitWindow("CabinetWClass", "M:\\");
+
+      viewWnd = folderView.WaitWindow("ShellTabWindowClass", "*").WaitWindow("DUIViewWndClassName", "", 1)
+      headerList = viewWnd.Pane(ExplorerPane).WaitWindow("CtrlNotifySink", "", 3).WaitWindow("SHELLDLL_DefView", "ShellView", 1).List(listItems).List(listHeader).SplitButton(tabName)
+      headerList.DblClick(headerList.Width-1,0); //Double clicks in the divider of the column
+      
+      folderView = folderView.WaitWindow("ShellTabWindowClass", "*").WaitWindow("DUIViewWndClassName", "", 1).WaitWindow("DirectUIHWND", "", 1).FindChild("WndClass", "DirectUIHWND", 3)
+      vaultFound = folderView.TextObject(vaultName).Exists
+      
+      if (vaultFound) {//Right clicks the vault if vault is found
+        folderView.TextObject(vaultName).ClickR(folderView.TextObject(vaultName).Width/2, folderView.TextObject(vaultName).Height/2);
+        
+        snooze = 0;  
+    
+        while( !Sys.Process("explorer").WaitWindow("#32768", "", -1,500).Exists && snooze < 60 ) {//Checks the existence of popup menu
+          Delay(1000, "Right clicking vault...");
+          folderView.TextObject(vaultName).ClickR(folderView.TextObject(vaultName).Width/2, folderView.TextObject(vaultName).Height/2);
+          snooze++;
+        }    
+      }
+    }
+
+    if (Sys.OSInfo.Name === "WinXP") { //Right clicks the vault if Operating system is WindowsXP
+     folderView = Sys.Process("Explorer").WaitWindow("CabinetWClass", "*M:*", -1, 100)
+      folderView = folderView.WaitWindow("SHELLDLL_DefView", "*", -1).WaitWindow("DUIViewWndClassName", "*", -1).WaitWindow("DirectUIHWND", "*", -1);
+      folderView = folderView.WaitWindow("CtrlNotifySink", "", 1).WaitWindow("SysListView32", "FolderView", 1);
+      //FindChild(["WndClass", "WndCaption", "Visible", "Exists"], ["SysListView32", "FolderView", true, true], 1, false);
+      
+      for (i=0; i<folderView.wItemCount; i++) //Loops to find if vault exists
+        if (vaultName.toUpperCase() === folderView.wItem(i, 0).toUpperCase()){ 
+          vaultFound = true;
+          break;
+        }
+    
+      if (vaultFound) { //Right clicks the vault if vault is found   
+        folderView.ClickItemR(vaultName); 
+        
+        snooze = 0;  
+    
+        while( !Sys.Process("explorer").WaitWindow("#32768", "", -1,500).Exists && snooze < 60 ) {//Checks the existence of popup menu
+          Delay(1000, "Right clicking vault...");
+          folderView.ClickItemR(vaultName);
+          snooze++;
+                
+        }    
+      } 
+    }     
+    
+    Sys.Keys("[Left][Left]");
+    
+    if (Sys.OSInfo.Name === "Win10") { //Click on the specified context menu option if Operating system is Windows10
+      Utility.popUpClick(CMenuLogOut);
+      Utility.syncExplorerProcess();
+    }
+    
+    else {
+      Sys.Process("explorer").WaitWindow("#32768", "", -1,500).WaitTextObject(CMenuLogOut, 500).Click();
+      Utility.syncExplorerProcess();
+    }
+    
+    if (!Sys.Process("explorer").WaitWindow("#32768", "", -1,500).Exists) {
+      
+      Sys.Process("Explorer").Refresh();
+      
+      dlgWarning = Sys.Process("Explorer").WaitWindow("#32770", LogOutFromVault, -1, 2000); //Instance of warning dialog while vault logs out
+             
+      if (dlgWarning.Exists && dlgWarning.WaitWindow("Static", ManyCheckedOut, -1, 100).Exists || dlgWarning.WaitWindow("Static", OneCheckedOut, -1, 100).Exists) { //Checks for existence of warning dialog
+        dlgWarning.Window("Button", BtnOK, 1).ClickButton();
+        Utility.syncExplorerProcess();
+      }
+      
+      snooze = 0; 
+      
+      dlgForceLogOut = Sys.Process("Explorer").WaitWindow("#32770", LogOutFromVault, 1, 2000); //Instance of force logout dialog
+  
+      if (dlgForceLogOut.Exists && dlgForceLogOut.WaitWindow("Button", BtnForceLogOut, 2, 1000).Exists) //Checks for the Force Logout dialog exists and clicks Force Logout button
+          dlgForceLogOut.Window("Button", BtnForceLogOut, 2).ClickButton(); 
+      
+      //Waits until the log out from vault message appears
+      while(Sys.Process("Explorer").WaitWindow("#32770", LogOutFromVault, -1, 1000).Exists && snooze < 60){
+        Delay(1000, "Logs out from " + vaultName + "....");
+        snooze++;
+      }
+      
+      syncExplorerProcess(); 
+      folderView.Refresh();
+          
+    }
+    else {
+      folderView.Keys("[Esc]");
+      Delay(5000);
+    }  
+    
+    if (Sys.OSInfo.Name === "Win7" || aqString.Find(Sys.OSInfo.Name, "Win8") == 0 || aqString.Find(Sys.OSInfo.Name, "Win10") == 0) { //Right clicks the vault if Operating system is Windows7   
+      folderView = Sys.Process("Explorer").WaitWindow("CabinetWClass", "M-Files (M:)");
+      
+      if(! folderView.Exists)
+        folderView = Sys.Process("Explorer").WaitWindow("CabinetWClass", "M:\\");
+        
+      folderView = folderView.WaitWindow("ShellTabWindowClass", "*").WaitWindow("DUIViewWndClassName", "", 1).WaitWindow("DirectUIHWND", "", 1).FindChild("WndClass", "DirectUIHWND", 3)
+      vaultFound = folderView.TextObject(vaultName).Exists
+      
+      if (vaultFound) {//Right clicks the vault if vault is found
+        folderView.TextObject(vaultName).ClickR(folderView.TextObject(vaultName).Width/2, folderView.TextObject(vaultName).Height/2);
+        
+        snooze = 0;  
+    
+        while( !Sys.Process("explorer").WaitWindow("#32768", "", -1,500).Exists && snooze < 60 ) {//Checks the existence of popup menu
+          Delay(1000, "Right clicking vault...");
+          folderView.TextObject(vaultName).ClickR(folderView.TextObject(vaultName).Width/2, folderView.TextObject(vaultName).Height/2);
+          snooze++;
+        }    
+      }
+    }
+
+    else if (Sys.OSInfo.Name === "WinXP") { //Right clicks the vault if Operating system is WindowsXP
+      folderView = Sys.Process("Explorer").WaitWindow("CabinetWClass", "*M:*", -1, 100)
+      folderView = folderView.WaitWindow("SHELLDLL_DefView", "*", -1).WaitWindow("DUIViewWndClassName", "*", -1).WaitWindow("DirectUIHWND", "*", -1);
+      folderView = folderView.WaitWindow("CtrlNotifySink", "", 1).WaitWindow("SysListView32", "FolderView", 1);
+      //FindChild(["WndClass", "WndCaption", "Visible", "Exists"], ["SysListView32", "FolderView", true, true], 1, false);
+      
+      for (i=0; i<folderView.wItemCount; i++) //Loops to find if vault exists
+        if (vaultName.toUpperCase() === folderView.wItem(i, 0).toUpperCase()){ 
+          vaultFound = true;
+          break;
+        }
+    
+      if (vaultFound) { //Right clicks the vault if vault is found   
+        folderView.ClickItemR(vaultName); 
+        
+        snooze = 0;  
+    
+        while( !Sys.Process("explorer").WaitWindow("#32768", "", -1,500).Exists && snooze < 60 ) {//Checks the existence of popup menu
+          Delay(1000, "Right clicking vault...");
+          folderView.ClickItemR(vaultName);
+          snooze++;
+                
+        }    
+      } 
+    } 
+    
+    if (vaultFound && userName !== undefined) {
+    
+      Delay(1500);
+      Sys.Keys("[Left][Left]");
+      Utility.syncExplorerProcess();
+      
+      if (Sys.OSInfo.Name === "Win10") { //Click on the specified context menu option if Operating system is Windows10
+        Utility.popUpClick(CMenuLoginAs);
+        Utility.syncExplorerProcess();
+      }
+      else {
+        Sys.Process("explorer").WaitWindow("#32768", "", -1,500).WaitTextObject(CMenuLoginAs, 500).Click(); //Clicks log-in as in context menu
+        Utility.syncExplorerProcess();
+      }
+      
+      if (!Sys.Process("explorer").WaitWindow("#32768", "", -1,500).Exists) {
+      
+        dlgLogIn = Sys.Process("explorer").Window("#32770", dlgLoginCaption, 1); //Instance of MFiles Log-in dialog
+      
+        if (!dlgLogIn.Exists) //Checks existence of Log-in dialog
+            throw {  Name: "Exception occurred in opening the log in as prompt",
+                     Description: "The object does not exist",
+                     Message: "The Log In As prompt does not exist"
+                  };
+
+        errorMsg = loginToMFiles(userType, userName, password); //Logs-in to the MFiles
+      
+        Delay(8000, "Logs in to " + vaultName + "...");              
+        
+      }
+    }
+    else if (vaultFound && userName === undefined) {
+      
+      Delay(1500);
+      Sys.Keys("[Left][Left]");
+      
+      if (Sys.OSInfo.Name === "Win10") { //Click on the specified context menu option if Operating system is Windows10
+        Utility.popUpClick(CMenuLogin);
+        Utility.syncExplorerProcess();
+      }
+      else {
+        Sys.Process("explorer").WaitWindow("#32768", "", -1,500).WaitTextObject(CMenuLogin, 500).Click(); //Clicks log-in as in context menu
+        Utility.syncExplorerProcess();
+      }
+      if (!Sys.Process("explorer").WaitWindow("#32768", "", -1,500).Exists) {
+        Delay(8000, "Logs in to " + vaultName + "...");
+        dlgError = Sys.Process("Explorer").WaitWindow("#32770", "M-Files*", 1,1000); //Instance of Error message dialog
+    
+        if(dlgError.Exists) { //Checks for error message dialog appears      
+          errorMsg = {  Exists : "",
+                        ErrorExists : true,
+                        VaultExists : vaultFound,
+                        Message : dlgError.WndCaption,
+                        Description :dlgError.Window("Static", "*", 2).WndCaption,  
+                        UserInformation : userName + "\t-\t" + userType  
+                     };
+                 
+          Sys.Process("Explorer").WaitWindow("#32770", "M-Files*", 1).Window("Button", BtnOK, 1).Click(); //Clicks Ok button in the error message diaog
+          Sys.Process("explorer").WaitWindow("#32770", dlgLoginCaption, 1).Window("Button", BtnCancel, 3).Click(); //Clicks Cancel button in the log-in to M-Files dialog
+        }
+        else{
+          errorMsg = {  Exists : "",
+                        ErrorExists : false,
+                        VaultExists : vaultFound,
+                        Message : "No Message Dialog Opened",
+                        Description :"-",  
+                        UserInformation : "-"  
+                     };
+        }
+      }
+    }
+    
+    if(Sys.Process("Explorer").WaitWindow("CabinetWClass", "*M:*", -1, 100).Exists && Sys.Process("Explorer").WaitWindow("CabinetWClass", vaultName, -1, 100).Exists) {
+        Sys.Process("Explorer").WaitWindow("CabinetWClass", "*M:*", -1, 100).Close();
+	      errorMsg = {  Exists : "",
+                      ErrorExists : true,
+                      VaultExists : vaultFound,
+                      Message : "New Dialog Opened",
+                      Description :"The vault is opened as seperate window rather than the existing window.",  
+                      UserInformation : "-"  
+                   };	
+    }
+      
+    errorMsg.Exists = errorMsg.ErrorExists && !vaultFound 
+    
+  } //End try
+  
+  catch(exception) {
+    throw exception;
+  } //End catch
+  
+  finally {
+  
+    if(dlgError !== undefined && dlgError.Exists) //Closes Error message dialog if exists
+      dlgError.Close();
+      
+    if(dlgLogIn !== undefined && dlgLogIn.Exists) //Closes Login dialog if exists
+      dlgLogIn.Close();
+      
+    return errorMsg;
+    
+  } //End finally
+
+} //loginAs
+
+function loginToMFiles(userType, userName, password, process) {
+
+/*============================================================================================
+Function: loginToMFiles
+Description: To login to a M-Files using specified user
+Parameters: This method takes the following inputs:
+                -> userType: Type of user
+                -> userName: Name of the user (In case of windows user domain Name\user name)
+                -> password: password for the user
+                -> process: process of the M-Files login dialog (default process is explorer)
+==============================================================================================*/
+  
+  //Variable Declaration  
+  var dlgLogIn; //Stores instance of M-Files Login dialog
+  var dlgError; //Stores instance of Error message dialog
+  var errorMsg; //Stores description and existence of error message
+    
+  try {
+  
+    //Variable Declaration to support Multi-language
+    var dlgLoginCaption = Utility.getCaption("IDD_DIALOG_LOGIN");
+    var BtnOK = Utility.getCaption("IDS_BTNTITLE_OK");
+    var BtnCancel = Utility.getCaption("IDS_MENUSTR_CANCEL"); 
+    
+    if(process === undefined || process === null || process === "") //Checks process has value
+      process = "explorer";
+      
+    errorMsg = {  Exists : false,
+                  ErrorExists : false,
+                  VaultExists : true,
+                  Message : "-",
+                  Description :"-",  
+                  UserInformation : "-"  
+               };
+   
+    dlgLogIn = Sys.Process(process).WaitWindow("#32770", dlgLoginCaption, -1,500); //Instance of MFiles login dialog
+    
+    dlgLogIn.Window("ComboBox", "", 1).ClickItem(userType); //Selects user type from authentication type combo box
+    dlgLogIn.Window("Edit", "", 1).SetText(userName); //Sets user name in the username text box
+    dlgLogIn.Window("Edit", "", 2).SetText(password); //Sets password in the password text box
+    dlgLogIn.Window("Button", BtnOK, 2).ClickButton();  //Clicks Ok button
+    
+    Delay(1000, "Logging into M-Files..");
+    dlgError = Sys.Process(process).WaitWindow("#32770", "M-Files*", 1,1000); //Instance of Error message dialog
+    
+    if(dlgError.Exists) { //Checks for error message dialog appears      
+        errorMsg = {  Exists : "",
+                      ErrorExists : true,
+                      VaultExists : true,
+                      Message : dlgError.WndCaption,
+                      Description :dlgError.Window("Static", "*", 2).WndCaption,  
+                      UserInformation : userName + "\t-\t" + userType  
+                   };
+                 
+        Sys.Process(process).Window("#32770", "M-Files*", 1).Window("Button", BtnOK, 1).Click(); //Clicks Ok button in the error message diaog
+        Sys.WaitProcess(process, 100).WaitWindow("#32770", "Log In to M-Files", -1, 100).WaitWindow("Button", BtnCancel).ClickButton(); //Clicks Cancel button in the log-in to M-Files dialog
+      }
+      else{
+        errorMsg = {  Exists : "",
+                      ErrorExists : false,
+                      VaultExists : true,
+                      Message : "No Message Dialog Opened",
+                      Description :"-",  
+                      UserInformation : "-"  
+                   };
+      }
+      
+    errorMsg.Exists = errorMsg.ErrorExists;   
+     
+  } //End try
+  
+  catch(exception) {
+    throw exception;
+  } //End catch
+  
+  finally {
+
+    if(dlgError !== undefined && dlgError.Exists) //Closes Error message dialog if exists
+      dlgError.Close();
+      
+    if(dlgLogIn !== undefined && dlgLogIn.Exists) //Closes Login dialog if exists
+      dlgLogIn.Close();
+      
+    return errorMsg;
+    
+  } //End finally
+  
+} //loginToMFiles  
+
+function popUpEnabled(mnuSeq, processName) {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Function: popUpEnabled
+Description: To check the item enabled in context menu 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  try {
+    
+    //Variable Declaration
+    var popupMnu; //Stores the instance of popupmenu
+    var menuEnabled; //Stores boolean value based on the enable status of the popup menu
+    
+    if (processName === undefined || processName === null || processName === "")
+      processName = "explorer";
+    
+    Sys.Keys("[Left][Left]");
+    mnuSeq = mnuSeq.split(">>");
+    
+    for (var i = 0; i < mnuSeq.length; i++) //Trims empty spaces in the menu sequence
+      mnuSeq[i] = aqString.Trim(mnuSeq[i]);
+    
+    if (!Sys.Process(processName).WaitWindow("#32768").Exists) //Checks for the existance of popmenu
+      return false;
+
+    popupMnu = Sys.Process(processName).Window("#32768").PopupMenu; //Instance of Popup Menu 
+    
+    ProjectSuite.Variables.overrideMenuEvents = true;
+    ProjectSuite.Variables.menuExists = true;
+    ProjectSuite.Variables.menuEnabled = true;
+    
+    popupMnu.Click(mnuSeq.join("|")); //Clicks the popup menu if it has submenu
+    Sys.Keys("[Esc]"); //Clicks Esc key
+    menuEnabled = ProjectSuite.Variables.menuEnabled;
+        
+    return menuEnabled;
+    
+  } //End try
+  
+  catch(exception) {
+    throw exception;
+  } //End catch
+  
+  finally {
+    ProjectSuite.Variables.overrideMenuEvents = false;
+    ProjectSuite.Variables.menuExists = true;    
+    ProjectSuite.Variables.menuEnabled = true;
+  } //End finally
+      
+} //popUpEnabled
+
+function popUpExists(mnuSeq, processName) {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Function: popUpExists
+Description: To check the item exists in context menu 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+  
+  try {
+    
+    //Variable Declaration
+    var popupMnu; //Stores the instance of popupmenu
+    var mnuSeqFound = true; //Stores boolean value based on the existance of the popup menu
+    
+    if (processName === undefined || processName === null || processName === "")
+      processName = "explorer";
+    
+    mnuSeq = mnuSeq.split(">>");
+    
+    for (var i = 0; i < mnuSeq.length; i++) //Trims empty spaces in the menu sequence
+      mnuSeq[i] = aqString.Trim(mnuSeq[i]);
+    
+    if (!Sys.Process(processName).WaitWindow("#32768").Exists) //Checks for the existance of popmenu
+      return false;
+
+    popupMnu = Sys.Process(processName).Window("#32768").PopupMenu; //Instance of Popup Menu 
+      
+    for (i = 0; i < mnuSeq.length; i++) {  //Iterating thru the given menu sequence    
+    
+      popupMnuIdx = 0;    
+    
+      while (popupMnuIdx < popupMnu.Count) { //Iterating thru the popup menu item        
+      
+        var mnuCaption = popupMnu.Items(popupMnuIdx).Caption;          
+        
+        if (mnuSeq[i].toUpperCase() === mnuCaption.toUpperCase() && i < mnuSeq.length) { //checking for matching menu item
+          popupMnu = popupMnu.Items(popupMnuIdx).SubMenu;
+          break;
+        } 
+                 
+        popupMnuIdx++;  
+
+        if (popupMnuIdx === popupMnu.Count) {
+          mnuSeqFound = false;
+          break;  
+        }                        
+        
+      } // while
+      
+    } //for
+  
+    return mnuSeqFound;
+    
+  } //End try
+  
+  catch(exception) {
+    throw exception;
+  } //End catch
+      
+} //popUpExists
+
+function popUpClick(mnuSeq, processName, processIdx) {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Function: popUpClick
+Description: To click item in the context menu 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  try {
+    
+    //Variable Declaration
+    var popupMnu; //Stores the instance of popupmenu
+    var mnuSeqFound; //Stores boolean based on the existance of the popmenu item
+    
+    if (processName === undefined || processName === null || processName === "")
+      processName = "explorer";
+    
+    if (processIdx === undefined || processIdx === null || processIdx === "")
+      processIdx = "1";
+      
+    Sys.Keys("[Left][Left]");
+    mnuSeq = mnuSeq.split(">>");
+    
+    for (var i = 0; i < mnuSeq.length; i++) //Trims empty spaces in the menu sequence
+      mnuSeq[i] = aqString.Trim(mnuSeq[i]);
+    
+    if (!Sys.Process(processName, processIdx).WaitWindow("#32768").Exists) //Checks for the existance of popmenu
+      return false;
+
+    popupMnu = Sys.Process(processName, processIdx).WaitWindow("#32768").PopupMenu; //Instance of Popup Menu 
+    
+    ProjectSuite.Variables.overrideMenuEvents = true;
+    ProjectSuite.Variables.menuExists = true;
+  
+    popupMnu.Click(mnuSeq.join("|")); //Clicks the popup menu
+
+    if (! ProjectSuite.Variables.menuExists) //Closes popup menu if item does not exists
+      Sys.Keys("[Esc]");
+    
+    mnuSeqFound = ProjectSuite.Variables.menuExists;
+    ProjectSuite.Variables.overrideMenuEvents = false;
+    ProjectSuite.Variables.menuExists = true;
+    
+    return mnuSeqFound;
+  
+  } //End try
+  
+  catch(exception) {
+    throw exception;
+  } //End catch
+     
+} //popUpClick
+
+function changePassword(oldPassword, newPassword) {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function    : changePassword
+  Description : To change the password of MFiles user
+  Input : This method takes the input as old password, new password, and confirm password.
+  Output : Return boolean value. Return true if the confirmation of the change password appears else return false.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/  
+  try {
+    
+    var changePwd; //Stores instance of Change Password dialog
+    var pwdChangeSuccessful = false; //Stores boolean value based on the existance of confirmation dialog
+    
+    changePwd = Sys.Process("explorer").WaitWindow("#32770", "Change M-Files Password", 1, 2000); //Instance of Change password dialog
+    
+    if (!changePwd.Exists) //Checks for the existance of the change password dialog
+      throw { name        : "Reusanble Function Exception",
+              description : "Error at OSCompatibility.changePwdword: change password dialog does not exists",
+              message     : "Change Password is not found in the screen." }      
+    
+    changePwd.Window("Edit", "", 1).SetText(oldPassword); //Sets the old password
+    changePwd.Window("Edit", "", 2).SetText(newPassword); //Sets the new password
+    changePwd.Window("Edit", "", 3).SetText(newPassword); //Sets the confirm new  password
+    
+    changePwd.Window("Button", "OK", 1).Click(); //Clicks Ok button
+                                   
+    //Checks for the existance of the M-Files message dialog on password change
+    if (Sys.Process("explorer").WaitWindow("#32770", "M-Files*", 1, 2000).Exists && 
+        Sys.Process("Explorer").WaitWindow("#32770", "M-Files*", 1, 2000).WaitWindow("Static", "Your password has been changed*", 2, 2000).Exists) {
+        
+      Sys.Process("explorer").Window("#32770", "M-Files*", 1).Window("Button", "OK", 1).Click(); //Clicks Ok button
+      pwdChangeSuccessful = true;
+
+    }
+    
+    return pwdChangeSuccessful;    
+  } //End try
+  
+  catch(exception) {
+    throw exception;
+  }
+   
+} //Change Password
+
+function isWrapperException(exception) {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~s
+  Function: isWrapperException
+  Description: returns true, if the given exception is wrapper exception
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  //Checks for exception name is wrapper exception
+  if (exception !== undefined && exception.name !== undefined && exception.name.toUpperCase() === "WRAPPER EXCEPTION")
+    return true;
+  else
+    return false;
+    
+} //isWrapperException
+
+function showMenuBar() {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~s
+  Function: showMenuBar
+  Description: Unhides the menu bar in explorer winow (for Win 7 & Win8)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+ 
+  try {
+    
+    var wShell; //An object to shell script
+    
+    if (Sys.OSInfo.Name.toUpperCase() === "WinXP") //Checks and returns from function if operation systems is WinXP
+      return;
+    
+    wShell = new ActiveXObject("Wscript.Shell");
+
+    //Sets the value 'AlwaysShowMenus' to 1    
+    wShell.RegWrite("HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\\AlwaysShowMenus", 1, "REG_DWORD");
+    Log.Event("Registry settings done to show 'Menu Bar' always.");
+    
+  } //End try
+  catch(exception) {
+    throw exception;
+  } //End catch
+  finally {
+    wShell = null;
+  } //End finally
+  
+} //showMenuBar
+
+function hideMenuBar() {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~s
+  Function: hideMenuBar
+  Description: Hides the menu bar in explorer winow (for Win7 & Win8)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+ 
+  try {
+    
+    var wShell; //An object to shell script
+    
+    if (Sys.OSInfo.Name.toUpperCase() === "WinXP") //Checks and returns from function if operation systems is WinXP
+      return;
+    
+    wShell = new ActiveXObject("Wscript.Shell");
+
+    //Sets the value 'AlwaysShowMenus' to 0, to disable/hide the menu bar always
+    wShell.RegWrite("HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\\AlwaysShowMenus", 0, "REG_DWORD");
+    Log.Event("Registry settings done to hide 'Menu Bar' always.");
+    
+  } //End try
+  catch(exception) {
+    throw exception;
+  } //End catch
+  finally {
+    wShell = null;
+  } //End finally
+    
+} //hideMenuBar
+
+function hideNavigationPane() {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~s
+  Function: hideNavigationPane
+  Description: Hides navigation pane displayed in explorer window, open and save as dialogs (for Win7 & Win8)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+ 
+   try {
+    
+    var wShell; //An object to shell script
+    
+    if (Sys.OSInfo.Name.toUpperCase() === "WinXP") //Checks and returns from function if operation systems is WinXP
+      return;
+    
+    wShell = new ActiveXObject("Wscript.Shell");
+    
+    //Sets the value 'PageControlSizer' to 0 for explorer, open and save as dialogs to hide navigation pane
+    wShell.Run("REG ADD HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Modules\\GlobalSettings\\Sizer /v PageSpaceControlSizer /t REG_BINARY /d d00000000000000000000000 /f")
+    wShell.Run("REG ADD HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\CIDOpen\\Modules\\GlobalSettings\\Sizer /v PageSpaceControlSizer /t REG_BINARY /d d00000000000000000000000 /f")
+    wShell.Run("REG ADD HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\CIDSave\\Modules\\GlobalSettings\\Sizer /v PageSpaceControlSizer /t REG_BINARY /d d00000000000000000000000 /f")
+    Log.Event("Registry settings done to hide 'Navigation Pane' always.");
+  
+   } //End try
+  catch(exception) {
+    throw exception;
+  } //End catch
+  
+} //hideNavigationPane
+
+function showNavigationPane() {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~s
+  Function: showNavigationPane
+  Description: Shows navigation pane displayed in explorer window, open and save as dialogs (for Win7 & Win8)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+ 
+  try {
+
+    var wShell; //An object to shell script
+    
+    if (Sys.OSInfo.Name.toUpperCase() === "WinXP") //Checks and returns from function if operation systems is WinXP
+      return;
+    
+    wShell = new ActiveXObject("Wscript.Shell");
+    
+    //Sets the value 'PageControlSizer' to 1 for explorer, open and save as dialogs to show navigation pane
+    wShell.Run("REG ADD HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Modules\\GlobalSettings\\Sizer /v PageSpaceControlSizer /t REG_BINARY /d d00000000100000000000000 /f")
+    wShell.Run("REG ADD HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\CIDOpen\\Modules\\GlobalSettings\\Sizer /v PageSpaceControlSizer /t REG_BINARY /d d00000000100000000000000 /f")
+    wShell.Run("REG ADD HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\CIDSave\\Modules\\GlobalSettings\\Sizer /v PageSpaceControlSizer /t REG_BINARY /d d00000000100000000000000 /f")
+    Log.Event("Registry settings done to show 'Navigation Pane' always.");
+    
+  } //End try
+  catch(exception) {
+    throw exception;
+  } //End catch
+  finally {
+    wShell = null;
+  } //End finally
+    
+} //showNavigationPane
+
+function goOffline(vaultName, userType, userName, password, caption, index, instance) {  
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function: goOffline
+  Description: Puts the mfiles explorer to offline mode
+  Parameters: This method takes following inputs.
+              vaultName : Vault to perform go offline function
+              userType : Type of a user to select in login dialog
+              userName : Name of user to enter in login dialog
+              password : password for the user to enter in login dialog
+              caption : Wnd caption of Cabinet class
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  //Variable Declaration
+  var dlgCaption; //Stores the caption of the go offline dialog
+  var errorMsg; //Stores the error message to be returned
+  var menuExists; //Stores boolean value based on the existance of the menu
+      
+  try {
+  
+    //Variable Declaration to support multi-language settings
+    var CMenuOperations = aqString.Replace(Utility.getCaption("IDS_MENUSTR_OPERATIONSMFILES"), "&", ""); 
+    var CMenuGoOffline = aqString.Replace(Utility.getCaption("IDS_STRING_GO_OFFLINE"), "&", "");
+    var BtnYes = Utility.getCaption("IDD_DIALOG_DIVIDE_SEARCH_RESULTS_BY_1"); 
+    var BtnOk = Utility.getCaption("IDS_BTNTITLE_OK");
+    var dlgLoginCaption = Utility.getCaption("IDD_DIALOG_LOGIN");
+    var dlgGoOfflineCaption = Utility.getCaption("IDS_DLGTITLE_GO_OFFLINE");
+    var idx = (index === undefined)?1:index;//Store the index of vault
+    
+    dlgCaption = "*";
+    
+    if(caption !== undefined && caption !== null && caption !== "")
+      dlgCaption = caption;
+    
+    if(vaultName === "" || vaultName === undefined || vaultName === null)
+      vaultName = ProjectSuite.Variables.TestVault1;    
+      
+    if(userName === "" || userName === null)
+      userName = undefined;
+    
+    errorMsg = {  Exists : false,
+                  ErrorExists : false,
+                  VaultExists : true,
+                  Message : "-",
+                  Description :"-",  
+                  UserInformation : "-"  
+               };
+
+    menuExists = Utility.explorerMenuClick(CMenuOperations + ">>" + CMenuGoOffline, undefined, undefined, caption, index, instance); //Clicks Opearations >> Go Offline menu
+    
+    if (!menuExists) //Clicks Yes button on confirmation to navigate to offline
+      errorMsg = {  Exists : true,
+                    ErrorExists : true,
+                    VaultExists : true,
+                    Message : "Explorer Menu is not clicked.",
+                    Description :"Explorer Menu is not clicked.",  
+                    UserInformation : "-"  
+                };
+    
+    if(Sys.Process("Explorer").WaitWindow("#32770", "M-Files*", -1, 1000).WaitWindow("Button", BtnYes, -1, 1000).Exists)
+      Sys.Process("Explorer").WaitWindow("#32770", "M-Files*", -1, 1000).WaitWindow("Button", BtnYes, -1, 1000).ClickButton();
+      
+    var snooze = 0;
+    
+    while(Sys.Process("Explorer").WaitWindow("#32770", dlgGoOfflineCaption, -1,1000).Exists && snooze < 60){ //Snooze until Go Offline dialog exists
+      Delay(2000);
+      snooze++;
+    }
+    
+    Utility.syncExplorerProcess();
+    
+    //Checks & launches M-File explorer if it is closed after navigating vault to the offline
+    if (! Sys.WaitProcess("Explorer", 500).WaitWindow("CabinetWClass", "*", -1, 1000).Exists) {
+      
+      Utility.launchExploreMFiles(); //Launch explore M-Files
+      Delay(5000, "Launching M-Files Explorer");
+      
+      //Opens the vault
+      if(userName === undefined)
+        errorMsg = Utility.openVault(vaultName)
+      else
+        errorMsg = Utility.loginAs(vaultName, userType, userName, password);
+      
+      errorMsg.Description = errorMsg.Description + "\n Explorer got closed while moving to offline. It is relaunched and logged in"
+    }
+    
+  } //End try
+    
+  catch (exception) {
+    throw exception
+  } //End catch
+  
+  finally {
+    return errorMsg;
+  } //End finally
+  
+}//goOffline()
+
+function goOnline(vaultName, userType, userName, password, caption, index, instance) {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function: goOnline
+  Description: Puts the mfiles explorer to online mode
+  Parameters: This method takes following inputs.
+              vaultName : Vault to perform Go online.
+              userType : Type of a user to select in login dialog
+              userName : Name of user to enter in login dialog
+              password : password for the user to enter in login dialog
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  try {
+    
+    //Variable Declaration
+    var errorMsg = new Array(); //Stores the message to be returned to the calling function
+    var dlgGoOnline; //Stores the instance of Go Online dialog
+    
+    //Variable Declaration to support multi-language settings
+    var CMenuOperations = aqString.Replace(Utility.getCaption("IDS_MENUSTR_OPERATIONSMFILES"), "&", ""); 
+    var CMenuGoOnline = aqString.Replace(Utility.getCaption("IDS_STRING_GO_ONLINE"), "&", ""); 
+    var BtnOk = Utility.getCaption("IDS_BTNTITLE_OK");
+    var dlgLoginCaption = Utility.getCaption("IDD_DIALOG_LOGIN");
+    var dlgGoOnlineCaption = Utility.getCaption("IDS_DLGTITLE_GO_ONLINE");
+    var idx = (index === undefined)?1:index;//Store the index of vault
+    
+    if(vaultName === "" || vaultName === undefined || vaultName === null)
+      vaultName = ProjectSuite.Variables.TestVault1;
+    
+    if(userName === "" || userName === null)
+      userName = undefined;
+      
+    errorMsg[0] = { Exists : false,
+                    UserInformation : "-",
+                    Message : "-",
+                    Description : "-"
+                  };
+               
+    errorMsg[1] = { Exists : false,
+                    ErrorExists : false,
+                    VaultExists : true,
+                    Message : "-",
+                    Description :"-",  
+                    UserInformation : "-"  
+                  };
+                  
+    Utility.explorerMenuClick(CMenuOperations + ">>" + CMenuGoOnline, undefined, undefined, caption, index, instance); //Select Operations-> Go Online from explorer menu
+      
+    if (Sys.Process("Explorer").WaitWindow("#32770", "M-Files*", 1,1000).Exists){ //Checks for error message appears while navigating to online
+      errorMsg[0]  = {
+                       Exists : true,
+                       UserInformation : userName + "\t-\t" + userType,
+                       Message : Sys.Process("explorer").Window("#32770", "M-Files", 1).WndCaption,
+                       Description : Sys.Process("explorer").Window("#32770", "M-Files", 1).Window("Static", "*", 2).WndCaption   
+                    };
+      Sys.Process("Explorer").Window("#32770", "M-Files*", 1).Window("Button", BtnOk, 1).ClickButton();
+    }
+    else{
+       errorMsg[0] = {
+                       Exists : false,
+                       UserInformation : userName + "\t-\t" + userType,
+                       Message : "Message dialog did not open",
+                       Description : "-"  
+                    };
+    }
+   
+     Utility.syncExplorerProcess();
+ 
+     //Checks log-in into MFiles dialog exists while navigating vault to online
+     if(Sys.Process("explorer").WaitWindow("#32770", dlgLoginCaption, 1, 1000).Exists) {  
+       if(userName !== undefined)
+          errorMsg[1] = Utility.loginToMFiles(userType, userName, password)
+       else{
+         Sys.Process("explorer").Window("#32770", dlgLoginCaption, 1).Close();
+         errorMsg[1].Exists = true;
+         errorMsg[1].Message = "Error at Utility.goOnline: User Name is undefined."
+         errorMsg[1].Description = "Login to MFiles window apppeared but user name is un-defined"
+         }
+     }
+    
+    var snooze = 0;
+    
+    //Snooze until it finds Go Online caption
+    while (Sys.WaitProcess("Explorer").WaitWindow("#32770", dlgGoOnlineCaption, 1).WaitWindow("Button", "&Discard", 2).Exists && snooze < 10) {
+      Sys.WaitProcess("Explorer").WaitWindow("#32770", dlgGoOnlineCaption, 1).WaitWindow("Button", "&Discard", 2).ClickButton();
+      Delay(500)
+      snooze ++;
+    }
+    
+    
+    var snooze = 0;
+    dlgGoOnline = Sys.Process("Explorer").WaitWindow("#32770", dlgGoOnlineCaption, -1,1000); //Instance of Go Online dialog
+    
+    while(dlgGoOnline.Exists && dlgGoOnline.Visible && dlgGoOnline.Enabled && snooze < 30) { //Snooze until the Go online dialog exists
+      Delay(1000);
+      snooze++;
+    }
+    
+    //Checks & launches M-File explorer if not found
+    if (! Sys.WaitProcess("Explorer", 500).WaitWindow("CabinetWClass", "*", -1, 1000).Exists) {
+      Utility.launchExploreMFiles();
+      Delay(5000, "Launching M-Files Explorer");
+      if(userName === undefined)
+        errorMsg[1] = Utility.openVault(vaultName)
+      else
+        errorMsg[1] = Utility.loginAs(vaultName, userType, userName, password);
+      
+      errorMsg[1].Description = errorMsg[1].Description + "\n Explorer got closed while moving to online. It is relaunched and logged in"  
+    }
+    Utility.syncExplorerProcess() 
+	
+   return errorMsg;
+
+  }
+    
+  catch (exception) {
+    throw exception
+  }
+  
+  finally {
+    ProjectSuite.Variables.overrideMenuEvents = false;
+    ProjectSuite.Variables.menuExists = true;
+  }
+  
+}//goOnline()
+
+function getExplorerAddress () {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function: getExplorerAddress
+  Description: Types the returns the address in the explorer address bar
+  Parameters: None
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+  
+  try {
+    
+    //Variable Declaration
+    var address; //Stores the text in the address bar
+    var infoMsg = {
+                    Exists : false,
+                    Message : "",
+                    Address : ""
+                  };
+    
+    if (Sys.OSInfo.Name.toUpperCase() === "WINXP") { //Stores the instance of XP Address bar
+      addressBar = Sys.Process("Explorer").WaitWindow("CabinetWClass", "*", 1).WaitWindow("WorkerW", "", 1);
+      addressBar = addressBar.WaitWindow("ReBarWindow32", "", 1).WaitWindow("ComboBoxEx32", "", 1).WaitWindow("ComboBox", "", 1).Window("Edit", "", 1)
+    }
+    else { //Stores the instance of WIN7 Address bar     
+      addressBar = Sys.Process("Explorer").WaitWindow("CabinetWClass", "*", 1).WaitWindow("WorkerW", "", 1)
+      addressBar = addressBar.Window("ReBarWindow32", "", 1).Window("Address Band Root", "", 1).Window("msctls_progress32", "", 1)
+      addressBar = addressBar.Window("Breadcrumb Parent", "", 1).ToolBar("*M:\\*")
+    }
+      
+    if (!addressBar.Exists) { //Checks for instance of address bar exists
+      infoMsg = {
+                    Exists : true,
+                    Message : "Address bar does not exists",
+                    Address : ""
+                  };
+      return infoMsg;
+    }
+    
+    if (Sys.OSInfo.Name.toUpperCase() === "WINXP") //Stores the text in XP address bar of root before navigating        
+      address = addressBar.wText;
+    else //Stores the text in WIN7 address bar of root before navigating    
+      address = aqString.Remove(addressBar.WndCaption, 0, 9);
+      
+    infoMsg = {
+                    Exists : false,
+                    Message : "",
+                    Address : address
+                  };
+    
+  } //End try
+  
+  catch (exception) {
+    throw exception;
+  } //End catch
+  
+  finally {
+    return infoMsg;
+  } //End finally
+  
+} //getExplorerAddress
+
+function setExplorerAddress (addressPath) {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function: setExplorerAddress
+  Description: Types the specified address in the explorer address bar
+  Parameters: This method takes following inputs.
+              addressPath : Path of address to be typed in address bar
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+  try {
+             	
+    //Variable Declaration
+    var addressBar; //Stores the instance of address bar
+    
+    if (addressPath === undefined || addressPath === null)
+	    addressPath = "";
+ 	
+    addressBar =  Sys.WaitProcess("explorer", 100).WaitWindow("CabinetWClass", "*", 1, 100).WaitWindow("WorkerW", "", 1, 100).WaitWindow("ReBarWindow32", "", 1, 100)
+  
+    if (!addressBar.Exists) //Checks addressbar exists 
+      throw { name        : "Helper Exception",
+              description : "Error at Utility.taskPanel: Address Bar does not exists.",
+              message     : "Address bar does not exists in explorer window" }
+      
+    if (Sys.OSInfo.Name === "WinXP") { //Enters the address in the address bar if it is in XP
+      addressBar.Window("ComboBoxEx32", "", 1).Window("ComboBox", "", 1).Window("Edit", "", 1).SetText("M:\\"+addressPath);
+      addressBar.Window("ComboBoxEx32", "", 1).Window("ComboBox", "", 1).Window("Edit", "", 1).Keys("[Enter]");
+    }
+
+   if (Sys.OSInfo.Name === "Win7" || aqString.Find(Sys.OSInfo.Name, "Win8") == 0 || aqString.Find(Sys.OSInfo.Name, "Win10") == 0) { //Enters the address in the address bar if it is in WIN7
+      addressBar.Window("Address Band Root", "", 1).Window("msctls_progress32", "", 1).Window("ToolbarWindow32", "", 1).Button("Previous Locations").Click();
+      Utility.syncExplorerProcess(); 
+      Utility.syncExplorerProcess(); 
+      Sys.Keys("[Esc]");
+      Utility.syncExplorerProcess(); 
+      Utility.syncExplorerProcess();
+      if(aqString.Find(addressPath, "m-files") >= 0)
+        addressBar.WaitWindow("Address Band Root", "", 1, 1000).WaitWindow("msctls_progress32", "", 1, 1000).WaitWindow("ComboBoxEx32", "", 1, 1000).WaitWindow("ComboBox", "", 1, 1000).WaitWindow("Edit", "", 1, 1000).SetText(addressPath);
+      else
+        addressBar.WaitWindow("Address Band Root", "", 1, 1000).WaitWindow("msctls_progress32", "", 1, 1000).WaitWindow("ComboBoxEx32", "", 1, 1000).WaitWindow("ComboBox", "", 1, 1000).WaitWindow("Edit", "", 1, 1000).SetText("M:\\"+addressPath);      
+      addressBar.WaitWindow("Address Band Root", "", 1, 1000).WaitWindow("msctls_progress32", "", 1, 1000).WaitWindow("ComboBoxEx32", "", 1, 1000).WaitWindow("ComboBox", "", 1, 1000).WaitWindow("Edit", "", 1, 1000).Keys("[Enter]");
+    }
+    
+  } //End try
+  catch (exception) {
+    throw exception;
+  } //End catch
+  
+}
+
+function closeAllBrowsers() {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function: closeAllBrowsers
+  Description: Closes all internet explorer, firefox, 
+               google chrome browsers if exists
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  while(true) {  
+  
+    if (Sys.WaitProcess("iexplore").Exists) { //Checks and Closes Internet Explorer browser
+      Sys.Process("iexplore").Terminate();
+      Delay(1000);
+    }
+    else if (Sys.WaitProcess("chrome").Exists) { //Checks and Closes Chrome browser
+      Sys.Process("chrome").Terminate();
+      Delay(1000);
+    } 
+    else if(Sys.WaitProcess("firefox").Exists) { //Checks and Closes Firefox browser
+      Sys.Process("firefox").Close();
+      Delay(1000);
+    }
+    else
+      break;
+  }
+  
+  Sys.Refresh();
+  
+} //closeAllBrowsers
+
+function installMFiles (buildPath, appPath, upgrade) {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Function: installMFiles
+Description: This will install M-Files
+Input: buidlPath: The location where the build to be installed 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  try {
+    
+    var dlgMFilesSetup;
+    var snooze = 0;
+    
+    var errorMsg = { Exists : false,
+                     Message : "-"
+                   };
+    
+    //String Captions for multi-language support
+    var dlgInstallCaption = Utility.getCaption("M-Files");
+    var BtnNext = Utility.getCaption("Control-License_Dialog,Next-9");
+    var RBtnAcceptLicense = Utility.getCaption("RadioButton-Accept,2-7");
+    var RBtnEvaluationInstallation = Utility.getCaption("RadioButton-M_EVALUATION_INSTALLATION_RADIO,8-7");
+    var StatusMsg = Utility.getCaption("Control-Progress_Dialog,Text28-9");  
+    var BtnFinish = Utility.getCaption("Control-Exit_Dialog,OK-9");
+    var BtnBrowse = Utility.getCaption("Control-Single_Feature_Destination,PushButton44-9");
+    var BtnOK = Utility.getCaption("Control-Browse,OK-9");    
+    var dlgErrorCaption = Utility.getCaption("Dialog-ErrorDialog-6");
+    var BtnErrorOK = Utility.getCaption("Control-ErrorDialog,O-9");
+    
+    closeAllMsiExec();    
+    
+    if(aqFile.Exists(ProjectSuite.Variables.ClientAppPath+ "\\" + ProjectSuite.Variables.ClientAppName)) {
+      TestLog.Warning("M-Files application is already installed in this machine");
+      return;    
+    }
+    
+    var ObjShellScript = new ActiveXObject("WScript.Shell");
+    ObjShellScript.Run(Chr(34) + buildPath + Chr(34));
+    Utility.syncExplorerProcess();  
+    Delay(30000, "Opening MFiles Installer...");   
+   
+    dlgInstall = Sys.WaitProcess("msiexec", -1).WaitWindow("MsiDialogCloseClass", dlgInstallCaption, -1, 2000);
+    
+    if (!dlgInstall.Exists) { //Checks if M-Files Installation dialog has opened
+      
+      errorMsg = { Exists : true,
+                   Message : "M-Files Installer does not opened"
+                 };
+      return;
+    }
+    
+    if (dlgInstall.WaitWindow("Button", BtnNext, 1, 100).Exists)
+      dlgInstall.Window("Button", BtnNext, 1).ClickButton();
+    Utility.syncExplorerProcess();
+    
+    dlgInstall = Sys.WaitProcess("msiexec", -1).WaitWindow("MsiDialogCloseClass", dlgInstallCaption, -1, 2000);
+
+    if (!dlgInstall.Window("Button", "", 1).Window("Button", RBtnAcceptLicense, 2).wChecked)
+      dlgInstall.Window("Button", "", 1).Window("Button", RBtnAcceptLicense, 2).ClickButton();
+
+   if (dlgInstall.WaitWindow("Button", BtnNext, 3, 100).Exists)
+      dlgInstall.Window("Button", BtnNext, 3).ClickButton();
+    Utility.syncExplorerProcess();
+    
+    dlgInstall = Sys.WaitProcess("msiexec", -1).WaitWindow("MsiDialogCloseClass", dlgInstallCaption, -1, 2000);
+    
+     if (upgrade !== undefined && upgrade !== null && upgrade !== "") {
+      if (!dlgInstall.Window("Button", "", 1).Window("Button", "Simple upgrade", 1).wChecked)
+        dlgInstall.Window("Button", "", 1).Window("Button", "Simple upgrade", 1).ClickButton();
+    }
+    else {
+      if (!dlgInstall.Window("Button", "", 1).Window("Button", RBtnEvaluationInstallation, 1).wChecked)
+        dlgInstall.Window("Button", "", 1).Window("Button", RBtnEvaluationInstallation, 1).ClickButton();
+    }
+    
+    if (dlgInstall.WaitWindow("Button", BtnNext, 6, 100).Exists)
+      dlgInstall.Window("Button", BtnNext, 6).ClickButton();
+    Utility.syncExplorerProcess();
+
+    dlgInstall = Sys.WaitProcess("msiexec", -1).WaitWindow("MsiDialogCloseClass", dlgInstallCaption, -1, 2000);  
+    
+    if (appPath !== undefined && appPath !== null && appPath !== "") {
+      dlgInstall.Window("Button", BtnBrowse).ClickButton();
+      
+      dlgInstall = Sys.WaitProcess("msiexec", -1).WaitWindow("MsiDialogCloseClass", dlgInstallCaption, 1, 2000);     
+      
+      if (!dlgInstall.Exists) { //Checks if M-Files Installation dialog has opened
+        errorMsg = { Exists : true,
+                   Message : "M-Files Installer does not opened"
+                 };
+        return;
+      }
+      dlgInstall.Window("RichEdit20W", "", 1).SetText(appPath); 
+      
+      dlgInstall.Window("Button", BtnOK, 1).ClickButton();
+      
+      if (Sys.Process("msiexec", 1).WaitWindow("MsiDialogCloseClass", dlgErrorCaption, 1, 2000).Exists) {
+        Sys.Process("msiexec", 1).Window("MsiDialogCloseClass", dlgErrorCaption, 1).Window("Button", BtnErrorOK, 1).ClickButton()
+        
+        errorMsg = { Exists : true,
+                   Message : "Path given does not exists"
+                 };
+        return;
+      }
+      
+    }
+    
+    dlgInstall = Sys.WaitProcess("msiexec", -1).WaitWindow("MsiDialogCloseClass", dlgInstallCaption, -1, 2000);
+    dlgInstall.Window("Button", BtnNext, 1).ClickButton();
+    Utility.syncExplorerProcess();
+      
+    dlgInstall = Sys.WaitProcess("msiexec", -1).WaitWindow("MsiDialogCloseClass", dlgInstallCaption, -1, 2000);
+     if (dlgInstall.WaitWindow("Button", BtnNext, 1, 100).Exists)
+      dlgInstall.Window("Button", BtnNext, 1).ClickButton(); 
+    
+    dlgInstall = Sys.WaitProcess("msiexec", -1).WaitWindow("MsiDialogNoCloseClass", dlgInstallCaption, -1, 2000);
+      
+    snooze = 0;
+    
+    while (dlgInstall.Exists && dlgInstall.WaitWindow("Static", "*", 4, 2000).WndCaption === StatusMsg && snooze < 300) {
+      dlgInstall = Sys.WaitProcess("msiexec", -1).WaitWindow("MsiDialogNoCloseClass", dlgInstallCaption, -1, 2000);
+      snooze++;
+      Delay(10000, "Installing application...")
+    }
+        
+    dlgInstall = Sys.WaitProcess("msiexec", -1).WaitWindow("MsiDialogCloseClass", dlgInstallCaption, -1, 2000);
+    
+    if (!dlgInstall.Window("Button", BtnFinish, 3).Exists) {
+      errorMsg = { Exists : true,
+                 Message : "M-Files application does not installed properly"
+               };
+      return errorMsg;
+    }
+    
+    return errorMsg
+    
+  }
+  catch (exception) {
+    TestLog.Error(exception.description, Utility.formattedException(exception));
+  }
+  
+  finally {
+    Utility.closeAllMsiExec();   
+  }
+}
+
+function uninstallMFiles(buildPath) {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Function: uninstallMFiles
+Description: This will uninstall M-Files
+Input: buidlPath: The location of the build installer
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  var dlgUnInstallMFiles;
+  
+  try {
+  
+    var dlgInstallCaption = Utility.getCaption("M-Files*");
+    var BtnNext = Utility.getCaption("Control-License_Dialog,Next-9");
+    var BtnRemove = Utility.getCaption("RadioButton-MaintenanceMode,3-7");
+    var MsgBoxTilte = Utility.getCaption("Property-MMsgBoxTitle-1");
+    var BtnYes = Utility.getCaption("MS_MRLN_BUTTON_YES");
+    var MFilesInUse = Utility.getCaption("Control-FilesInUse,Text-9");
+    var BtnContinue = Utility.getCaption("Control-FilesInUse,Ignore-9");
+    var UninstalledSucessfully = Utility.getCaption("Control-Exit_Dialog,Text56-9");
+    var BtnFinish = Utility.getCaption("Control-Exit_Dialog,OK-9");
+  
+    closeAllMsiExec();
+  
+    if(! aqFile.Exists(ProjectSuite.Variables.ClientAppPath+ "\\" + ProjectSuite.Variables.ClientAppName)) {
+      TestLog.Warning("M-Files application is not installed in this machine");
+      return;    
+    }
+    
+    if(buildPath === undefined || buildPath === "" || buildPath === null) {
+      TestLog.Warning("Please provide the application build path to proceed with the uninstallation");
+      return;    
+    }
+    
+    var ObjShellScript = new ActiveXObject("WScript.Shell");
+    ObjShellScript.Run(Chr(34) + buildPath + Chr(34));
+    Utility.syncExplorerProcess();
+    
+    Delay(30000, "Opening MFiles Installer...");    
+    
+    if(Sys.Process("Explorer").WaitWindow("#32770", "Open File - Security Warning", -1,500).Exists) 
+      Sys.Process("Explorer").Window("#32770", "Open File - Security Warning", 1).Window("Button", "&Run", 1).ClickButton();
+
+    dlgUnInstallMFiles = Sys.Process("msiexec").WaitWindow("MsiDialogCloseClass", dlgInstallCaption, -1,2000)
+    
+    while(snooze<10) {
+      
+      dlgUnInstallMFiles = Sys.Process("msiexec").WaitWindow("MsiDialogCloseClass", dlgInstallCaption, -1,2000)
+      
+      if (dlgUnInstallMFiles.Exists)
+        break;
+        
+      Delay(500);
+      snooze++;
+                   
+    }    
+    
+    if(dlgUnInstallMFiles.Window("Button", "", 1).Window("Button", BtnRemove, 2).wChecked === false)
+      dlgUnInstallMFiles.Window("Button", "", 1).Window("Button", BtnRemove, 2).Click();
+    
+    dlgUnInstallMFiles.Window("Button", BtnNext, 3).ClickButton();
+    Utility.syncExplorerProcess();
+    
+    dlgUnInstallMFiles = Sys.Process("msiexec").WaitWindow("MsiDialogCloseClass", dlgInstallCaption, -1,2000)
+    dlgUnInstallMFiles.Window("Button", BtnNext, 5).ClickButton();
+    Utility.syncExplorerProcess();
+    
+    if(Sys.WaitProcess("MsiExec", 1000, 3).WaitWindow("#32770", MsgBoxTilte, -1,500).Exists)
+      Sys.Process("MsiExec", 3).Window("#32770", MsgBoxTilte, 1).Window("Button", BtnYes, 1).ClickButton();
+    
+    if(Sys.WaitProcess("MsiExec", 1000, 2).WaitWindow("#32770", MsgBoxTilte, -1,500).Exists)
+      Sys.Process("MsiExec", 2).Window("#32770", MsgBoxTilte, 1).Window("Button", BtnYes, 1).ClickButton();
+    
+    Utility.syncExplorerProcess();
+    Delay(500);
+    
+    dlgUnInstallMFiles = Sys.Process("msiexec").WaitWindow("MsiDialogCloseClass", dlgInstallCaption, -1,2000)
+    dlgUnInstallMFiles.Window("Button", BtnNext, 1).ClickButton();
+    Utility.syncExplorerProcess();    
+    
+    while(snooze<300) {
+    
+      dlgUnInstallMFiles = Sys.Process("msiexec").WaitWindow("MsiDialogCloseClass", dlgInstallCaption, -1,2000)
+      if (dlgUnInstallMFiles.WaitWindow("Static", MFilesInUse, -1,500).Exists) {
+        dlgUnInstallMFiles.Window("Button", BtnContinue, 1).ClickButton();
+        Utility.syncExplorerProcess(); 
+      }  
+      
+      dlgUnInstallMFiles = Sys.Process("msiexec").WaitWindow("MsiDialogCloseClass", dlgInstallCaption, -1,2000)
+      if(dlgUnInstallMFiles.Exists) {
+        if(dlgUnInstallMFiles.FindChild(["WndClass","WndCaption","Exists","Visible"],["Static",dlgInstallCaption, true, true],2).Exists) {
+          if(aqString.Find(dlgUnInstallMFiles.FindChild(["WndClass","WndCaption","Exists","Visible"],["Static",dlgInstallCaption,"true","true"],2).WndCaption,UninstalledSucessfully)!== -1)
+            break;
+        }  
+      }
+      Delay(1000);  
+      snooze++;      
+    }
+    Utility.syncExplorerProcess();      
+    dlgUnInstallMFiles = Sys.Process("msiexec").WaitWindow("MsiDialogCloseClass", dlgInstallCaption, -1,2000)
+    dlgUnInstallMFiles.Window("Button", BtnFinish, 3).ClickButton();
+    Utility.syncExplorerProcess();
+  }
+  
+  catch (exception) {
+    TestLog.Error(exception.description, Utility.formattedException(exception));
+  }
+  
+  finally {
+    Utility.closeAllBrowsers();
+    Utility.closeAllMsiExec();
+  }
+  
+}     
+
+function closeAllMsiExec() {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Function: closeAllMsiExec
+Description: This closes all instances of MSI Executable
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+  
+  //Close all msiexec process untill it exists
+  while (Sys.WaitProcess("msiexec",0,-1).Exists) 
+   Sys.Process("msiexec", -1).Terminate();
+       
+  Sys.Refresh();
+  
+} //closeAllMsiExec
+
+function resetTaskPanelSettingsToDefaults() {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function: resetTaskPanelSettingsToDefaults
+  Description: Resets Task Panel to Default Settings
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  
+  try {
+    
+    //Variable Declaration
+    var panel; //Stores instance of MTaskPanel window
+    var dlgTaskPanelReset; //Stores the instance of Task Panel reset confirmation dialog
+    
+    //Variable Declaration to support multi-language settings
+    var CMenuResetToDefaults = aqString.Replace(Utility.getCaption("MS_MRLN_STR_POPUP_RESET_TO_DEFAULTS"), "&", "");
+    var dlgResetTaskSettingsCaption = Utility.getCaption("MS_MRLN_DLG_RESET_TASK_AREA_SETTINGS_DEFAULTS");
+    var BtnResetToCommonDefaults = Utility.getCaption("MS_MRLN_BUTTON_RESET_TO_COMMON_DEFAULTS"); 
+            
+    panel = Sys.Process("Explorer").Window("CabinetWClass", "*", 1).FindChild("WndClass", "MTaskPanel", 8, true); //Instance of MTaskPanel window
+  
+    if (!panel.Exists) //Checks for the existance of MTaskPanel window
+      return;
+    
+    panel.ClickR(50, 20); //Right clicks on the panel
+    panel.PopupMenu.Click(CMenuResetToDefaults); //Selects Restore to task panel settings default in context menu
+    
+    dlgTaskPanelReset = Sys.Process("Explorer").WaitWindow("#32770", dlgResetTaskSettingsCaption, 1, 2000); //Instance of Task Panel reset confirmation dialog
+  
+    if (dlgTaskPanelReset.Exists) { //Clicks Reset common defaults button in Task Panel reset confirmation dialog
+      dlgTaskPanelReset.Window("Button", BtnResetToCommonDefaults, 1).ClickButton();
+      Utility.syncExplorerProcess();
+    }
+
+    syncExplorerProcess();
+  
+  } //End try
+  
+  catch (exception) {
+    throw exception;
+  } //End catch
+  
+} //resetTaskPanelSettingsToDefaults
+
+function resetDisplaySettingsToDefaults() {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function: resetDisplaySettingsToDefaults
+  Description: Resets Vault listing Display Setting to Default
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  try {
+    
+    //Variable Declaration
+    var dlgDisplayReset; //Stores the instance of Display reset confirmation dialog
+    
+    //Variable Declaration to support multi-language settings
+    var CMenuView = aqString.Replace(Utility.getCaption("MS_MRLN_STR_MENU_VIEW"), "&", ""); 
+    var CMenuResetDispSetting = aqString.Replace(Utility.getCaption("MS_MRLN_STR_POPUP_RESET_TO_DISPLAY_SETTINGS"), "&", "");
+    var dlgResetDispCaption = Utility.getCaption("MS_MRLN_DLG_RESET_DISPLAY_SETTINGS_DEFAULTS");
+    var BtnResetToCommonDefaults = Utility.getCaption("MS_MRLN_BUTTON_RESET_TO_COMMON_DEFAULTS"); 
+  
+    Utility.explorerMenuClick(CMenuView + ">>" + CMenuResetDispSetting); //Select View>> Reset display settings from explorer menu
+    
+    dlgDisplayReset = Sys.Process("Explorer").WaitWindow("#32770", dlgResetDispCaption, 1, 2000); //Instance of Display reset confirmation dialog
+  
+    if (dlgDisplayReset.Exists) { //Clicks Reset common defaults button in Display reset confirmation dialog
+      dlgDisplayReset.Window("Button", BtnResetToCommonDefaults, 1).ClickButton();
+      Utility.syncExplorerProcess();
+    }
+  
+  } //End try
+  
+  catch (exception) {
+    throw exception;
+  } //End catch
+
+} //resetDisplaySettingsToDefaults
+
+function hideViewer() {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function: hideViewer  
+  Description: Hides viewer displayed in vault listing
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+  
+  try {
+  
+    Utility.explorerMenuClick("View >> Right Pane >> Off", true); //Selects View >> Show Right pane from the explorer menu
+    Utility.syncExplorerProcess();
+    
+  } //End try
+  
+  catch (exception) {
+    throw exception;
+  } //End catch
+  
+} //hideViewer
+
+function hidePropertiesPane() {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function: hidePropertiesPane
+  Description: Hides properties pane displayed in vault listing
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+  
+  try {
+  
+    Utility.explorerMenuClick("View >> Bottom Pane >> Off", true); //Selects View >> Show Properties pane from the explorer menu
+    Utility.syncExplorerProcess();
+  
+  } //End try
+  
+  catch (exception) {
+    throw exception;
+  } //End catch
+
+} //hidePropertiesPane
+
+function resetMFilesExplorerToAutomationDefaultSettings() {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~s
+  Function: resetMFilesExplorerToAutomationDefaultSettings
+  Description: Resets MFiles to Automation Base State
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  Utility.showMenuBar(); //Shows menu bar
+  Utility.hideNavigationPane(); //Hides Navigation pane
+  Utility.syncExplorerProcess();
+  Utility.loginAs(ProjectSuite.Variables.TestVault1, ProjectSuite.Variables.ClientAuthenticationType, ProjectSuite.Variables.ClientUserName, ProjectSuite.Variables.ClientUserPassword, false, true);
+  Utility.resetDisplaySettingsToDefaults(); //Resets display settings to common defaults
+  Utility.resetTaskPanelSettingsToDefaults(); //Resets task pane settings to common defaults
+  Utility.hideViewer(); //Hides viewer
+  Utility.hidePropertiesPane(); //Hides Properties pane
+  Utility.showFileExtns(); //Shows file extension for the documents
+  Utility.clearCache(); //Clears local cache
+  
+} //resetMFilesExplorerToAutomationDefaultSettings
+
+function launchMFilesClientSettings() {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~s
+  Function: launchMFilesClientSettings
+  Description: Launches M-Files Desktop Settings window
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  try {    
+  
+    //Variable Declaration
+    var path = ProjectSuite.Variables.ClientAppPath + "\\MFConfig.exe" ;
+    
+    Indicator.PushText("Launching M-Files Desktop Settings...");
+    
+    //Checks if Application exists in the path specified
+    if (! aqFile.Exists(path)) {
+      TestLog.Warning("Invalid Configuration. MFiles Client Settings application is not found in the specified location.", path);
+      return;
+    }
+    
+    //Launches MFiles Client Settings dialog
+    var ObjShellScript = new ActiveXObject("WScript.Shell");
+    ObjShellScript.Exec("\"" + path + "\"");
+    Utility.syncExplorerProcess();
+    Delay(500, "Launching M-Files Desktop Settings...")
+    
+    index = 0
+    while(! Sys.WaitProcess("MFConfig", 1000).WaitWindow("*", "M-Files Desktop Settings", -1, 1000).Exists && index++<60) 
+      Delay(500, "Launching M-Files Desktop Settings...")
+        //Logs warning if MFiles client settings dialog does not opened
+    if (! Sys.WaitProcess("MFConfig", 2000).WaitWindow("*", "M-Files Desktop Settings", -1, 2000).Exists) {
+      TestLog.Warning("Unable to launch MFiles Client Settings. Please check configuration");
+      return;
+    }    
+  
+  } //End try
+  catch(exception) {
+    throw exception;
+  } //End catch
+  finally {
+    Utility.syncExplorerProcess();
+    Indicator.Clear();
+  } //End finally
+  
+} //launchMFilesClientSettings
+
+function launchMFilesStatus() {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~s
+  Function: launchMFilesStatus
+  Description: Launches M-Files Status process
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  try {    
+  
+    //Variable Declaration
+    var path = ProjectSuite.Variables.ClientAppPath + "\\MFStatus.exe" ;
+    
+    Indicator.PushText("Launching M-Files Status Process...");
+    
+    //Checks if Application exists in the path specified
+    if (! aqFile.Exists(path)) {
+      TestLog.Warning("Invalid Configuration. MFiles Status application Process is not found in the specified location.", path);
+      return;
+    }
+    
+    //Launches MFiles Status Process
+    var ObjShellScript = new ActiveXObject("WScript.Shell");
+    ObjShellScript.Exec("\"" + path + "\"");
+    Utility.syncExplorerProcess();
+    Delay(500, "Launching M-Files Status Process...")
+    
+    index = 0
+    while(! Sys.WaitProcess("MFStatus", 1000).Exists && index++<60) 
+      Delay(500, "Launching M-Files Status Process...")
+        //Logs warning if MFiles Status Process does not opened
+    if (! Sys.WaitProcess("MFStatus", 2000).Exists) {
+      TestLog.Warning("Unable to launch MFiles Status Process. Please check configuration");
+      return;
+    }    
+  
+  } //End try
+  catch(exception) {
+    throw exception;
+  } //End catch
+  finally {
+    Utility.syncExplorerProcess();
+    Indicator.Clear();
+  } //End finally
+  
+} //launchMFilesStatus
+
+
+function clickSysTrayIcon(clickItem){
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~s
+  Function: clickSysTray
+  Description: Clicks item specified in the M-Files System Tray
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  try {
+    
+    //Variable Declaration
+    var sysTray; //Stores instance of TrayNotifyWnd
+    var notifyArea; //Stores instance of ToolbarWindow32
+    var loopIdx; //Stores the for loop index variable
+ 
+    sysTray =  Sys.WaitProcess("Explorer").Window("Shell_TrayWnd", "", 1).WaitWindow("TrayNotifyWnd", "", 1); //Instance of TrayNotifyWnd
+    notifyArea = sysTray.Window("SysPager", "", 1).FindChild(["WndClass", "Visible"],["ToolbarWindow32", true], 0); //Instance of ToolbarWindow32
+    
+    //Checks the availablity of M-Files icon in the notification area and right clicks it 
+    for (loopIdx=0; loopIdx<notifyArea.wButtonCount; loopIdx++){
+ 
+      if(aqString.Find(notifyArea.wButtonText(loopIdx),"M-Files") !== -1){
+        notifyArea.ClickItemR(notifyArea.wButtonText(loopIdx));
+        break;
+      
+      }
+    }
+
+    if(loopIdx >= notifyArea.wButtonCount) //throws exception if M-Files icon does not exists or not visible
+      throw {  name: "Exception occurred in Launching M-Files from System Tray",
+                      description: "M-Files icon does not exist in system tray",
+                      message: "M-Files icon does not exist in system tray"};
+    
+    Utility.syncExplorerProcess("MFStatus");                      
+    Utility.popUpClick(clickItem, "MFStatus"); //Selects the item to be selected from the popup menu appears on right clicking M-Files icon
+    
+  } //End try
+  
+  catch(exception){
+    throw exception;       
+  } //End catch
+ 
+} //clickSysTrayIcon()
+
+function logoutFromVault(caption) {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~s
+  Function: logoutFromVault
+  Description: Logs out from vault and launches M-Files explorer if not found
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  try {
+  
+    //Variable Declaration
+    var dlgWarning; //Stores the instance of logout warning dialog
+    var snooze; //Stores snooze index
+    var dlgForceLogOut; //Stores instance Force Logout dialog
+    
+    //Variable Declaration to support multi-language settings
+    var LogOutFromVault = Utility.getCaption("IDS_DLGTITLE_LOG_OUT_FROM_VAULT_X");
+    var ManyCheckedOut = Utility.getCaption("IDS_E_MFILES_CHECKEDOUT_DOCUMENTS_ON_LOGOUT_DESC");
+    var OneCheckedOut = Utility.getCaption("IDS_E_MFILES_SINGLE_CHECKEDOUT_DOCUMENT_ON_LOGOUT");
+    var BtnOK = Utility.getCaption("IDS_BTNTITLE_OK");
+    var CMenuOperations = aqString.Replace(Utility.getCaption("IDS_MENUSTR_OPERATIONSMFILES"), "&", ""); 
+    var CMenuLogOut = aqString.Replace(Utility.getCaption("IDS_MENU_STRING_LOG_OUT_FROM_ALL_VAULTS"), "&", "");
+    var BtnForceLogOut = Utility.getCaption("IDS_BTNTITLE_FORCE_LOGOUT");          
+  
+    Utility.explorerMenuClick(CMenuOperations + ">>" + CMenuLogOut,"","",caption); //Stores Operations -> Log out from context menu
+    
+    dlgWarning = Sys.Process("explorer").WaitWindow("#32770", "M-Files 2015.2", -1, 10000);  //Stores the instance of warning dialog    
+    
+    //Clicks the OK button if warning dialog exists and closes all explorer process
+    if (dlgWarning.Exists)  {
+    
+      dlgWarning.WaitWindow("Button", "OK", 1, 1000).ClickButton(); //Clicks the OK button
+      syncExplorerProcess();
+      
+      closeAllExplorerWindows();  //Closes all explorer window
+      syncExplorerProcess();
+            
+    } //End if
+    
+  
+    dlgWarning = Sys.WaitProcess("Explorer", 500).WaitWindow("#32770", LogOutFromVault, -1, 2000); //Instance of Logout warning dialog
+            
+    //Clicks Ok in the warning dialog if it exists
+    if (dlgWarning.Exists && dlgWarning.WaitWindow("Static", OneCheckedOut, -1, 100).Exists || 
+          dlgWarning.Exists && dlgWarning.WaitWindow("Static", ManyCheckedOut, -1, 100).Exists) {
+      dlgWarning.Window("Button", BtnOK, 1).ClickButton();
+      syncExplorerProcess();
+    }
+  
+    Utility.syncExplorerProcess();
+  
+    snooze = 0;
+  
+    dlgForceLogOut = Sys.Process("Explorer").WaitWindow("#32770", LogOutFromVault, 1, 2000); //Instance of Force logout dialog
+  
+    if (dlgForceLogOut.Exists && dlgForceLogOut.WaitWindow("Button", BtnForceLogOut, 2, 1000).Exists) //Clicks Force Logout button in the Force Logout dialog
+        dlgForceLogOut.Window("Button", BtnForceLogOut, 2).ClickButton(); 
+
+    //Waits until the vault gets logged out
+    while (Sys.WaitProcess("Explorer", 500).WaitWindow("#32770", LogOutFromVault, -1, 1000).Exists && snooze < 30){
+      Delay(1000, "Logs out from vault...");
+      snooze++;
+    }
+  
+    //Checks & launches M-File explorer if not found  
+    if (! Sys.WaitProcess("Explorer", 500).WaitWindow("CabinetWClass", "M-Files (M:)", -1, 1000).Exists && !Sys.WaitProcess("Explorer", 500).WaitWindow("CabinetWClass", "M:\\", -1, 1000).Exists) {
+      Utility.launchExploreMFiles();
+      Delay(5000);
+    }
+  
+    snooze = 0;
+  
+     while (snooze <10) { //Checks if M:\ explorer page appears
+      if(Sys.WaitProcess("Explorer", 500).WaitWindow("CabinetWClass", "M-Files (M:)", -1, 1000).Exists || Sys.WaitProcess("Explorer", 500).WaitWindow("CabinetWClass", "M:\\", -1, 1000).Exists)
+        break;
+      Delay(1000);
+      snooze++;
+    }
+  
+  } //End try
+  
+  catch(exception){
+    throw exception;       
+  } //End catch
+  
+}// End logoutFromVault()
+
+function mFilesServerService (toStart, version) {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Function: startMFilesServerService
+Description: To Start MFiles Server Service
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  //Variable Declaration
+  var wndServices; //Stores the instance of Services window
+  var serviceList; //Stores the instance of list in the services window
+  var snooze = 0; //Stores snooze variable
+    
+  try {
+    
+    if (toStart === undefined || toStart === null || toStart === "")
+      toStart = true
+    
+    Sys.Keys("[Hold][Win]r[Release]"); //Opens run window
+    Sys.Keys("services.msc"); //Enters services.msc in the open text box 
+    Sys.Keys("[Enter]"); //Press Enter key
+  
+    Delay(30000, "Opens services");
+  
+    wndServices = Sys.Process("mmc").WaitWindow("MMCMainFrame", "Services", -1, 100); //Instance of services window
+  
+    if (!wndServices.Exists) //Checks if Services window has opened
+      throw { name: "Reusable Function Exception",
+              description: "Exception at Utility.startMFilesServerService: Service window does  not exists.",
+              message: "Service Window does not exists." }
+    
+    serviceList = wndServices.Window("MDIClient", "", 1).Window("MMCChildFrm", "Services (Local)", 1).Window("MMCViewWindow", "", 1).Window("SysListView32", "", 1); //Instance of list in the Services window
+    
+    serviceList.ClickItemR("M-Files Server 2015 (11.0.4300.53)"); //Right clicks in the M-Files server services
+    
+    if (toStart)
+      serviceList.PopupMenu.Click("Start"); //Clicks Start from context menu
+    else
+      serviceList.PopupMenu.Click("Stop"); //Clicks Stop from context menu
+
+    while (Sys.Process("mmc").WaitWindow("#32770", "Service Control", -1, 100).Exists && snooze < 100) { //Snooze until service gets started 
+      Delay(500, "Start/Stop service...");
+      snooze++;
+    }
+  
+    wndServices.Close(); //Closes service window     
+  
+  } //End try
+  
+  catch(exception){
+    throw exception;       
+  } //End catch
+  
+  finally {
+    if (wndServices !== undefined && wndServices.Exists)
+      wndServices.Close()
+  }
+  
+}
+
+function getMFilesClientVersion () {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
+Function: getMFilesClientVersion
+Description: To get the Version of M-Files client                      
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  try {
+  
+    //Variable Declaration
+    var processName; //Stores the instance of process name
+  
+    processName = Sys.WaitProcess("MFStatus", 500); //Instance of the process
+  
+    if (!processName.Exists) {
+      TestLog.Warning("MFStatus process does not exists.")
+      Runner.Stop();
+    }
+     
+    return(VarToStr(processName.FileVersionInfo)); //Returns the Version
+    
+  } //End try
+  
+  catch (exception) {
+    throw exception;
+  } //End catch
+  
+} //getMFilesClientVersion
+
+function getMFilesServerVersion () {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
+Function: getMFilesServerVersion
+Description: To get the Version of M-Files Server                      
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  try {
+  
+    //Variable Declaration
+    var processName; //Stores the instance of process name
+  
+    processName = Sys.WaitProcess("MFServer", 500); //Instance of the process
+  
+    if (!processName.Exists) {
+      TestLog.Warning("MFServer process does not exists.")
+      Runner.Stop();
+    }
+     
+    return(VarToStr(processName.FileVersionInfo)); //Returns the Version
+    
+  } //End try
+  
+  catch (exception) {
+    throw exception;
+  } //End catch
+
+} //getMFilesServerVersion
+
+function getOSInformation(){
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
+Function: getOSInformation
+Description: To get the Information of Operating Systems                      
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+  try {
+  
+    //Variable Declaration
+    var OSInfo; //Stores the OS information 
+    var info; //Stores the information to be returned
+  
+    OSInfo = Sys.OSInfo; //Obtains the OSInfo object
+
+    info = "Name: " + OSInfo.Name + " "; //Obtains information on the running operating system
+  
+    if (OSInfo.Windows64bit)
+      info = info + "64-bit version";
+    else
+      info = info + "32-bit version";
+
+    info = info + ", Service Pack Version: " + OSInfo.ServicePackVersion;
+  
+    return info;
+  
+    } //End try
+  
+    catch (exception) {
+      throw exception;
+    } //End catch
+  
+} //getOSInformation
+
+function getDotNetVersion() {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
+Function: getDotNetVersion
+Description: To get the Dot net version installed                       
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/  
+
+  try {
+  
+    //Variable Declaration
+    var dotNetInfo; //Stores the dotNet information
+    
+    dotNetInfo = "Microsoft .Net Framework Version: " + dotNET.System.Environment.Version.Major + "." + dotNET.System.Environment.Version.Minor + "." + dotNET.System.Environment.Version.Build; //Get Microsoft .Net Framework Version
+    
+    return dotNetInfo; 
+  
+  } //End try
+  
+    catch (exception) {
+      throw exception;
+    } //End catch
+    
+} //getDotNetVersion
+
+function getJavaVersion() {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
+Function: getJavaVersion
+Description: To get the Java version installed                       
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/  
+  
+  try {
+  
+    //Variable Declaration
+    var javaInfo = "Java is not installed in this machine."; //Stores the Java information
+    
+    //Get Java Version 
+    if (aqFileSystem.Exists(Sys.OSInfo.SystemDirectory+"\\java.exe")) {
+      javaInfo = aqFileSystem.GetFileInfo(Sys.OSInfo.SystemDirectory+"\\java.exe");
+      javaInfo = "Java Version: " + javaInfo.VersionInfo.ProductMajorVersion + "." + javaInfo.VersionInfo.ProductMinorVersion + "." + javaInfo.VersionInfo.ProductBuildVersion
+    } 
+    
+    return javaInfo;
+   
+  } //End try
+  
+  catch (exception) {
+    throw exception;
+  } //End catch
+    
+} //getJavaVersion
+
+function getIEVersion() {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
+Function: getIEVersion
+Description: To get the IE version installed                       
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/ 
+  try {
+  
+    //Variable Declaration
+    var ieInfo = "Java is not installed in this machine."; //Stores the Java information
+    var wShell; //Stores instance of ActiveXObject 
+    
+    wShell = new ActiveXObject("Wscript.Shell"); //Creates WScript ActiveXObject
+    ieInfo = "IE Version: " + wShell.RegRead ("HKLM\\Software\\Microsoft\\Internet Explorer\\Version"); //Gets the IE Version
+    
+    return ieInfo;
+    
+  } //End try
+  
+  catch (exception) {
+    throw exception;
+  } //End catch
+    
+} //getIEVersion
+
+function clearCache () {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
+Function: clearCache
+Description: To clear local cache in M-Files Application                      
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/ 
+  
+  //Variable Declaration
+  var dlgClrLocalCache; //Stores instance of Clear local cache dialog
+  var dlgConfirm; //Stores instance of confirmation dialog
+  var dlgMFiles; //Stores instance of M-Files information dialog
+  
+  try {
+    
+    //String Captions for multi-language support
+    var CMenuSettings = aqString.Replace(Utility.getCaption("IDS_MENUSTR_SETTINGSMFILES"), "&", "");
+    var CMenuClearLocalCache = aqString.Replace(Utility.getCaption("IDS_MENUSTR_CLEAN_VAULT"), "&", "");
+    var dlgLocalCacheCaption = Utility.getCaption("IDS_DLGTITLE_CLEAN_VAULT");
+    var BtnDeleteAll = Utility.getCaption("IDC_BUTTON_DELETE_ALL_NONDOCUMENT_ITEMS");
+    var dlgDeleteAllCaption = Utility.getCaption("IDS_DLGTITLE_CONFIRM_DELETE");
+    var BtnYes = Utility.getCaption("IDD_DIALOG_DIVIDE_SEARCH_RESULTS_BY_1");
+    var BtnFinish = Utility.getCaption("IDD_DIALOG_CLEAN_VIEW_1");
+    var strMsgCacheCleared = Utility.getCaption("IDS_MSG_VAULT_CLEANED");
+    var BtnOK = Utility.getCaption("IDS_BTNTITLE_OK");
+    
+    Utility.explorerMenuClick(CMenuSettings + ">>" + CMenuClearLocalCache); //Selects Settings >> Clear Local Cache from explorer menu
+    Utility.syncExplorerProcess();
+   
+    dlgClrLocalCache = Sys.Process("explorer").WaitWindow("#32770", dlgLocalCacheCaption, -1, 1000); //Instance of ClearLocal Cache dialog
+    
+    if (!dlgClrLocalCache.Exists) //Checks for the existance of Clear Local Cache dialog
+      throw { name: "Reusable Function Exception",
+              description: "Exception at Utility.clearCache: Clear Local cache dialog does not exists.",
+              message: "Clear Local cache dialog does not exists." }  
+    
+    dlgClrLocalCache.Window("#32770", "", 1).Window("Button", BtnDeleteAll, 2).ClickButton(); //Clicks DeleteAll button in the dialog
+   
+    dlgConfirm = Sys.Process("explorer").WaitWindow("#32770", dlgDeleteAllCaption, -1, 1000); //Stores instance M-Files Confirmation dialog
+  
+    if (dlgConfirm.Exists) //Clicks Yes button if  confimation dialog exists
+      dlgConfirm.Window("Button", BtnYes, 1).Click();
+      
+    if (dlgClrLocalCache.Exists) //Clicks Finish button if Clear local cache button exists
+      dlgClrLocalCache.Window("Button", BtnFinish, 1).ClickButton();
+      
+    Utility.syncExplorerProcess();
+    Delay(5000, "Clearing Local Cache...")
+  
+    dlgMFiles = Sys.Process("explorer").WaitWindow("#32770", "M-Files*", -1, 5000); //Instance of M-Files information dialog
+
+    if (dlgMFiles.Exists && dlgMFiles.WaitWindow("Static", strMsgCacheCleared, -1, 1000).Exists) //Clicks Ok button if M-Files information dialog exists
+      dlgMFiles.Window("Button", BtnOK, 1).Click();
+    
+  } //End try
+  
+  catch (exception) {
+    throw exception;
+  } //End catch
+  
+  finally {
+  
+    //Closes opened dialog if exists
+    if (dlgMFiles !== undefined && dlgMFiles.Exists)
+      dlgMFiles.Close();
+      
+    if (dlgConfirm !== undefined && dlgConfirm.Exists)
+      dlgConfirm.Close();
+      
+    if (dlgClrLocalCache !== undefined && dlgClrLocalCache.Exists)
+      dlgClrLocalCache.Close();
+      
+  } //End finally
+
+} //clearCache
+
+function showFileExtns() {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function: showFileExtns
+  Description: Shows file extensions for all files.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+  
+  //Variable Declaration
+  var dlgFolderOptions; //Stores the instance of Folder options dialog
+  var treeView; //Stores the instance of tree view
+  var wShell; //Stores the ActiveXObject
+  var regValue; //Stores the registry value
+  
+  try {
+ 
+    //String Captions for multi-language support
+    var CMenuTools = aqString.Replace(Utility.getCaption("MS_MRLN_MENU_TOOLS"), "&", "");
+    var CMenuFolderOptions = aqString.Replace(Utility.getCaption("MS_MRLN_MENU_FOLDER_OPTIONS"), "&", "");
+    var dlgFolderOptionCaption = Utility.getCaption("MS_MRLN_DLG_FOLDER_OPTIONS");
+    var TabView = aqString.Replace(Utility.getCaption("MS_MRLN_STR_MENU_VIEW"), "&", ""); 
+    var FilesAndFolders = Utility.getCaption("MS_MRLN_STR_FILES_AND_FOLDERS");              
+    var HideExtnForKnownFile = Utility.getCaption("MS_MRLN_STR_HIDE_EXTENSIONS_FOR_KNOWN_FILE"); 
+    var BtnOK = Utility.getCaption("IDS_BTNTITLE_OK");             
+    
+    Utility.explorerMenuClick(CMenuTools + ">>" + CMenuFolderOptions); //Selects Tools >> Folder Options from explorer menu
+  
+    dlgFolderOptions = Sys.Process("explorer").WaitWindow("#32770", dlgFolderOptionCaption, 1, 2000); //Stores instance of Folder Options dialog
+  
+    if (! dlgFolderOptions.Exists) { //Checks for the existance of Folder options dialog
+      throw { name: "Reusable Function Exception",
+              description: "Exception at Utility.showFileExtns: Folder Options dialog does  not exists.",
+              message: "Folder Options dialog does  not exists." }    
+    }
+  
+    dlgFolderOptions.Window("SysTabControl32", "", 1).ClickTab(1); //Clicks View Tab
+  
+    treeView = dlgFolderOptions.Window("#32770", TabView, 1).Window("SysTreeView32", "*", 1); //Stores the instance of tree view in the Folder options
+  
+    wShell = new ActiveXObject("Wscript.Shell"); //Object of WScript Shell 
+    regValue = wShell.RegRead ("HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\\HideFileExt"); //Reads the value of HideFileExt from the registry
+  
+    if (String(regValue) === "1") //Un-Checks Hide Extension for known file types if it is already checked
+      treeView.ClickItem(FilesAndFolders + "|" + HideExtnForKnownFile);
+
+    dlgFolderOptions.Window("Button", BtnOK, 1).ClickButton(); //Clicks Ok button in the dialog
+    
+  } //End try
+  
+  catch(exception){
+   throw exception; 
+  } //End catch
+  
+  finally{
+  
+    if(dlgFolderOptions !== undefined && dlgFolderOptions.Exists)
+      dlgFolderOptions.Close();
+    
+  } //End finally
+  
+}// ShowFileExtns()
+
+
+function displayEnvironmentDetails() {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function: displayEnvironmentDetails
+  Description: Displays MFiles, OS, Dotnet, java, IE versions.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  Log.PushLogFolder(Log.CreateFolder("Exection Environment Details"));
+  
+  //Prints Environment details in log of events
+  TestLog.Message(Utility.getMFilesClientVersion());
+  TestLog.Message(Utility.getMFilesServerVersion());
+  TestLog.Message(Utility.getOSInformation());
+  TestLog.Message(Utility.getDotNetVersion());
+  TestLog.Message(Utility.getJavaVersion());
+  TestLog.Message(Utility.getIEVersion());
+  
+  Log.PopLogFolder();  
+
+} //displayEnvironmentDetails
+
+function setProjConfiguration() {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function: doProjectSettings
+  Description: Assigns value to Project Suite Variables from Project Settings.ini file
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+  
+  try {
+    
+    var iniFilePath = Storages.INI(ProjectSuite.Path + "Common\\ProjectSettings.ini"); //Stores the ini file
+    
+    //Assigns Project Suite variables to multi-language settings
+    ProjectSuite.Variables.VaultLanguage = iniFilePath.GetSubSection("MultiLanguageSettings").GetOption("VaultLanguage", "Not Exists");
+    ProjectSuite.Variables.INIFileName = iniFilePath.GetSubSection("MultiLanguageSettings").GetOption("INIFileName", "Not Exists");
+    Indicator.PushText("Loads Language Settings file into memory...");
+    
+    if (ProjectSuite.Variables.DoLoadINI) {
+    
+      ProjectSuite.Variables.IniRoot = Storages.INI(ProjectSuite.Path + "Common\\Mulit-Language Settings\\INI Files\\" + ProjectSuite.Variables.IniFileName);
+      ProjectSuite.Variables.DoLoadINI = false;
+      
+    }
+    
+    Indicator.Clear();
+    
+    //Assigns Variables of Server and Client Application
+    ProjectSuite.Variables.ClientAppName = Utility.getCaption(iniFilePath.GetSubSection("ClientSettings").GetOption("ClientAppName", "Not Exists"));
+    ProjectSuite.Variables.ClientAppPath = aqString.Replace(Sys.WaitProcess("MFStatus",500).Path,"MFStatus.exe","");
+    ProjectSuite.Variables.ClientAuthenticationType = Utility.getCaption(iniFilePath.GetSubSection("ClientSettings").GetOption("ClientAuthenticationType", "Not Exists"));
+    ProjectSuite.Variables.ClientUserName = Utility.getCaption(iniFilePath.GetSubSection("ClientSettings").GetOption("ClientUserName", "Not Exists"));
+    ProjectSuite.Variables.ClientUserPassword = Utility.getCaption(iniFilePath.GetSubSection("ClientSettings").GetOption("ClientUserPassword", "Not Exists"));
+    ProjectSuite.Variables.ConnectionName = Utility.getCaption(iniFilePath.GetSubSection("ClientSettings").GetOption("ConnectionName", "Not Exists"));
+    ProjectSuite.Variables.ServerAppName = Utility.getCaption(iniFilePath.GetSubSection("ServerSettings").GetOption("ServerAppName", "Not Exists"));
+    ProjectSuite.Variables.ServerAppPath = ProjectSuite.Variables.ClientAppPath.split("Bin")[0] +"ServerTools\\";
+    ProjectSuite.Variables.ServerAuthenticationType = Utility.getCaption(iniFilePath.GetSubSection("ServerSettings").GetOption("ServerAuthenticationType", "Not Exists"));
+    ProjectSuite.Variables.ServerName = Utility.getCaption(iniFilePath.GetSubSection("ServerSettings").GetOption("ServerName", "Not Exists"));
+    ProjectSuite.Variables.ServerPassword = Utility.getCaption(iniFilePath.GetSubSection("ServerSettings").GetOption("ServerPassword", "Not Exists"));
+    ProjectSuite.Variables.ServerPortNumber = Utility.getCaption(iniFilePath.GetSubSection("ServerSettings").GetOption("ServerPortNumber", "Not Exists"));
+    ProjectSuite.Variables.ServerProtocol = Utility.getCaption(iniFilePath.GetSubSection("ServerSettings").GetOption("ServerProtocol", "Not Exists"));
+    ProjectSuite.Variables.ServerUserName = Utility.getCaption(iniFilePath.GetSubSection("ServerSettings").GetOption("ServerUserName", "Not Exists"));
+    ProjectSuite.Variables.RestoreBackupAfterEachTest = iniFilePath.GetSubSection("ServerSettings").GetOption("RestoreBackupAfterEachTest", "Not Exists");
+    ProjectSuite.Variables.TestVault1 = Utility.getCaption(iniFilePath.GetSubSection("TestVaultSettings").GetOption("TestVault1", "Not Exists"));
+    ProjectSuite.Variables.TestVault2 = Utility.getCaption(iniFilePath.GetSubSection("TestVaultSettings").GetOption("TestVault2", "Not Exists"));
+    ProjectSuite.Variables.MemCpuLogInfo = iniFilePath.GetSubSection("LogSettings").GetOption("MemCpuLogInfo", "Not Exists");
+    ProjectSuite.Variables.TestCaseStatus = "";
+    
+    if (ProjectSuite.Variables.ClientAppPath === "Not Exists") { 
+      TestLog.Error("Client Application path is not correct or not exists.");
+      Runner.Stop();
+    }
+    
+    if (ProjectSuite.Variables.ServerAppPath === "Not Exists") { 
+      TestLog.Error("Server Application path is not correct or not exists.");
+      Runner.Stop();
+    }
+   
+  }
+  
+  catch(exception) {
+    throw exception;
+  }
+  
+  finally {
+    iniFilePath = null;
+  }
+  
+} //setProjConfiguration
+
+function createLogVariables() {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function: createLogVariables
+  Description: Creates local variables at Project to use it in logs
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  try {
+  
+    if (Project.Variables.VariableExists("prevCpuInfo"))
+      Project.Variables.RemoveVariable("prevCpuInfo");
+  
+    if (Project.Variables.VariableExists("currCpuInfo"))
+      Project.Variables.RemoveVariable("currCpuInfo");
+    
+    if (Project.Variables.VariableExists("prevMemInfo"))
+      Project.Variables.RemoveVariable("prevMemInfo");
+    
+    if (Project.Variables.VariableExists("currMemInfo"))
+      Project.Variables.RemoveVariable("currMemInfo");
+      
+    if (Project.Variables.VariableExists("eventFileContent"))
+      Project.Variables.RemoveVariable("eventFileContent"); 
+      
+    if (Project.Variables.VariableExists("xmlFileName"))
+      Project.Variables.RemoveVariable("xmlFileName");
+      
+    if (Project.Variables.VariableExists("eventGenerated"))
+      Project.Variables.RemoveVariable("eventGenerated");
+      
+    if (Project.Variables.VariableExists("lastEventRecordNumber"))
+      Project.Variables.RemoveVariable("lastEventRecordNumber");
+      
+    if (Project.Variables.VariableExists("eventLogCaseId"))
+      Project.Variables.RemoveVariable("eventLogCaseId");
+    
+    Project.Variables.AddVariable("prevCpuInfo", "Object");
+    Project.Variables.AddVariable("currCpuInfo", "Object");
+    Project.Variables.AddVariable("prevMemInfo", "Object");
+    Project.Variables.AddVariable("currMemInfo", "Object");
+    Project.Variables.AddVariable("eventFileContent", "String"); 
+    Project.Variables.AddVariable("xmlFileName", "String");
+    Project.Variables.AddVariable("eventGenerated", "String");
+    Project.Variables.AddVariable("lastEventRecordNumber", "Integer");
+    Project.Variables.AddVariable("eventLogCaseId", "String");
+    
+  } //End try
+  
+  catch(exception) {
+    throw exception;
+  } //End catch
+  
+}//createLogVariables
+  
+
+function removeLogVariables() {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function: removeLogVariables
+  Description: Removes local variables at Project used in logs
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  try {
+  
+    if (Project.Variables.VariableExists("prevCpuInfo"))
+      Project.Variables.RemoveVariable("prevCpuInfo");
+  
+    if (Project.Variables.VariableExists("currCpuInfo"))
+      Project.Variables.RemoveVariable("currCpuInfo");
+    
+    if (Project.Variables.VariableExists("prevMemInfo"))
+      Project.Variables.RemoveVariable("prevMemInfo");
+    
+    if (Project.Variables.VariableExists("currMemInfo"))
+      Project.Variables.RemoveVariable("currMemInfo");
+    
+  } //End try
+  
+  catch(exception) {
+   throw exception;
+  } //End catch
+  
+}//removeLogVariables
+
+function getCaption(propertyID) {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function: getCaption
+  Description: Gets the property id and returns its corresponding caption
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  try {
+
+    return (aqString.Trim(ProjectSuite.Variables.IniRoot.GetOption(propertyID, propertyID)));
+       
+  } //End try
+  
+  catch(exception) {
+    throw exception
+  } //End catch
+  
+} //getCaption
+
+function eventLog (testCaseID, lastRecNum, eventType) {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function: eventLog
+  Description: Get the details of windows - Application event log 
+              between the specified time frame
+              
+  eventType:  1 - Error (Optional)
+
+              2 - Warning
+
+              3 - Information
+
+              4 - Security Audit Success
+
+              5 - Security Audit Failure
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  try {
+  
+    //Variable Declaration
+    var strComputer; //Stores the name of the computer 
+    var logType; //Stores the type of the event log
+    var wmiService; //Object to fetch the query from Win32_NTLogEvent
+    var errorLogCollection; //Collection of error log result
+    var errorLog; //Stores the number of records returned from the query 
+    var fileContent; //Stores the content to written in the file
+    var i = 0; //Iteration variable
+    var recNum; //Stores the last generated record number from the event log
+    var year; //Stores the year
+    var month; //Stores the month
+    var day; //Stores the date
+    var dtDate; //Stores the date of the event generated
+  
+    if(eventType == undefined)
+      eventType = 1;  
+  
+    strComputer = "."; //Denotes local computer
+    logType = "Application";        
+    wmiService = GetObject("winMgmts:{impersonationLevel=impersonate}!//" + strComputer + "/root/cimv2");
+   
+    //Get all the record from event log that matches the log type as application, event type as error(1) and source name as 'M-Files' and Record Number greater the last record.
+    errorLogCollection = wmiService.ExecQuery("Select * from Win32_NTLogEvent Where (Logfile = '" + logType + "') and (SourceName = 'M-Files') and (EventType = "+eventType+") and (RecordNumber > " + lastRecNum + ")");
+    errorLog = new Enumerator(errorLogCollection);
+
+    if (!errorLog.atEnd()) 
+      fileContent = "<TestCase ID = '" + testCaseID + "'><EventType Level = 'Error'>"
+    
+    for (; !errorLog.atEnd(); errorLog.moveNext()) {
+  	  
+      recordSet = errorLog.item(); //Gets the record set 
+      dtDate = recordSet.TimeGenerated; //Stores the time generated
+      year=dtDate.substr(0,4);
+      month=dtDate.substr(4,2);
+      day=dtDate.substr(6,2);
+  
+      //Splits the item in the record set and adds in the formatted way to return
+      fileContent = fileContent + "<EventNumber SNo = '" + i + "'>";
+      fileContent = fileContent + "<DateAndTime>" + year + "-" + month + "-" + day + " " + dtDate.substr(8,2) + ":" + dtDate.substr(10,2) + ":" + dtDate.substr(12,2) + "</DateAndTime>";
+      fileContent = fileContent + "<EventRecordNumber>" + recordSet.RecordNumber + "</EventRecordNumber>";
+      fileContent = fileContent + "<Category>" + recordSet.Category + "</Category>";
+      fileContent = fileContent + "<CategoryString>" + recordSet.CategoryString + "</CategoryString>";
+      fileContent = fileContent + "<Event>" + recordSet.EventCode + "</Event>";
+      fileContent = fileContent + "<Message>" + recordSet.Message + "</Message></EventNumber>"
+      i++;
+    }
+  
+    fileContent = fileContent + "</EventType></TestCase>"
+    return fileContent;
+    
+  } //End try
+  catch(exception) {
+    throw exception
+  } //End catch
+  
+} //eventLog
+
+function getLastEventRecord () {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function: getLastEventRecord
+  Description: Gets the last generated event record from the event log
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  try {
+
+    //Variable Declaration
+    var strComputer; //Stores the name of the computer 
+    var logType; //Stores the type of the event log
+    var wmiService; //Object to fetch the query from Win32_NTLogEvent
+    var errorLogCollection; //Collection of error log result
+    var errorLog; //Stores the number of records returned from the query
+    var recNum; //Stores the last generated record number from the event log
+  
+    strComputer = ".";
+    logType = "Application";        
+    wmiService = GetObject("winMgmts:{impersonationLevel=impersonate}!//" + strComputer + "/root/cimv2");
+ 
+    //Get all the records from event log that matches the log type as application, event type as error(1) and source name as 'M-Files' 
+    errorLogCollection = wmiService.ExecQuery("Select * from Win32_NTLogEvent Where (Logfile = '" + logType + "') and (SourceName = 'M-Files')");
+    errorLog = new Enumerator(errorLogCollection);
+  
+    //Fetch the latest event record number
+    if (!errorLog.atEnd()) { 
+      recordSet = errorLog.item(); 
+      recNum = recordSet.RecordNumber;  
+    }
+  
+    return recNum;
+    
+  } //End try
+  
+  catch(exception) {
+    throw exception 
+  } //End catch
+  
+  finally {
+    wmiService = null; 
+    errorLogCollection = null;
+    errorLog = null;
+    recordSet = null;
+  } //End finally
+  
+} //getLastEventRecord
+
+function writeEvent (fileName, fileContent, folderPath) {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function: writeEvent
+  Description: Writes the captured event to the XML File
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  try {
+  
+    //Variable Declaration
+    var filePath; //Stores the path of the XML file folder
+    var writeOnFile; //Store the pointer to the XML file
+    
+    if (folderPath === undefined || folderPath === "" || folderPath === null)
+      folderPath = ProjectSuite.Path + "\\EventLog"; //Path of the XML file folder 
+  
+    if (!aqFileSystem.Exists(folderPath)) //Checks for the existance of the folder and creates if does not exists
+      aqFileSystem.CreateFolder(folderPath)
+        
+    filePath = folderPath + "\\" + fileName + ".xml"; //Stores the path of the XML file
+    aqFile.Create(filePath); //Creates the XML file in specified location
+  
+    if (!aqFile.Exists(filePath)) { //Checks if XML file exists in the location
+      throw { name: "Reusable Function Exception",
+              description: "Exception at Utility.writeEvent: XML file does not exists.",
+              message: "XML file does not exists." + filePath}   
+    }
+
+    writeOnFile = aqFile.OpenTextFile(filePath, aqFile.faWrite, aqFile.ctANSI, true); //Opens the XML file to write
+    writeOnFile.write(fileContent); //Writes in the XML file
+  
+  } //End try
+  
+  catch(exception) {
+    throw exception 
+  } //End catch
+
+} //writeEvent
+
+
+function editXMLFile (data) {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function: editXMLFile
+  Description: Edits the the XML File
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+  
+  //Variable Declaration
+  var writeOnFile; //Store the pointer to the XML file
+  var fileContent; //Stores the content of the XML file
+  var errorMsg; //Stores the error message to be returned
+  var findString; //Stores the value returned by aqString.Find method
+    
+  try {
+    
+    errorMsg = {
+                  Exists : false,
+                  Message : ""
+               };
+               
+    if (!aqFile.Exists(data.XMLFilePath)) { //Checks for the existance of XML file
+      errorMsg.Exists = true;
+      errorMsg.Message = "XML file does not exists in specified location"
+      return errorMsg;
+    }
+  
+    fileContent = aqFile.ReadWholeTextFile(data.XMLFilePath, aqFile.ctANSI); //Reads the whole text file and stores it in the variable
+    findString = aqString.Find(fileContent, data.StringToReplace, 0, false); //Finds the string to replace exists in the XML file
+  
+    if (findString === -1) { //Checks if XML file has the string to replace
+      errorMsg.Exists = true;
+      errorMsg.Message = "The specified string does not exists in the XML file.";
+      return errorMsg;
+    }
+  
+    fileContent = aqString.Replace(fileContent, data.StringToReplace, data.NewString, false); //Replaces the string that to be replaced with new string
+    writeOnFile = aqFile.OpenTextFile(data.XMLFilePath, aqFile.faWrite, aqFile.ctANSI, true); //Opns the XML file
+    writeOnFile.write(fileContent); //Writes in the XML file with the replacement done
+  
+    fileContent = aqFile.ReadWholeTextFile(data.XMLFilePath, aqFile.ctANSI); //Reads the XML file content
+    findString = aqString.Find(fileContent, data.NewString, 0, false); //Finds the string in the XML file
+  
+    if (findString === -1) { //Checks if XML file is replaced with the new string
+      errorMsg.Exists = true;
+      errorMsg.Message = "The modified string does not exists in the XML file.";
+      return errorMsg;
+    }
+    
+    findString = aqString.Find(fileContent, data.StringToReplace, 0, false); //Finds the string in the XML file
+  
+    if (findString !== -1) { //Checks if the replaced string exists in XML file
+      errorMsg.Exists = true;
+      errorMsg.Message = "The string to replace exists in the XML file.";
+      return errorMsg;
+    }
+    
+    wShell = new ActiveXObject("Wscript.Shell"); //Initiates ActiveX object      
+    fileName = "TestFile" + aqString.Replace(aqDateTime.Time(), ":", "") + ".xml";  //Assignining folder name
+    
+    filePath = wShell.SpecialFolders("Desktop") + "\\" + fileName; //Assigning folder path
+    aqFile.Create(filePath); //Creates 1 file in the specified path
+    aqFile.WriteToTextFile(filePath, fileContent, 22, true); //Creates a invalid xml file with the modified content
+        
+    if (!aqFile.Exists(filePath)) { //Checks for the existance of XML file
+      errorMsg.Exists = true;
+      errorMsg.Message = "XML file does not created in specified location"
+      return errorMsg;
+    } 
+    
+    return filePath;
+  
+  } //End try
+  
+  catch(exception) {
+    throw exception 
+  } //End catch
+  
+  finally {
+    if (errorMsg.Exists)
+      return errorMsg;
+    else 
+      return filePath;
+  }
+ 
+} //editXMLFile
+
+function fetchUserPassword(userName) {
+
+  try {
+    if(userName == undefined || userName == "" || userName == null)
+      userName = Sys.UserName;
+    
+    return ProjectSuite.Variables.GetVariableDefaultValue(aqString.Replace(userName, ".", "_")).Decryptedvalue;
+  }
+  catch(exception) {
+    throw exception 
+  } //End catch
+  
+}
+
+function executeNextSuite(suiteName) { //function to call Next Project for execution
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function: editXMLFile
+  Description: Executes the next project
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+ 
+  try {
+    
+    if (suiteName != undefined && suiteName != "" && suiteName != null) 
+      AutomateRelaunch.RestartAndContinue(suiteName);//Function to Relaunch the execution tool and continue with next project suite execution
+    
+   } //End try
+  
+  catch(exception) {
+    throw exception 
+  } //End catch
+
+} //executeNextProject
+
+function compareImageObjects(wPage,wImage){
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function: compareImageObjects
+  Description: Comapares the given image object with the web page images
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+  
+  //variable declaration
+  var expImage = null;
+  var getAllImg = {};
+  var result = false;
+  var count = 0;
+  var actImage = null;
+
+  try{
+
+  expImage = Regions.GetPicture(wImage);
+
+  if(expImage === null)//Checks corresponding image found in the region
+    throw { name: "Image object doesn't exists",
+                description: "Unable to get the given image from the regions",
+                message: "Please check the image name passed" }; 
+
+
+  getAllImg = new VBArray(wPage.EvaluateXPath("//IMG[contains(@src, '.png')]")).toArray();//Gets all the matching elements in the web page
+  
+  if(getAllImg.length <= 0)//Checks for matching image object found
+    throw { name: "No Image object found on this page",
+                description: "Unable to find any image from this page",
+                message: "Please check the web page object passed" }; 
+  
+  for(; count<getAllImg.length ; ) {//Loops through available images to compare
+    
+    getAllImg[count].scrollIntoView();
+    Utility.syncExplorerProcess();
+    actImage = getAllImg[count].Picture(0,0,-1,-1,false);
+ 
+    if(actImage.Find(expImage,0,0,false,0,false)){//Checks whether the images are identical
+      return true;
+      } 
+      
+    else
+      count++; 
+  }  
+  
+  return false;//if no matching image found
+    
+  }
+
+  catch(exception) {
+    throw exception 
+    } //End catch
+
+}
+
+function compareTitleText(wPage,wTitle,wContent) {
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function: compareTitleText
+  Description: Comapares the given text topic & contents with the web page contents
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+  
+  //variable declaration
+  var expImage = null;
+  var getTopic = {};
+  var isContent = false;
+  var isTopic = false;
+  var count = 0;
+  var getContent = {};
+
+  try{
+
+  if(wTitle !== undefined){
+
+  getTopic = new VBArray(wPage.EvaluateXPath("//h1[contains(@class,'title topictitle1')]")).toArray();//Gets all the matching topic title in the web page
+  
+  if(getTopic.length <= 0)//Checks for matching topic class length
+    throw { name: "No title available on this page",
+                description: "Unable to find any title class from this page",
+                message: "Please check the web page object passed" }; 
+  
+  for(count = 0; count<getTopic.length ; ) {//Loops through available title class
+   
+    if(aqString.Find(getTopic[count].innerText.toUpperCase(),wTitle.toUpperCase()) >= 0){//Checks whether the expected text found
+      isTopic = true;
+      break;
+      } 
+      
+    else
+      count++; 
+    } 
+  } 
+  
+  if(wContent !== undefined) {
+
+  getContent = new VBArray(wPage.EvaluateXPath("//body[@class='frmBody']//div[@class='body']/p")).toArray();//Gets all the matching topic content in the web page
+  
+  if(getContent.length <= 0)//Checks for matching topic content length
+    throw { name: "No title available on this page",
+                description: "Unable to find any title class from this page",
+                message: "Please check the web page object passed" }; 
+  
+  for(count = 0; count<getContent.length ; ) {//Loops through available title content
+  
+    if(aqString.Find(getContent[count].innerText.toUpperCase(),wContent.toUpperCase()) >= 0){//Checks whether the expected text found
+      isContent = true;
+      break;
+      } 
+      
+    else
+      count++; 
+    }  
+  }
+  
+  if(wTitle !== undefined && wContent !== undefined)
+    return (isTopic && isContent); //Returns if both topic and content verified
+  else
+    return isTopic;//Returns if only topic verified
+  
+  }
+
+  catch(exception) {
+    throw exception 
+    } //End catch
+
+}
+
+function compareSectionText(wPage,wTitle,wContent) {
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function: compareSectionText
+  Description: Comapares the given section topic & contents with the web page contents
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+  
+  //variable declaration
+  var expImage = null;
+  var getTopic = {};
+  var isContent = false;
+  var isTopic = false;
+  var count = 0;
+  var getContent = {};
+
+  try{
+
+  if(wTitle !== undefined){
+
+  getTopic = new VBArray(wPage.EvaluateXPath("//h2[contains(@class,'title sectiontitle')]")).toArray();//Gets all the matching section topic title in the web page
+  
+  if(getTopic.length <= 0)//Checks for matching section topic class length
+    throw { name: "No section title available on this page",
+                description: "Unable to find any section title class from this page",
+                message: "Please check the web page object passed" }; 
+  
+  for(count = 0; count<getTopic.length ; ) {//Loops through available title class
+   
+    if(aqString.Find(getTopic[count].innerText.toUpperCase(),wTitle.toUpperCase()) >= 0){//Checks whether the expected text found
+      isTopic = true;
+      break;
+      } 
+      
+    else
+      count++; 
+    } 
+  } 
+  
+  if(wContent !== undefined) {
+
+  getContent = new VBArray(wPage.EvaluateXPath("//div[@class='section']/p")).toArray();//Gets all the matching topic content in the web page
+  
+  if(getContent.length <= 0)//Checks for matching topic content length
+    throw { name: "No title available on this page",
+                description: "Unable to find any title class from this page",
+                message: "Please check the web page object passed" }; 
+  
+  for(count = 0; count<getContent.length ; ) {//Loops through available title content
+    
+    if(aqString.Find(getContent[count].innerText.toUpperCase(),wContent.toUpperCase()) >= 0){//Checks whether the expected text found
+      isContent = true;
+      break;
+      } 
+      
+    else
+      count++; 
+    }  
+  }
+  
+  if(wTitle !== undefined && wContent !== undefined)
+    return (isTopic && isContent); //Returns if both topic and content verified
+  else
+    return isTopic;//Returns if only topic verified
+  
+  }
+
+  catch(exception) {
+    throw exception 
+    } //End catch
+
+}
+
+function ChangeViewFromStatus (viewMode)  {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Method     : ChangeViewFromStatus
+  Description: Changes the view by clicking the button in the bottom righ corner
+  Input      : Name of the view to be changed
+  Output     : boolean value
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  //variable declaration
+  var instance; //Stores the instance of the window
+
+  try {
+  
+    instance = Sys.Process("Explorer").WaitWindow("CabinetWClass", "*", -1 ,500); //Stores the instance of the window
+    
+    //Checks the existence of the window
+    if(!instance.Exists) {
+      this.sysListView = Sys.FindAllChildren("ProcessName", "Explorer", 1).toArray();
+      for (var count = 0; count < this.sysListView.length; count++) {
+        instance = this.sysListView[count].WaitWindow("CabinetWClass", this.caption, -1 ,500);
+        if(instance.Exists) 
+          break;
+      }
+    }
+
+    //Stores the instance of the button
+    instance = instance.Window("ShellTabWindowClass", "*").Window("DUIViewWndClassName", "", 1).Pane("Explorer Pane").Pane("Folder Layout Pane").StatusBar("Status bar").Grouping("View Modes").RadioButton(viewMode);
+    
+    //Checks the existence of the button
+    if(!instance.Exists)
+      throw { name: "Explorer was not opened",
+              description: "Explorer was not found or it has been terminated",
+              message: "Explorer was not found or it has been terminated" };
+              
+    instance.ClickButton(); //Clicks the specified view button
+    Utility.syncExplorerProcess();
+    
+    return true;
+        
+  } //End try
+
+  catch(exception) {
+    throw exception
+    return false;     
+  } //End catch
+
+} //ChangeViewFromStatus
+
+function GetCurrentUserLogin ()  {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Method     : GetCurrentUserLogin
+  Description: Fetch the name of the current user login to the vault
+  Output     : Name of the user
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  //variable declaration
+  var folderView; //Stores the instance of the cabinet window
+  var userName; //Stores the name of the current user
+
+  try {
+  
+    folderView = Sys.Process("explorer").Window("CabinetWClass", "*", 1).FindChild(["ClassName","WndClass","Visible","Exists"],["CSearchDialogBar","#32770",true,true],10)
+    userName = folderView.Window("Button", "*", 4).WndCaption;
+    
+    return userName;        
+  } //End try
+
+  catch(exception) {
+    throw exception
+    return false;     
+  } //End catch
+
+} //GetCurrentUserLogin
+

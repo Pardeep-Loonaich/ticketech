@@ -1,0 +1,121 @@
+﻿//USEUNIT Utility
+
+/******************************************************************************
+            ---------- Class Definition ----------
+  Name:TicketingPanel
+  
+  Description: 
+  
+  This class has methods and properties to perform the TicketingPanel objects. 
+  Instance of the class can be created by calling the constructor. 
+  To call it from other units used New()method.  
+*****************************************************************************/
+
+function ticketingPanel() { 
+
+/*------------------------------------------------------------------------------- 
+  Method: ticketingPanel() 
+  
+  Description: This method will the Instantiate the TicketingPanel Wrapper Helper
+--------------------------------------------------------------------------------*/   
+  this.lastError = {};
+  
+  this.pnlTicketing =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "PanelTicketing", 2000);
+  this.throwError = false; 
+    
+} //ticketingPanel
+
+ticketingPanel.prototype.Exists = function () {  
+
+/*---------------------------------------------------------------------
+  Method      : Exists()
+  
+  Description : This method checks the existance of the ticketingPanel.  
+  
+  Output: True if Panel Exists
+          False if Panel does not Exists   
+----------------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+
+    return this.pnlTicketing.Exists;  //Return whether ticketingPanel exists or not
+  
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+      
+} //Exists
+
+ticketingPanel.prototype.ClickMonthly = function () {  
+
+/*-----------------------------------------------------------------
+  Method      : ClickMonthly()
+  
+  Description : This method Clicks the Monthly button  
+  
+  Output      : Click on Monthly button if Ticketing Panel Exists
+-----------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at ticketingPanel.ClickMonthly: The Ticketing Panel does not Exist.",
+              message     : this.pnlPunch + " Panel does not Exist." }             
+    
+    this.pnlTicketing.WaitWinFormsObject("ScreenButton", "MONTHLY", 1000).ClickButton();
+    
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+      
+} //ClickMonthly
+
+ticketingPanel.prototype.ClickDaily = function () {  
+
+/*-----------------------------------------------------------------
+  Method      : ClickDaily()
+  
+  Description : This method Clicks the Daily button  
+  
+  Output      : Click on Daily button if Ticketing Panel Exists
+-----------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at ticketingPanel.ClickDaily: The ticketing Panel does not Exist.",
+              message     : this.pnlPunch + " Panel does not Exist." }             
+    
+    this.pnlTicketing.WaitWinFormsObject("ScreenButton", "DAILY", 1000).ClickButton();
+    
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+      
+} //ClickDaily
+
+function New() {
+
+/*------------------------------------------------------------------------------------ 
+  Method: New() 
+  
+  Description:
+  This method is for instantiating ticketingPanel() class from other units of the project. 
+------------------------------------------------------------------------------------*/
+
+  return new ticketingPanel();  
+}
