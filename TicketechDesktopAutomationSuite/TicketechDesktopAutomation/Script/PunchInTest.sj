@@ -10,7 +10,7 @@ function TC_PIN_EMP_002() {
 
   //Variable Declaration 
   //---------------------
-  var home; //Stores the instance of home screen
+  var home; //Stores the instance of home screen...
   var employeeInfo; //Stores the instance of Employee Info Screen
   var expectedErrorMessage = "EMPLOYEE NOT FOUND."; //Stores the expected error message    
   var actualErrorMessage; //Stores the error message to be dispalyed    
@@ -62,7 +62,7 @@ function TC_PIN_EMP_002() {
       home.NavigateToEmployeeInfoScreen();
       if (home.lastError.name !== undefined) throw home.lastError;
       
-      //Initialize object of EmployeeInfoScreen..Pardeep
+      //Initialize object of EmployeeInfoScreen.
       employeeInfo = new EmployeeInfoForm.New();
       
       //Set data in Employee ID field and click Enter button from Navigation panel
