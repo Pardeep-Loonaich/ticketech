@@ -17,7 +17,7 @@ function TC_PIN_EMP_002() {
   
   try {
   
-    //Connecting to testdata file & reading the given data
+    //Connecting to testdata file & reading the given data from file...
     TestDataIdx = 0;
     DataPool.FilePath = Project.Path + "TestData\\";
     DataPool.FileName = "PunchIn.xls";
@@ -62,7 +62,7 @@ function TC_PIN_EMP_002() {
       home.NavigateToEmployeeInfoScreen();
       if (home.lastError.name !== undefined) throw home.lastError;
       
-      //Initialize object of EmployeeInfoScreen..Raj
+      //Initialize object of EmployeeInfoScreen
       employeeInfo = new EmployeeInfoForm.New();
       
       //Set data in Employee ID field and click Enter button from Navigation panel
