@@ -10,7 +10,7 @@ function TC_PIN_EMP_002() {
 
   //Variable Declaration 
   //---------------------
-  var home; //Stores the instance of home screen
+  var home; //Stores the instance of home screen..
   var employeeInfo; //Stores the instance of Employee Info Screen
   var expectedErrorMessage = "EMPLOYEE NOT FOUND."; //Stores the expected error message    
   var actualErrorMessage; //Stores the error message to be dispalyed    
