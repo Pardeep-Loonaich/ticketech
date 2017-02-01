@@ -30,7 +30,7 @@ function mainDialog() {
   
   this.infoScreen = InformationScreen.New();
   this.punchPanel = PunchPanel.New();
-  this.mainoptionsPanel = MainOptionsPanel.New();
+  this.mainOptionsPanel = MainOptionsPanel.New();
   this.optionsPanel = OptionsPanel.New();
   this.mainScreen = MainScreen.New();
   this.ticketingPanel = TicketingPanel.New();
@@ -53,7 +53,7 @@ mainDialog.prototype.Exists = function () {
   
     this.lastError = {};
 
-    return this.dlgMain.Exists;  //Return whether punchPanel exists or not
+    return this.dlgMain.Exists;  //Return whether MainDialog exists or not
   
   } //End try
   
@@ -64,10 +64,10 @@ mainDialog.prototype.Exists = function () {
       
 } //Exists
 
-mainDialog.prototype.NavigateToEmployeeInfoScreen = function () {  
+mainDialog.prototype.NavigateToPunchInScreen = function () {  
 
 /*--------------------------------------------------------------------------
-  Method      : NavigateToEmployeeInfoScreen()
+  Method      : NavigateToPunchInScreen()
   
   Description : This method clicks Punch In button
   
@@ -79,7 +79,7 @@ mainDialog.prototype.NavigateToEmployeeInfoScreen = function () {
     
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
-              description : "Error at mainDialog.NavigateToEmployeeInfoScreen: The Main Dialog does not Exist.",
+              description : "Error at mainDialog.NavigateToPunchInScreen: The Main Dialog does not Exist.",
               message     : this.dlgMain + " The Main Dialog does not Exist." }             
     
     this.punchPanel.ClickPunchIn();
@@ -92,7 +92,37 @@ mainDialog.prototype.NavigateToEmployeeInfoScreen = function () {
     if (this.throwError) throw exception
   } //End catch
       
-} //InputandSubmitForm
+} //NavigateToPunchInScreen
+
+mainDialog.prototype.NavigateToPunchOutScreen = function () {  
+
+/*--------------------------------------------------------------------------
+  Method      : NavigateToPunchOutScreen()
+  
+  Description : This method clicks PunchOut button
+  
+  Output      : Clicks PunchOut button
+--------------------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at mainDialog.NavigateToPunchOutScreen: The Main Dialog does not Exist.",
+              message     : this.dlgMain + " The Main Dialog does not Exist." }             
+    
+    this.punchPanel.ClickPunchOut();
+    Delay(1000);
+        
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+      
+} //NavigateToPunchOutScreen
 
 function New() {
 
@@ -106,10 +136,10 @@ function New() {
   return new mainDialog();  
 }
 
-mainDialog.prototype.Login = function () {  
+mainDialog.prototype.NavigateToUserInfoScreen = function () {  
 
 /*--------------------------------------------------------------------------
-  Method      : Login()
+  Method      : NavigateToUserInfoScreen()
   
   Description : This method clicks LogIn button
   
@@ -121,10 +151,41 @@ mainDialog.prototype.Login = function () {
     
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
-              description : "Error at mainDialog.Login: The Main Dialog does not Exist.",
+              description : "Error at mainDialog.NavigateToUserInfoScreen: The Main Dialog does not Exist.",
               message     : this.dlgMain + " The Main Dialog does not Exist." }             
     
     this.mainOptionsPanel.ClickLogin();
+    Delay(1000);
+        
+  } //End try
+  
+  catch (exception) {
+    TestLog.Message(2);
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+      
+} //NavigateToUserInfoScreen
+
+mainDialog.prototype.NavigateToTimeKeeperMenu = function () {  
+
+/*--------------------------------------------------------------------------
+  Method      : NavigateToTimeKeeperMenu()
+  
+  Description : This method clicks TimeKeeperMenu button
+  
+  Output      : Clicks TimeKeeperMenu button
+--------------------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at mainDialog.NavigateToTimeKeeperMenu: The Main Dialog does not Exist.",
+              message     : this.dlgMain + " The Main Dialog does not Exist." }             
+    
+    this.punchPanel.ClickTimeKeeperMenu();
     Delay(1000);
         
   } //End try
@@ -134,4 +195,4 @@ mainDialog.prototype.Login = function () {
     if (this.throwError) throw exception
   } //End catch
       
-} //InputandSubmitForm
+} //NavigateToTimeKeeperMenu

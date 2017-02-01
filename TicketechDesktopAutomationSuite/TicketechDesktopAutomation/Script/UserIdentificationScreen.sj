@@ -20,7 +20,7 @@ function userIdentificationScreen() {
 ------------------------------------------------------------------------------------*/   
   this.lastError = {};
   
-  this.scrnUserInfo =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "ScreenUserIdentification", 3);
+  this.scrnUserInfo =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "ScreenUserIdentification", 2);
   
   this.throwError = false; 
     
@@ -70,7 +70,7 @@ userIdentificationScreen.prototype.SetUsername = function (username) {
               message     : this.scrnUserInfo + " Screen does not Exist." }             
     
     if (username !== undefined && username !== null)
-      this.scrnUserInfo.FindChild("Caption", "USERNAME", 1000).FindChild("WinFormsControlName","maskedTextBoxInfo",1000).Keys(username);
+      this.scrnUserInfo.FindChild("Caption", "USERNAME",2).FindChild("WinFormsControlName","maskedTextBoxInfo",0).Keys(username);
       
     
   } //End try
@@ -97,11 +97,11 @@ userIdentificationScreen.prototype.SetPassword = function (password) {
     
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
-              description : "Error at userIdentificationScreen.SetUsername: The User Identification screen does not Exist.",
+              description : "Error at userIdentificationScreen.SetPassword: The User Identification screen does not Exist.",
               message     : this.scrnUserInfo + " Screen does not Exist." }             
     
     if (password !== undefined && password !== null)
-      this.scrnUserInfo.FindChild("Caption", "PASSWORD", 1000).FindChild("WinFormsControlName","maskedTextBoxInfo",1000).Keys(password);
+      this.scrnUserInfo.FindChild("Caption", "PASSWORD",2).FindChild("WinFormsControlName","maskedTextBoxInfo",0,true).Keys(password);
       
     
   } //End try

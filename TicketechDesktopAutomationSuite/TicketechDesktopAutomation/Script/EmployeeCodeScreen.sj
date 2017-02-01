@@ -2,36 +2,36 @@
 
 /******************************************************************************
             ---------- Class Definition ----------
-  Name:EmployeeInfoScreen
+  Name:EmployeeCodeScreen
   
   Description: 
   
-  This class has methods and properties to perform the EmployeeInfoScreen objects. 
+  This class has methods and properties to perform the EmployeeCodeScreen objects. 
   Instance of the class can be created by calling the constructor. 
   To call it from other units used New()method.  
 *****************************************************************************/
 
-function employeeInfoScreen() { 
+function employeeCodeScreen() { 
 
 /*------------------------------------------------------------------------------------ 
-  Method: employeeInfoScreen() 
+  Method: employeeCodeScreen() 
   
-  Description: This method will the Instantiate the EmployeeInfoScreen Wrapper Helper
+  Description: This method will the Instantiate the EmployeeCodeScreen Wrapper Helper
 ------------------------------------------------------------------------------------*/   
   this.lastError = {};
   
-  this.scrnEmployeeInfo =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "ScreenEmployeeInfo", 2);
+  this.scrnEmployeeCode =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "ScreenEmployeeCode", 3);
   
   this.throwError = false; 
     
-} //mainScreen
+} //employeeCodeScreen
 
-employeeInfoScreen.prototype.Exists = function () {  
+employeeCodeScreen.prototype.Exists = function () {  
 
 /*---------------------------------------------------------------------
   Method      : Exists()
   
-  Description : This method checks the existance of the employeeInfoScreen.  
+  Description : This method checks the existance of the employeeCodeScreen.  
   
   Output: True if Screen Exists
           False if Screen does not Exists   
@@ -40,7 +40,7 @@ employeeInfoScreen.prototype.Exists = function () {
   
     this.lastError = {};
 
-    return this.scrnEmployeeInfo.Exists;  //Return whether employeeInfoScreen exists or not
+    return this.scrnEmployeeCode.Exists;  //Return whether employeeCodeScreen exists or not
   
   } //End try
   
@@ -51,14 +51,14 @@ employeeInfoScreen.prototype.Exists = function () {
       
 } //Exists
 
-employeeInfoScreen.prototype.SetEmployeeID = function (empID) {  
+employeeCodeScreen.prototype.SetEmployeeCode = function (code) {  
 
 /*-------------------------------------------------------------------------------
-  Method      : SetEmployeeID()
+  Method      : SetEmployeeCode()
   
-  Description : This method enters the Emp ID in the Employee Info screen
+  Description : This method enters the Code in the Employee Code screen
   
-  Output      : Enters the Emp ID in the Employee Info screen 
+  Output      : Enters the Code  in the Employee Code screen 
 -------------------------------------------------------------------------------*/  
   try {
   
@@ -66,11 +66,11 @@ employeeInfoScreen.prototype.SetEmployeeID = function (empID) {
     
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
-              description : "Error at employeeInfoScreen.SetEmployeeID: The Employee Info does not Exist.",
-              message     : this.scrnEmployeeInfo + " Screen does not Exist." }             
+              description : "Error at employeeCodeScreen.SetEmployeeCode: The Employee Code Exist.",
+              message     : this.scrnEmployeeCode + " Screen Exist." }             
     
-    if (empID !== undefined && empID !== null)
-      this.scrnEmployeeInfo.FindChild("WinFormsControlName", "labelTextBox", 1000).Keys(empID);
+    if (code !== undefined && code !== null)
+      this.scrnEmployeeCode.FindChild("Caption","CODE",1).FindChild("WinFormsControlName", "labelTextBox", 1).Keys(code);
     
   } //End try
   
@@ -79,16 +79,16 @@ employeeInfoScreen.prototype.SetEmployeeID = function (empID) {
     if (this.throwError) throw exception
   } //End catch
       
-} //SetEmployeeID
+} //SetEmployeeCode
 
-employeeInfoScreen.prototype.GetErrorMessage = function () {  
+employeeCodeScreen.prototype.GetErrorMessage = function () {  
 
 /*------------------------------------------------------------------------------------
   Method      : GetErrorMessage()
   
-  Description : This method returns the error message displayed in the info screen 
+  Description : This method returns the error message displayed in the code screen 
   
-  Output      : Returns the error message displayed in the emp info screen 
+  Output      : Returns the error message displayed in the emp code screen 
 -------------------------------------------------------------------------------------*/  
   try {
   
@@ -96,10 +96,10 @@ employeeInfoScreen.prototype.GetErrorMessage = function () {
     
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
-              description : "Error at EmployeeInfoScreen.GetErrorMessage: The Info screen does not Exist.",
-              message     : this.scrnInfo + " Info does not Exist." }             
+              description : "Error at EmployeeCodeScreen.GetErrorMessage: The Code screen does not Exist.",
+              message     : this.scrnEmployeeCode + " Code screen does not Exist." }             
     
-    return this.scrnEmployeeInfo.WinFormsObject("screenInformationFooter")
+    return this.scrnEmployeeCode.WinFormsObject("screenInformationFooter")
               .WinFormsObject("labelInformation").WndCaption;
     
   } //End try
@@ -117,8 +117,8 @@ function New() {
   Method: New() 
   
   Description:
-  This method is for instantiating employeeInfoForm() class from other units of the project. 
+  This method is for instantiating employeeCodeForm() class from other units of the project. 
 ------------------------------------------------------------------------------------------*/
 
-  return new employeeInfoScreen();  
+  return new employeeCodeScreen();  
 }

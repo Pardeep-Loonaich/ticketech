@@ -2,7 +2,7 @@
 
 /******************************************************************************
             ---------- Class Definition ----------
-  Name:TicketingPanel
+  Name:TicketingPanel [Monthly,Daily,Replace]
   
   Description: 
   
@@ -20,7 +20,7 @@ function ticketingPanel() {
 --------------------------------------------------------------------------------*/   
   this.lastError = {};
   
-  this.pnlTicketing =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "PanelTicketing", 2000);
+  this.pnlTicketing =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "PanelTicketing", 2);
   this.throwError = false; 
     
 } //ticketingPanel
@@ -59,23 +59,7 @@ ticketingPanel.prototype.ClickMonthly = function () {
   
   Output      : Click on Monthly button if Ticketing Panel Exists
 -----------------------------------------------------------------*/  
-  try {
-  
-    this.lastError = {};
-    
-    if (!this.Exists())
-      throw { name        : "Wrapper Exception",
-              description : "Error at ticketingPanel.ClickMonthly: The Ticketing Panel does not Exist.",
-              message     : this.pnlPunch + " Panel does not Exist." }             
-    
-    this.pnlTicketing.WaitWinFormsObject("ScreenButton", "MONTHLY", 1000).ClickButton();
-    
-  } //End try
-  
-  catch (exception) {
-    for (prop in exception) this.lastError[prop] = exception[prop];
-    if (this.throwError) throw exception
-  } //End catch
+  this.Click("MONTHLY");  
       
 } //ClickMonthly
 
@@ -88,16 +72,33 @@ ticketingPanel.prototype.ClickDaily = function () {
   
   Output      : Click on Daily button if Ticketing Panel Exists
 -----------------------------------------------------------------*/  
-  try {
+  this.Click("DAILY");  
+      
+} //ClickDaily
+
+ticketingPanel.prototype.ClickReplace = function () {  
+
+/*-----------------------------------------------------------------
+  Method      : ClickReplace()
+  
+  Description : This method Clicks the Replace button  
+  
+  Output      : Click on Replace button if Ticketing Panel Exists
+-----------------------------------------------------------------*/                
+    this.Click("REPLACE");     
+} //ClickReplace
+
+ticketingPanel.prototype.Click = function(btnName){
+try {
   
     this.lastError = {};
     
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
-              description : "Error at ticketingPanel.ClickDaily: The ticketing Panel does not Exist.",
-              message     : this.pnlPunch + " Panel does not Exist." }             
+              description : "Error at ticketingPanel.Click"+btnName+": The ticketing Panel does not Exist.",
+              message     : this.pnlTicketing + " Panel does not Exist." }             
     
-    this.pnlTicketing.WaitWinFormsObject("ScreenButton", "DAILY", 1000).ClickButton();
+    this.pnlTicketing.WaitWinFormsObject(["ScreenButton","Visible],[btnName,true], 1000).ClickButton();
     
   } //End try
   
@@ -105,8 +106,7 @@ ticketingPanel.prototype.ClickDaily = function () {
     for (prop in exception) this.lastError[prop] = exception[prop];
     if (this.throwError) throw exception
   } //End catch
-      
-} //ClickDaily
+}
 
 function New() {
 
@@ -114,8 +114,9 @@ function New() {
   Method: New() 
   
   Description:
-  This method is for instantiating punchPanel() class from other units of the project. 
+  This method is for instantiating ticketingPanel() class from other units of the project. 
 ------------------------------------------------------------------------------------*/
 
   return new ticketingPanel();  
 }
+

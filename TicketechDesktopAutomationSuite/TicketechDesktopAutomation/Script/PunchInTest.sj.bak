@@ -1,6 +1,6 @@
-﻿//USEUNIT Utility
+﻿//USEUNIT EmployeeInfoForm
 //USEUNIT MainDialog
-//USEUNIT EmployeeInfoForm
+//USEUNIT Utility
 
 function TC_PIN_EMP_002() {
   
@@ -10,7 +10,7 @@ function TC_PIN_EMP_002() {
 
   //Variable Declaration 
   //---------------------
-  var home; //Stores the instance of home screen...
+  var home; //Stores the instance of home screen
   var employeeInfo; //Stores the instance of Employee Info Screen
   var expectedErrorMessage = "EMPLOYEE NOT FOUND."; //Stores the expected error message    
   var actualErrorMessage; //Stores the error message to be dispalyed    
@@ -62,11 +62,7 @@ function TC_PIN_EMP_002() {
       home.NavigateToEmployeeInfoScreen();
       if (home.lastError.name !== undefined) throw home.lastError;
       
-<<<<<<< HEAD
-      //Initialize object of EmployeeInfoScreen..Raj
-=======
-      //Initialize object of EmployeeInfoScreen
->>>>>>> 636ec38f45147ac2c4c9e2df7f92c7545439ee72
+      //Initialize object of EmployeeInfoScreen 
       employeeInfo = new EmployeeInfoForm.New();
       
       //Set data in Employee ID field and click Enter button from Navigation panel

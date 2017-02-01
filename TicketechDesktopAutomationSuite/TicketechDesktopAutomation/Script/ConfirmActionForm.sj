@@ -1,53 +1,58 @@
 ﻿//USEUNIT Utility
 //USEUNIT InformationScreen
 //USEUNIT NavigationPanel
-//USEUNIT EmployeeInfoScreen
+//USEUNIT BackPanel
+//USEUNIT ConfirmActionScreen
+//USEUNIT YesNoConfirmActionPanel
+
 
 /*************************************************************************
             ---------- Class Definition ----------
-  Name:EmployeeInfoForm
+  Name:ConfirmActionForm
   
   Description: 
   
-  This class has methods and properties to perform the EmployeeInfoForm objects. 
+  This class has methods and properties to perform the ConfirmActionForm objects. 
   Instance of the class can be created by calling the constructor. 
   To call it from other units used New()method.  
 **************************************************************************/
 
-function employeeInfoForm() { 
+function confirmActionForm() { 
 
 /*--------------------------------------------------------------------- 
-  Method: employeeInfoForm() 
+  Method: confirmActionForm() 
   
-  Description: This method will the Instantiate the employeeInfoForm Wrapper
+  Description: This method will the Instantiate the confirmActionForm Wrapper
 ---------------------------------------------------------------------*/   
   this.lastError = {};
   
-  this.dlgEmployeeInfo =  Sys.Process("PosApplication").WaitWinFormsObject("FormEmployeeInfo", 3000); 
+  this.dlgConfirmAction =  Sys.Process("PosApplication").WaitWinFormsObject("FormConfirmAction", 3000); 
   
   this.infoScreen = InformationScreen.New();
-  this.employeeInfoScreen = EmployeeInfoScreen.New();
+  this.confirmActionScreen = ConfirmActionScreen.New();
+  this.yesNoConfirmActionPanel = YesNoConfirmActionPanel.New();
+  this.backPanel = BackPanel.New();
   this.navigationPanel = NavigationPanel.New();
   
   this.throwError = false; 
     
-} //employeeInfoForm
+} //confirmActionForm
 
-employeeInfoForm.prototype.Refresh = function () {  
+confirmActionForm.prototype.Refresh = function () {  
 
 /*-------------------------------------------------------------------------------
   Method      : Refresh()
   
-  Description : This method will the re-instantiate the employeeInfoForm Wrapper   
+  Description : This method will the re-instantiate the confirmActionForm Wrapper   
 --------------------------------------------------------------------------------*/  
   try {
-//    Sys.Refresh();
-//    Delay(1000);
-//    
-    this.dlgEmployeeInfo =  Sys.Process("PosApplication").WaitWinFormsObject("FormEmployeeInfo", 3000); 
+
+    this.dlgConfirmAction =  Sys.Process("PosApplication").WaitWinFormsObject("FormConfirmAction", 3000);
   
     this.infoScreen = InformationScreen.New();
-    this.employeeInfoScreen = EmployeeInfoScreen.New();
+    this.confirmActionScreen = ConfirmActionScreen.New();
+    this.yesNoConfirmActionPanel = YesNoConfirmActionPanel.New();
+    this.backPanel = BackPanel.New();
     this.navigationPanel = NavigationPanel.New();
         
   } //End try
@@ -59,12 +64,12 @@ employeeInfoForm.prototype.Refresh = function () {
       
 } //Refresh
 
-employeeInfoForm.prototype.Exists = function () {  
+confirmActionForm.prototype.Exists = function () {  
 
 /*-----------------------------------------------------------------
   Method      : Exists()
   
-  Description : This method checks the existance of the employeeInfoForm.  
+  Description : This method checks the existance of the confirmActionForm.  
   
   Output: True if dialog Exists
           False if dialog does not Exists   
@@ -73,7 +78,7 @@ employeeInfoForm.prototype.Exists = function () {
   
     this.lastError = {};
 
-    return this.dlgEmployeeInfo.Exists;  //Return whether employeeInfoForm exists or not
+    return this.dlgConfirmAction.Exists;  //Return whether confirmActionForm exists or not
   
   } //End try
   
@@ -84,14 +89,14 @@ employeeInfoForm.prototype.Exists = function () {
       
 } //Exists
 
-employeeInfoForm.prototype.InputAndSubmitForm = function (empID) {  
+confirmActionForm.prototype.ConfirmYes = function () {  
 
 /*--------------------------------------------------------------------------
-  Method      : InputAndSubmitForm()
+  Method      : ConfirmYes()
   
-  Description : This method enters Employee ID  
+  Description : This method Clicks Yes button  
   
-  Output      : Enters Emp ID if Employee Info Form Exists
+  Output      : Clicks Yes button if ConfirmActionForm Exists
 --------------------------------------------------------------------------*/  
   try {
   
@@ -99,13 +104,10 @@ employeeInfoForm.prototype.InputAndSubmitForm = function (empID) {
     
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
-              description : "Error at formEmployeeInfo.SetEmployeeID: The Employee Info Form does not Exist.",
-              message     : this.dlgEmployeeInfo + " The Employee Info Form does not Exist." }             
+              description : "Error at confirmActionForm.ConfirmYes: The ConfirmActionForm does not Exist.",
+              message     : this.dlgConfirmAction + " The ConfirmActionForm does not Exist." }             
     
-    this.employeeInfoScreen.SetEmployeeID(empID);
-    Delay(1000);
-    
-    this.navigationPanel.ClickEnter();
+    this.confirmActionScreen.ClickYes();
     Delay(1000);
     
   } //End try
@@ -115,26 +117,28 @@ employeeInfoForm.prototype.InputAndSubmitForm = function (empID) {
     if (this.throwError) throw exception
   } //End catch
       
-} //InputandSubmitForm
+} //ConfirmYes
 
-employeeInfoForm.prototype.InputAndSubmitFormWithErrors = function (empID) {  
+confirmActionForm.prototype.ConfirmNo = function () {  
 
 /*--------------------------------------------------------------------------
-  Method      : InputAndSubmitFormWithErrors()
+  Method      : ConfirmNo()
   
-  Description : This method enters Employee ID and click enter button
+  Description : This method Clicks No button  
   
-  Output      : Enters Emp ID if Employee Info Form and click enter button
+  Output      : Clicks No button if ConfirmActionForm Exists
 --------------------------------------------------------------------------*/  
   try {
   
-    this.InputandSubmitForm(empID);
-    Delay(1000);
+    this.lastError = {};
     
-    this.Refresh();
-    Delay(1000);
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at confirmActionForm.ConfirmYes: The ConfirmActionForm does not Exist.",
+              message     : this.dlgConfirmAction + " The ConfirmActionForm does not Exist." }             
     
-    return this.employeeInfoScreen.GetErrorMessage();
+    this.confirmActionScreen.ClickNo();
+    Delay(1000);
     
   } //End try
   
@@ -143,7 +147,7 @@ employeeInfoForm.prototype.InputAndSubmitFormWithErrors = function (empID) {
     if (this.throwError) throw exception
   } //End catch
       
-} //InputAndSubmitFormWithErrors
+} //ConfirmNo
 
 function New() {
 
@@ -151,8 +155,8 @@ function New() {
   Method: New() 
   
   Description:
-  This method is for instantiating employeeInfoForm() class from other units of the project. 
+  This method is for instantiating confirmActionForm() class from other units of the project. 
 ------------------------------------------------------------------------------------*/
 
-  return new employeeInfoForm();  
+  return new confirmActionForm();  
 }

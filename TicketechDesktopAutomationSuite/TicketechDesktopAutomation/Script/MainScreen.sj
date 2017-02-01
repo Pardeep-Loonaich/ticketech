@@ -2,7 +2,7 @@
 
 /******************************************************************************
             ---------- Class Definition ----------
-  Name:TicketingPanel
+  Name:MainScreen
   
   Description: 
   
@@ -20,7 +20,7 @@ function mainScreen() {
 --------------------------------------------------------------------------------*/   
   this.lastError = {};
   
-  this.scrnMain =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "ScreenMain", 2000);
+  this.scrnMain =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "ScreenMain", 2);
   this.throwError = false; 
     
 } //mainScreen
@@ -59,23 +59,7 @@ mainScreen.prototype.GetDate = function () {
   
   Output      : Returns the current date labelled in the main screen 
 -------------------------------------------------------------------------------*/  
-  try {
-  
-    this.lastError = {};
-    
-    if (!this.Exists())
-      throw { name        : "Wrapper Exception",
-              description : "Error at scrnMain.GetDate: The Main screen does not Exist.",
-              message     : this.scrnMain + " Screen does not Exist." }             
-    
-    return this.scrnMain.WaitWinFormsObject("WinFormsControlName", "labelDate", 1000).WndCaption;
-    
-  } //End try
-  
-  catch (exception) {
-    for (prop in exception) this.lastError[prop] = exception[prop];
-    if (this.throwError) throw exception
-  } //End catch
+  this.GetText("labelDate");
       
 } //GetDate
 
@@ -88,16 +72,29 @@ mainScreen.prototype.GetTime = function () {
   
   Output      : Returns the current GetTime labelled in the main screen 
 -------------------------------------------------------------------------------*/  
+  this.GetText("labelTime");
+      
+} //GetTime
+
+mainScreen.prototype.GetText = function (objControlName) {  
+
+/*-------------------------------------------------------------------------------
+  Method      : GetText()
+  
+  Description : This method returns the label of the given objControlName in the main screen 
+  
+  Output      : Returns the label of the given object in the main screen 
+-------------------------------------------------------------------------------*/  
   try {
   
     this.lastError = {};
     
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
-              description : "Error at mainScreen.GetTime: The Main screen does not Exist.",
+              description : "Error at mainScreen.Get"+objControlName+": The Main screen does not Exist.",
               message     : this.scrnMain + " Screen does not Exist." }             
     
-    return this.scrnMain.WaitWinFormsObject("WinFormsControlName", "labelTime", 1000).WndCaption;
+    return this.scrnMain.WaitWinFormsObject("WinFormsControlName", objControlName, 1000).WndCaption;
     
   } //End try
   
@@ -106,7 +103,7 @@ mainScreen.prototype.GetTime = function () {
     if (this.throwError) throw exception
   } //End catch
       
-} //GetTime
+} //GetText
 
 function New() {
 

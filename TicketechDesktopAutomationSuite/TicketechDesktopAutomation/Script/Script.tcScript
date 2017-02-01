@@ -58,6 +58,30 @@
 		<child name="UserIdentificationScreen" key="{A9221999-0EF4-4B3C-BE45-D7A7A90BCC2D}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
 			<data path="UserIdentificationScreen.sj" />
 		</child>
+		<child name="TimeKeeperMenuTest" key="{A1E72068-8D11-4E59-A77C-4258C2A945D3}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="TimeKeeperMenuTest.sj" />
+		</child>
+		<child name="BackPanel" key="{9B3F96D0-5403-4870-B19A-AA2FFACA2594}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="BackPanel.sj" />
+		</child>
+		<child name="ConfirmActionForm" key="{273DF2D9-37A5-4C1D-8A8C-45A1EFB687B8}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="ConfirmActionForm.sj" />
+		</child>
+		<child name="ConfirmActionScreen" key="{F62BC2A6-B160-49C1-8888-CED8FE1E8C1B}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="ConfirmActionScreen.sj" />
+		</child>
+		<child name="EmployeeCodeForm" key="{C19A750F-0B89-4A19-A22F-5F1591C84F24}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="EmployeeCodeForm.sj" />
+		</child>
+		<child name="EmployeeCodeScreen" key="{EA73A69B-C9F4-4AF4-A13A-A178F9657ECE}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="EmployeeCodeScreen.sj" />
+		</child>
+		<child name="EmployeePunchForm" key="{564847FF-E9E7-4835-8546-4DB2129D4154}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="EmployeePunchForm.sj" />
+		</child>
+		<child name="YesNoConfirmActionPanel" key="{5D210D45-B567-4E30-9D57-A56FF1B2749B}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="YesNoConfirmActionPanel.sj" />
+		</child>
 	</children>
 	<folders>
 		<folder caption="Tests" description="A logical folder that is used to organize project items and elements." moniker="">
@@ -65,6 +89,7 @@
 				<ref key="{C14968EE-A84F-47C0-85E6-9E40BCC2C4F9}" />
 				<ref key="{10C371CB-248E-4F9A-A5FA-08657276C70E}" />
 				<ref key="{250C68BE-523E-45BF-B762-A76F546EF2F6}" />
+				<ref key="{A1E72068-8D11-4E59-A77C-4258C2A945D3}" />
 			</references>
 		</folder>
 		<folder caption="Wrappers" description="A logical folder that is used to organize project items and elements." moniker="">
@@ -81,6 +106,10 @@
 						<ref key="{3534F8FC-D09E-4B16-AF9A-82E3604A9383}" />
 						<ref key="{AB6DA8BB-2939-4D3F-81FE-81B8BAE0F0EB}" />
 						<ref key="{A9221999-0EF4-4B3C-BE45-D7A7A90BCC2D}" />
+						<ref key="{9B3F96D0-5403-4870-B19A-AA2FFACA2594}" />
+						<ref key="{F62BC2A6-B160-49C1-8888-CED8FE1E8C1B}" />
+						<ref key="{EA73A69B-C9F4-4AF4-A13A-A178F9657ECE}" />
+						<ref key="{5D210D45-B567-4E30-9D57-A56FF1B2749B}" />
 					</references>
 				</folder>
 			</folders>
@@ -88,6 +117,9 @@
 				<ref key="{71CA7E3D-13AA-4DE7-8EAC-99B316E09792}" />
 				<ref key="{EC8D3AFF-A3DA-471E-BF2E-E3FB176AC32D}" />
 				<ref key="{B17996EA-3B99-4942-A9BC-6346C0670764}" />
+				<ref key="{273DF2D9-37A5-4C1D-8A8C-45A1EFB687B8}" />
+				<ref key="{C19A750F-0B89-4A19-A22F-5F1591C84F24}" />
+				<ref key="{564847FF-E9E7-4835-8546-4DB2129D4154}" />
 			</references>
 		</folder>
 		<folder caption="GenericUtils" description="A logical folder that is used to organize project items and elements." moniker="">

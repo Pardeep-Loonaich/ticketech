@@ -89,10 +89,10 @@ userInfoForm.prototype.Exists = function () {
       
 } //Exists
 
-userInfoForm.prototype.InputandSubmitForm = function (username,password) {  
+userInfoForm.prototype.InputAndSubmitForm = function (username,password) {  
 
 /*--------------------------------------------------------------------------
-  Method      : InputandSubmitForm()
+  Method      : InputAndSubmitForm()
   
   Description : This method enters Username and Password 
   
@@ -104,16 +104,18 @@ userInfoForm.prototype.InputandSubmitForm = function (username,password) {
     
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
-              description : "Error at userInfoForm.InputandSubmitForm: The User Info Form does not Exist.",
-              message     : this.userInfoForm + " The User Info Form does not Exist." }             
+              description : "Error at userInfoForm.InputAndSubmitForm: The User Info Form does not Exist.",
+              message     : this.dlgUserInfo + " The User Info Form does not Exist." }             
     
-    this.userIdentificationScreen.SetUsername(username);
+    this.userInfoScreen.SetUsername(username);
     Delay(1000);
     
     this.navigationPanel.ClickEnter();
     Delay(1000);
     
-    this.userIdentificationScreen.SetPassword(password);
+    this.Refresh();
+    
+    this.userInfoScreen.SetPassword(password);
     Delay(1000);
     
     this.navigationPanel.ClickEnter();
@@ -128,10 +130,10 @@ userInfoForm.prototype.InputandSubmitForm = function (username,password) {
       
 } //InputandSubmitForm
 
-userInfoForm.prototype.InputandSubmitFormWithErrors = function (username,password) {  
+userInfoForm.prototype.InputAndSubmitFormWithErrors = function (username,password) {  
 
 /*--------------------------------------------------------------------------
-  Method      : InputandSubmitFormWithErrors()
+  Method      : InputAndSubmitFormWithErrors()
     
   Description : This method enters Username and Password 
   
@@ -139,7 +141,7 @@ userInfoForm.prototype.InputandSubmitFormWithErrors = function (username,passwor
 --------------------------------------------------------------------------*/  
   try {
   
-    this.InputandSubmitForm(username,password);
+    this.InputAndSubmitForm(username,password);
     Delay(1000);
     
     this.Refresh();

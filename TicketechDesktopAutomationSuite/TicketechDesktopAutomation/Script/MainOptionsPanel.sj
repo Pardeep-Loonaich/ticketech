@@ -1,4 +1,5 @@
 ﻿//USEUNIT Utility
+//USEUNIT UserInfoForm
 
 /*******************************************************************
             ---------- Class Definition ----------
@@ -21,7 +22,7 @@ function mainOptionsPanel() {
 --------------------------------------------------------------------------------------*/   
   this.lastError = {};
   
-  this.pnlMainOptions =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "PanelMainOptions", 2000);
+  this.pnlMainOptions =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "PanelMainOptions", 2);
   this.throwError = false; 
     
 } //mainOptionsPanel
@@ -60,23 +61,7 @@ mainOptionsPanel.prototype.ClickAboutTicketech = function () {
   
   Output      : Click on AboutTicketech button if main Options Panel Exists
 --------------------------------------------------------------------------*/  
-  try {
-  
-    this.lastError = {};
-    
-    if (!this.Exists())
-      throw { name        : "Wrapper Exception",
-              description : "Error at PunchPanel.ClickAboutTicketech: The Punch Panel does not Exist.",
-              message     : this.pnlPunch + " Panel does not Exist." }             
-    
-    this.pnlMainOptions.WaitWinFormsObject(["Value", "Visible"], ["ABOUT TICKETECH", true], 1000).ClickButton();
-    
-  } //End try
-  
-  catch (exception) {
-    for (prop in exception) this.lastError[prop] = exception[prop];
-    if (this.throwError) throw exception
-  } //End catch
+  this.Click("ABOUT TICKETECH");
       
 } //ClickAboutTicketech
 
@@ -89,17 +74,42 @@ mainOptionsPanel.prototype.ClickLogin = function () {
   
   Output      : Click on Login button if main Options Panel Exists
 --------------------------------------------------------------------------*/  
+  this.Click("USER LOGIN");
+      
+} //ClickLogin
+
+mainOptionsPanel.prototype.ClickLogout = function () {  
+
+/*--------------------------------------------------------------------------
+  Method      : ClickLogout()
+  
+  Description : This method Clicks the Logout button  
+  
+  Output      : Click on Logout button if main Options Panel Exists
+--------------------------------------------------------------------------*/  
+  this.Click("USER LOGIN");
+      
+} //ClickLogout
+
+mainOptionsPanel.prototype.Click = function (btnName) {  
+
+/*--------------------------------------------------------------------------
+  Method      : Click()
+  
+  Description : This method Clicks the given button in the parameter
+  
+  Output      : Click on given button if main Options Panel Exists
+--------------------------------------------------------------------------*/  
   try {
   
     this.lastError = {};
     
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
-              description : "Error at PunchPanel.ClickLogin: The Punch Panel does not Exist.",
+              description : "Error at PunchPanel.Click"+index+": The Punch Panel does not Exist.",
               message     : this.pnlPunch + " Panel does not Exist." }             
     
-    this.pnlMainOptions.WaitWinFormsObject(["Value", "Visible"], ["USER LOGIN", true], 1000).ClickButton();
-    
+    this.pnlMainOptions.FindChild("Value", btnName, 2).ClickButton();
   } //End try
   
   catch (exception) {
@@ -107,7 +117,7 @@ mainOptionsPanel.prototype.ClickLogin = function () {
     if (this.throwError) throw exception
   } //End catch
       
-} //ClickLogin
+} //Click
 
 function New() {
 

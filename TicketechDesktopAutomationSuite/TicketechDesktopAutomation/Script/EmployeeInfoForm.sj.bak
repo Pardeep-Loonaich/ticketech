@@ -5,7 +5,7 @@
 
 /*************************************************************************
             ---------- Class Definition ----------
-  Name:MainDialog
+  Name:EmployeeInfoForm
   
   Description: 
   
@@ -41,9 +41,9 @@ employeeInfoForm.prototype.Refresh = function () {
   Description : This method will the re-instantiate the employeeInfoForm Wrapper   
 --------------------------------------------------------------------------------*/  
   try {
-    Sys.Refresh();
-    Delay(1000);
-    
+//    Sys.Refresh();
+//    Delay(1000);
+//    
     this.dlgEmployeeInfo =  Sys.Process("PosApplication").WaitWinFormsObject("FormEmployeeInfo", 3000); 
   
     this.infoScreen = InformationScreen.New();
@@ -84,10 +84,10 @@ employeeInfoForm.prototype.Exists = function () {
       
 } //Exists
 
-employeeInfoForm.prototype.InputandSubmitForm = function (empID) {  
+employeeInfoForm.prototype.InputAndSubmitForm = function (empID) {  
 
 /*--------------------------------------------------------------------------
-  Method      : SetEmployeeID()
+  Method      : InputAndSubmitForm()
   
   Description : This method enters Employee ID  
   
@@ -100,7 +100,7 @@ employeeInfoForm.prototype.InputandSubmitForm = function (empID) {
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
               description : "Error at formEmployeeInfo.SetEmployeeID: The Employee Info Form does not Exist.",
-              message     : this.formEmployeeInfo + " The Employee Info Form does not Exist." }             
+              message     : this.dlgEmployeeInfo + " The Employee Info Form does not Exist." }             
     
     this.employeeInfoScreen.SetEmployeeID(empID);
     Delay(1000);
@@ -117,10 +117,10 @@ employeeInfoForm.prototype.InputandSubmitForm = function (empID) {
       
 } //InputandSubmitForm
 
-employeeInfoForm.prototype.InputandSubmitFormWithErrors = function (empID) {  
+employeeInfoForm.prototype.InputAndSubmitFormWithErrors = function (empID) {  
 
 /*--------------------------------------------------------------------------
-  Method      : InputandSubmitFormWithErrors()
+  Method      : InputAndSubmitFormWithErrors()
   
   Description : This method enters Employee ID and click enter button
   

@@ -20,7 +20,7 @@ function informationScreen() {
 -----------------------------------------------------------------------------------*/   
   this.lastError = {};
   
-  this.scrnInfo =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "ScreenInformation", 2000);
+  this.scrnInfo =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "ScreenInformation", 2);
   this.throwError = false; 
     
 } //informationScreen
@@ -49,6 +49,77 @@ informationScreen.prototype.Exists = function () {
   } //End catch
       
 } //Exists
+
+informationScreen.prototype.GetDBVersion = function () {  
+
+/*-------------------------------------------------------------------------------
+  Method      : GetDBVersion()
+  
+  Description : This method returns the Current Version of the Connected DB 
+  
+  Output      : Returns the Current Version of the Connected DB 
+-------------------------------------------------------------------------------*/  
+  var DBVersionControlName = "labelVersion";
+  this.GetText(DBVersionControlName);
+      
+} //GetDBVersion
+
+informationScreen.prototype.GetUserTitle = function () {  
+
+/*-------------------------------------------------------------------------------
+  Method      : GetUserTitle()
+  
+  Description : This method returns the Current User's Title 
+  
+  Output      : Returns the Current User's Title 
+-------------------------------------------------------------------------------*/  
+  var UserTitleControlName = "labelUser";
+  this.GetText(UserTitleControlName);
+      
+} //GetUserTitle
+
+informationScreen.prototype.GetUserRole = function () {  
+
+/*-------------------------------------------------------------------------------
+  Method      : GetUserRole()
+  
+  Description : This method returns the Current User's Role 
+  
+  Output      : Returns the Current User's Role 
+-------------------------------------------------------------------------------*/  
+  var UserRoleControlName = "labelRole";
+  this.GetText(UserRoleControlName);
+      
+} //GetUserRole
+
+informationScreen.prototype.GetText = function (objControlName) {  
+
+/*-------------------------------------------------------------------------------
+  Method      : GetText()
+  
+  Description : This method returns the label of the given objControlName in the information Screen 
+  
+  Output      : Returns the label of the given object in the information Screen 
+-------------------------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at informationScreen.Get"+objControlName+": The Main screen does not Exist.",
+              message     : this.scrnInfo + " Screen does not Exist." }             
+    
+    return this.scrnMain.WaitWinFormsObject("WinFormsControlName", objControlName, 1000).WndCaption;
+    
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+      
+} //GetText
 
 function New() {
 

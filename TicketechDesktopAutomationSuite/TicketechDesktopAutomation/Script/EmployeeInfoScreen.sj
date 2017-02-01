@@ -20,7 +20,7 @@ function employeeInfoScreen() {
 ------------------------------------------------------------------------------------*/   
   this.lastError = {};
   
-  this.scrnEmployeeInfo =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "ScreenEmployeeInfo", 3);
+  this.scrnEmployeeInfo =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "ScreenEmployeeInfo", 2);
   
   this.throwError = false; 
     
@@ -70,7 +70,7 @@ employeeInfoScreen.prototype.SetEmployeeID = function (empID) {
               message     : this.scrnEmployeeInfo + " Screen does not Exist." }             
     
     if (empID !== undefined && empID !== null)
-      this.scrnEmployeeInfo.FindChild("WinFormsControlName", "labelTextBox", 1000).Keys(empID);
+      this.scrnEmployeeInfo.FindChild("WinFormsControlName", "labelTextBox", 2).Keys(empID);
     
   } //End try
   

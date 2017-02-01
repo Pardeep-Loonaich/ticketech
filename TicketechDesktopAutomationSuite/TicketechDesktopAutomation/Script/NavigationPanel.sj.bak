@@ -21,7 +21,7 @@ function navigationPanel() {
 --------------------------------------------------------------------------------------*/   
   this.lastError = {};
   
-  this.pnlNavigation =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "PanelNavigation", 2000);
+  this.pnlNavigation =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "PanelNavigation", 2);
   this.throwError = false; 
     
 } //numericPanel
@@ -60,24 +60,7 @@ navigationPanel.prototype.ClickEnter = function () {
   
   Output      : Click on Enter button if Navigation Panel Exists
 --------------------------------------------------------------------------*/  
-  try {
-  
-    this.lastError = {};
-    
-    if (!this.Exists())
-      throw { name        : "Wrapper Exception",
-              description : "Error at navigationPanel.ClickEnter: The Navigation Panel does not Exist.",
-              message     : this.pnlNavigation + " Panel does not Exist." }             
-    
-    this.pnlNavigation.FindChild(["Value", "Visible"], ["Enter", true], 1000).ClickButton();
-    
-  } //End try
-  
-  catch (exception) {
-    for (prop in exception) this.lastError[prop] = exception[prop];
-    if (this.throwError) throw exception
-  } //End catch
-      
+  this.Click("ENTER")
 } //ClickEnter
 
 navigationPanel.prototype.ClickCancel = function () {  
@@ -88,35 +71,18 @@ navigationPanel.prototype.ClickCancel = function () {
   Description : This method Clicks the Cancel button  
   
   Output      : Click on Cancel button if Navigation Panel Exists
---------------------------------------------------------------------------*/  
-  try {
-  
-    this.lastError = {};
-    
-    if (!this.Exists())
-      throw { name        : "Wrapper Exception",
-              description : "Error at navigationPanel.ClickCancel: The Navigation Panel does not Exist.",
-              message     : this.pnlNavigation + " Panel does not Exist." }             
-    
-    this.pnlNavigation.WaitWinFormsObject(["Value", "Visible"], ["Cancel", true], 1000).ClickButton();
-    
-  } //End try
-  
-  catch (exception) {
-    for (prop in exception) this.lastError[prop] = exception[prop];
-    if (this.throwError) throw exception
-  } //End catch
-      
+--------------------------------------------------------------------------*/ 
+  this.Click("CANCEL")
 } //ClickCancel
 
-navigationPanel.prototype.ClickLogin = function () {  
+navigationPanel.prototype.Click = function (btnName) {  
 
 /*--------------------------------------------------------------------------
-  Method      : ClickLogin()
+  Method      : Click()
   
-  Description : This method Clicks the Login button  
+  Description : This method Clicks the given button  
   
-  Output      : Click on Login button if main Options Panel Exists
+  Output      : Click on the given button if Navigation Panel Exists
 --------------------------------------------------------------------------*/  
   try {
   
@@ -124,10 +90,10 @@ navigationPanel.prototype.ClickLogin = function () {
     
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
-              description : "Error at PunchPanel.ClickLogin: The Punch Panel does not Exist.",
-              message     : this.pnlPunch + " Panel does not Exist." }             
+              description : "Error at navigationPanel.Click"+btnName+": The Navigation Panel does not Exist.",
+              message     : this.pnlNavigation + " Panel does not Exist." }             
     
-    this.pnlMainOptions.WaitWinFormsObject(["Value", "Visible"], ["USER LOGIN", true], 1000).ClickButton();
+    this.pnlNavigation.WaitWinFormsObject(["Value", "Visible"], [btnName, true], 2).ClickButton();
     
   } //End try
   
@@ -136,7 +102,7 @@ navigationPanel.prototype.ClickLogin = function () {
     if (this.throwError) throw exception
   } //End catch
       
-} //ClickLogin
+} //Click
 
 function New() {
 

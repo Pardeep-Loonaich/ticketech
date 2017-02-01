@@ -20,7 +20,7 @@ function punchPanel() {
 ---------------------------------------------------------------------------*/   
   this.lastError = {};
   
-  this.pnlPunch =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "PanelPunch", 2000);
+  this.pnlPunch =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "PanelPunch", 2);
   this.throwError = false; 
     
 } //punchPanel
@@ -59,24 +59,7 @@ punchPanel.prototype.ClickPunchIn = function () {
   
   Output      : Click on PunchIn button if Punch Panel Exists
 -----------------------------------------------------------------*/  
-  try {
-  
-    this.lastError = {};
-    
-    if (!this.Exists())
-      throw { name        : "Wrapper Exception",
-              description : "Error at PunchPanel.ClickPunchIn: The Punch Panel does not Exist.",
-              message     : this.pnlPunch + " Panel does not Exist." }             
-    
-    this.pnlPunch.WaitWinFormsObject("ScreenButton", "PUNCH IN", 1000).ClickButton();
-    
-  } //End try
-  
-  catch (exception) {
-    for (prop in exception) this.lastError[prop] = exception[prop];
-    if (this.throwError) throw exception
-  } //End catch
-      
+this.Click("PUNCH IN");      
 } //ClickPunchIn
 
 punchPanel.prototype.ClickPunchOut = function () {  
@@ -88,16 +71,40 @@ punchPanel.prototype.ClickPunchOut = function () {
   
   Output      : Click on PunchOut button if Punch Panel Exists
 -----------------------------------------------------------------*/  
+ this.Click("PUNCH OUT");      
+} //ClickPunchOut
+
+punchPanel.prototype.ClickTimeKeeperMenu = function () {  
+
+/*-----------------------------------------------------------------
+  Method      : ClickTimeKeeperMenu()
+  
+  Description : This method Clicks the TimeKeeper Menu button  
+  
+  Output      : Click on TimeKeeper Menu button if Punch Panel Exists
+-----------------------------------------------------------------*/  
+ this.Click("TIMEKEEPER MENU");
+}//ClickTimeKeeperMenu
+
+punchPanel.prototype.Click = function (btnName) {  
+
+/*-----------------------------------------------------------------
+  Method      : Click(btnName)
+  
+  Description : This method Clicks the required button given as the parameter  
+  
+  Output      : Click on the required button if Punch Panel Exists
+-----------------------------------------------------------------*/  
   try {
   
     this.lastError = {};
     
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
-              description : "Error at PunchPanel.ClickPunchOut: The Punch Panel does not Exist.",
+              description : "Error at PunchPanel.Click"+btnName+": The Punch Panel does not Exist.",
               message     : this.pnlPunch + " Panel does not Exist." }             
     
-    this.pnlPunch.WaitWinFormsObject("ScreenButton", "PUNCH OUT", 1000).ClickButton();
+    this.pnlPunch.FindChild(["WndCaption","Visible"], [btnName,true],2).ClickButton();
     
   } //End try
   
@@ -106,7 +113,7 @@ punchPanel.prototype.ClickPunchOut = function () {
     if (this.throwError) throw exception
   } //End catch
       
-} //ClickPunchOut
+} //Click
 
 function New() {
 

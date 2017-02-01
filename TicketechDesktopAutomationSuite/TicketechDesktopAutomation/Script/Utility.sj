@@ -75,7 +75,7 @@ function closePOSProcess() {
   
   Indicator.PushText("Closing all explorer windows....");
   
-  winPOSApp = Sys.FindAllChildren("ProcessName","PosApplication").toArray(); 
+  winPOSApp = Sys.FindAllChildren("ProcessName","PosApplication*").toArray(); 
   
   for(counter = 0; counter < winPOSApp.length; counter++) {
   if(winPOSApp[counter].Exists) //Verify if the Explorer Window exists

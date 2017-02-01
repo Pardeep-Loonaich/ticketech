@@ -1,6 +1,6 @@
-﻿//USEUNIT Utility
+﻿//USEUNIT EmployeeInfoForm
 //USEUNIT MainDialog
-//USEUNIT EmployeeInfoForm
+//USEUNIT Utility
 
 function TC_PIN_EMP_002() {
   
@@ -8,16 +8,16 @@ function TC_PIN_EMP_002() {
   TC_PIN_EMP_002 : Validating Employee PunchIn Time by providing invalid emp ID
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~---~~~~~~*/
 
-  //Variable Declaration
+  //Variable Declaration 
   //---------------------
-  var home; //Stores the instance of home screen...
+  var home; //Stores the instance of home screen
   var employeeInfo; //Stores the instance of Employee Info Screen
   var expectedErrorMessage = "EMPLOYEE NOT FOUND."; //Stores the expected error message    
   var actualErrorMessage; //Stores the error message to be dispalyed    
   
   try {
   
-    //Connecting to testdata file & reading the given data from file...
+    //Connecting to testdata file & reading the given data
     TestDataIdx = 0;
     DataPool.FilePath = Project.Path + "TestData\\";
     DataPool.FileName = "PunchIn.xls";
@@ -62,11 +62,11 @@ function TC_PIN_EMP_002() {
       home.NavigateToEmployeeInfoScreen();
       if (home.lastError.name !== undefined) throw home.lastError;
       
-      //Initialize object of EmployeeInfoScreen
+      //Initialize object of EmployeeInfoScreen 
       employeeInfo = new EmployeeInfoForm.New();
       
       //Set data in Employee ID field and click Enter button from Navigation panel
-      actualErrorMessage = employeeInfo.InputandSubmitFormWithErrors(objTestData.EmployeeID);
+      actualErrorMessage = employeeInfo.InputAndSubmitFormWithErrors(objTestData.EmployeeID);
       if (employeeInfo.lastError.name !== undefined) throw employeeInfo.lastError;
       
       TestLog.Message("Step-2: Navigated to Employee Info screen and submitted invalid emp id.");

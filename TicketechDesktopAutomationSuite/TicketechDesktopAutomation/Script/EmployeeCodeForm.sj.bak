@@ -1,53 +1,53 @@
 ﻿//USEUNIT Utility
 //USEUNIT InformationScreen
 //USEUNIT NavigationPanel
-//USEUNIT EmployeeInfoScreen
+//USEUNIT EmployeeCodeScreen
 
 /*************************************************************************
             ---------- Class Definition ----------
-  Name:EmployeeInfoForm
+  Name:EmployeeCodeForm
   
   Description: 
   
-  This class has methods and properties to perform the EmployeeInfoForm objects. 
+  This class has methods and properties to perform the EmployeeCodeForm objects. 
   Instance of the class can be created by calling the constructor. 
   To call it from other units used New()method.  
 **************************************************************************/
 
-function employeeInfoForm() { 
+function employeeCodeForm() { 
 
 /*--------------------------------------------------------------------- 
-  Method: employeeInfoForm() 
+  Method: employeeCodeForm() 
   
-  Description: This method will the Instantiate the employeeInfoForm Wrapper
+  Description: This method will the Instantiate the employeeCodeForm Wrapper
 ---------------------------------------------------------------------*/   
   this.lastError = {};
   
-  this.dlgEmployeeInfo =  Sys.Process("PosApplication").WaitWinFormsObject("FormEmployeeInfo", 3000); 
+  this.dlgEmployeeCode =  Sys.Process("PosApplication").WaitWinFormsObject("FormEmployeeCode", 3000); 
   
-  this.infoScreen = InformationScreen.New();
-  this.employeeInfoScreen = EmployeeInfoScreen.New();
+  this.codeScreen = InformationScreen.New();
+  this.employeeCodeScreen = EmployeeCodeScreen.New();
   this.navigationPanel = NavigationPanel.New();
   
   this.throwError = false; 
     
-} //employeeInfoForm
+} //employeeCodeForm
 
-employeeInfoForm.prototype.Refresh = function () {  
+employeeCodeForm.prototype.Refresh = function () {  
 
 /*-------------------------------------------------------------------------------
   Method      : Refresh()
   
-  Description : This method will the re-instantiate the employeeInfoForm Wrapper   
+  Description : This method will the re-instantiate the employeeCodeForm Wrapper   
 --------------------------------------------------------------------------------*/  
   try {
 //    Sys.Refresh();
 //    Delay(1000);
 //    
-    this.dlgEmployeeInfo =  Sys.Process("PosApplication").WaitWinFormsObject("FormEmployeeInfo", 3000); 
+    this.dlgEmployeeCode =  Sys.Process("PosApplication").WaitWinFormsObject("FormEmployeeCode", 3000); 
   
-    this.infoScreen = InformationScreen.New();
-    this.employeeInfoScreen = EmployeeInfoScreen.New();
+    this.codeScreen = InformationScreen.New();
+    this.employeeCodeScreen = EmployeeCodeScreen.New();
     this.navigationPanel = NavigationPanel.New();
         
   } //End try
@@ -59,12 +59,12 @@ employeeInfoForm.prototype.Refresh = function () {
       
 } //Refresh
 
-employeeInfoForm.prototype.Exists = function () {  
+employeeCodeForm.prototype.Exists = function () {  
 
 /*-----------------------------------------------------------------
   Method      : Exists()
   
-  Description : This method checks the existance of the employeeInfoForm.  
+  Description : This method checks the existance of the employeeCodeForm.  
   
   Output: True if dialog Exists
           False if dialog does not Exists   
@@ -73,7 +73,7 @@ employeeInfoForm.prototype.Exists = function () {
   
     this.lastError = {};
 
-    return this.dlgEmployeeInfo.Exists;  //Return whether employeeInfoForm exists or not
+    return this.dlgEmployeeCode.Exists;  //Return whether employeeCodeForm exists or not
   
   } //End try
   
@@ -84,14 +84,14 @@ employeeInfoForm.prototype.Exists = function () {
       
 } //Exists
 
-employeeInfoForm.prototype.InputAndSubmitForm = function (empID) {  
+employeeCodeForm.prototype.InputAndSubmitForm = function (code) {  
 
 /*--------------------------------------------------------------------------
-  Method      : InputAndSubmitForm()
+  Method      : SetCode()
   
   Description : This method enters Employee ID  
   
-  Output      : Enters Emp ID if Employee Info Form Exists
+  Output      : Enters Code if Employee Code Form Exists
 --------------------------------------------------------------------------*/  
   try {
   
@@ -99,10 +99,10 @@ employeeInfoForm.prototype.InputAndSubmitForm = function (empID) {
     
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
-              description : "Error at formEmployeeInfo.SetEmployeeID: The Employee Info Form does not Exist.",
-              message     : this.dlgEmployeeInfo + " The Employee Info Form does not Exist." }             
+              description : "Error at formEmployeeCode.InputandSubmitForm: The Employee Info Form does not Exist.",
+              message     : this.dlgEmployeeCode + " The Employee Info Form does not Exist." }             
     
-    this.employeeInfoScreen.SetEmployeeID(empID);
+    this.employeeCodeScreen.SetEmployeeCode(code);
     Delay(1000);
     
     this.navigationPanel.ClickEnter();
@@ -115,26 +115,26 @@ employeeInfoForm.prototype.InputAndSubmitForm = function (empID) {
     if (this.throwError) throw exception
   } //End catch
       
-} //InputandSubmitForm
+} //InputAndSubmitForm
 
-employeeInfoForm.prototype.InputAndSubmitFormWithErrors = function (empID) {  
+employeeCodeForm.prototype.InputAndSubmitFormWithErrors = function (code) {  
 
 /*--------------------------------------------------------------------------
   Method      : InputAndSubmitFormWithErrors()
   
-  Description : This method enters Employee ID and click enter button
+  Description : This method enters Code and click enter button
   
-  Output      : Enters Emp ID if Employee Info Form and click enter button
+  Output      : Enters Emp ID if Employee Code Form and click enter button
 --------------------------------------------------------------------------*/  
   try {
   
-    this.InputandSubmitForm(empID);
+    this.InputAndSubmitForm(code);
     Delay(1000);
     
     this.Refresh();
     Delay(1000);
     
-    return this.employeeInfoScreen.GetErrorMessage();
+    return this.employeeCodeScreen.GetErrorMessage();
     
   } //End try
   
@@ -143,7 +143,7 @@ employeeInfoForm.prototype.InputAndSubmitFormWithErrors = function (empID) {
     if (this.throwError) throw exception
   } //End catch
       
-} //InputAndSubmitFormWithErrors
+} //InputAndSubmitFormWithErrors()
 
 function New() {
 
@@ -151,8 +151,8 @@ function New() {
   Method: New() 
   
   Description:
-  This method is for instantiating employeeInfoForm() class from other units of the project. 
+  This method is for instantiating employeeCodeForm() class from other units of the project. 
 ------------------------------------------------------------------------------------*/
 
-  return new employeeInfoForm();  
+  return new employeeCodeForm();  
 }
