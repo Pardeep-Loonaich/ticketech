@@ -62,7 +62,7 @@ function TC_PIN_EMP_002() {
       home.NavigateToEmployeeInfoScreen();
       if (home.lastError.name !== undefined) throw home.lastError;
       
-      //Initialize object of EmployeeInfoScreen..Raj
+      //Initialize object of EmployeeInfoScreen..Raga
       employeeInfo = new EmployeeInfoForm.New();
       
       //Set data in Employee ID field and click Enter button from Navigation panel
