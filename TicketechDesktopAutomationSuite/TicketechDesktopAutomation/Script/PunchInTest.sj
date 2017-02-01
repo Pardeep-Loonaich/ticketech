@@ -17,7 +17,7 @@ function TC_PIN_EMP_002() {
   
   try {
   
-    //Connecting to testdata file & reading the given data
+    //Connecting to testdata file & reading the given data from file...
     TestDataIdx = 0;
     DataPool.FilePath = Project.Path + "TestData\\";
     DataPool.FileName = "PunchIn.xls";
