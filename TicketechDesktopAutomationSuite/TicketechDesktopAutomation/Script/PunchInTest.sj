@@ -8,7 +8,7 @@ function TC_PIN_EMP_002() {
   TC_PIN_EMP_002 : Validating Employee PunchIn Time by providing invalid emp ID
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~---~~~~~~*/
 
-  //Variable Declaration 
+  //Variable Declaration
   //---------------------
   var home; //Stores the instance of home screen...
   var employeeInfo; //Stores the instance of Employee Info Screen
