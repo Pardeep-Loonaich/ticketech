@@ -115,7 +115,7 @@ employeeInfoForm.prototype.InputAndSubmitForm = function (empID) {
     if (this.throwError) throw exception
   } //End catch
       
-} //InputandSubmitForm
+} //InputAndSubmitForm
 
 employeeInfoForm.prototype.InputAndSubmitFormWithErrors = function (empID) {  
 
