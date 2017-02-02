@@ -53,5 +53,7 @@ OpenSQLConnection.prototype.close = function() {
 }
 
 function hostName(){
-Log.Message(Sys.HostName);
+conString = OpenSQLConnection().getConnectionString();
+Log.Message(conSting);
+
 }

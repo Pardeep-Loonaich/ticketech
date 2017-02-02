@@ -7,7 +7,7 @@ function OpenSQLConnection (strHostName, strDBDataBase) {
     strDataBase = Project.Variables.DataBase;
   }
   if (strHostName == undefined) {
-    strDataBase = Sys.HostName;
+    strHostName = Sys.HostName;
   }
   
   // private variables  
