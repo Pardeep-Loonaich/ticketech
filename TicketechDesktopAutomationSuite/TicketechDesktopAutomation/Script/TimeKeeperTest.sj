@@ -1,28 +1,26 @@
-﻿//USEUNIT EmployeeInfoForm
+﻿//USEUNIT UserInfoForm
 //USEUNIT MainDialog
 //USEUNIT Utility
 
-function TC_PIN_EMP_002() {
+function TC_TKM_ACCESS_001() {
   
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~----~~~~~~~~
-  TC_PIN_EMP_002 : Validating Employee PunchIn Time by providing invalid emp ID
+  TC_TKM_ACCESS_001 : 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~---~~~~~~*/
 
   //Variable Declaration 
   //---------------------
-  var home; //Stores the instance of home screen
-  var employeeInfo; //Stores the instance of Employee Info Screen
-  var expectedErrorMessage = "EMPLOYEE NOT FOUND."; //Stores the expected error message    
-  var actualErrorMessage; //Stores the error message to be dispalyed    
+  var objUserInfo; //Stores the instance of home screen
+  var objMain; //Stores the instance of Employee Info Screen
   
   try {
   
-    //Connecting to testdata file & reading the given data
+    //Connect to testdata file & read the require data
     TestDataIdx = 0;
     DataPool.FilePath = Project.Path + "TestData\\";
-    DataPool.FileName = "PunchIn.xls";
-    DataPool.SheetName = "TC_PIN_EMP_002";
-    DataPool.New(); //Creating a New Data Connection
+    DataPool.FileName = "TimeKeeper.xls";
+    DataPool.SheetName = "TC_TKM_ACCESS_001";
+    DataPool.New(); //Create a New Data Connection
   
     //Verify if test data exists in the test data sheet
     if (DataPool.EOF) {
@@ -47,38 +45,41 @@ function TC_PIN_EMP_002() {
       TestLog.AddTestDataInfo(TestDataIdx, DataPool.Columns, DataPool.Item); // Printing given testdata info to Log
       
       objTestData = {
-                      EmployeeID : DataPool.Item("EmpID")                                            
+                      username : DataPool.Item("UserName"), password : DataPool.Item("Password")                                            
                     }; //TestData object to punch in an employee
      
       //Step-1: Launching the POS application and Initialize the home screen
       //--------------------------------------------------------------------
       Utility.launchApp();
-      home = MainDialog.New();
+      objMain=MainDialog.New();
+      objMain.NavigateToUserInfoScreen();
+      Log.Message("@1"); 
+      objUserInfo=UserInfoForm.New();
+      Log.Message("@2");
+      objUserInfo.Exists();
+      objUserInfo.InputAndSubmitForm(objTestData.username,objTestData.password);
       
-      TestLog.Message("Step-1: Click Punch In button.");
-
-      //Step-2: Navigate into Employee info screen and submit invalid emp ID
+      
+      
+      
+      //Step-2: Navigate into user info screen and submit username and password
       //--------------------------------------------------------------------
-      home.NavigateToEmployeeInfoScreen();
+      userInfo = UserInfoForm.New();
       if (home.lastError.name !== undefined) throw home.lastError;
-      
+      TestLog.Message("Step-1: Clicked LogIn button."+objTestData.password);
       //Initialize object of EmployeeInfoScreen 
-      employeeInfo = new EmployeeInfoForm.New();
+      
       
       //Set data in Employee ID field and click Enter button from Navigation panel
-      actualErrorMessage = employeeInfo.InputAndSubmitFormWithErrors(objTestData.EmployeeID);
-      if (employeeInfo.lastError.name !== undefined) throw employeeInfo.lastError;
+      userInfo.InputandSubmitForm(objTestData.username,objTestData.password);
+      if (userInfo.lastError.name !== undefined) throw userInfo.lastError;
       
-      TestLog.Message("Step-2: Navigated to Employee Info screen and submitted invalid emp id.");
-      
-      //Verification : To verify if the expected error message is displayed
-      //-------------------------------------------------------------------
-      if (actualErrorMessage === expectedErrorMessage)
-        TestLog.Pass("TestCase Passed. The error message is displayed as expected for invalid employee ID");    
-      else if (actualErrorMessage === "THE SYSTEM IS WAITING FOR YOUR SELECTION")  
-        TestLog.Fail("TestCase Failed. No error message is displayed for the invalid employee ID");
-      else
-        TestLog.Fail("TestCase Failed. Unexpected error message is displayed for the invalid employee ID");    
+      TestLog.Message("Step-2: Navigated to User Info screen and Logged in as"+objTestData.username);
+      home1 = MainDialog.New();
+      home1.NavigateToTimeKeeperMenu();
+      delay(1000);
+      if (home.lastError.name !== undefined) throw home.lastError;
+      TestLog.Message("Step-3: Navigated to Time Keeper screen");    
                                              
     } //End try
         
