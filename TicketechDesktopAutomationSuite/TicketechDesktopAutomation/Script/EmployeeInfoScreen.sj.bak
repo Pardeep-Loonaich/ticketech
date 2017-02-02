@@ -69,8 +69,8 @@ employeeInfoScreen.prototype.SetEmployeeID = function (empID) {
               description : "Error at employeeInfoScreen.SetEmployeeID: The Employee Info does not Exist.",
               message     : this.scrnEmployeeInfo + " Screen does not Exist." }             
     
-    if (empID !== undefined && empID !== null)
-      this.scrnEmployeeInfo.FindChild("WinFormsControlName", "labelTextBox", 1000).Keys(empID);
+    //if (empID !== undefined && empID !== null)
+      this.scrnEmployeeInfo.FindChild("WinFormsControlName", "labelTextBox", 2).Keys(empID);
     
   } //End try
   

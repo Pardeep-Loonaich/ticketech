@@ -92,7 +92,7 @@ mainDialog.prototype.NavigateToPunchInScreen = function () {
     if (this.throwError) throw exception
   } //End catch
       
-} //NavigateToEmployeeInfoScreen
+} //NavigateToPunchInScreen
 
 mainDialog.prototype.NavigateToPunchOutScreen = function () {  
 

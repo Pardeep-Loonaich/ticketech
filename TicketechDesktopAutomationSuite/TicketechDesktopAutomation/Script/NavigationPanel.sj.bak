@@ -61,6 +61,7 @@ navigationPanel.prototype.ClickEnter = function () {
   Output      : Click on Enter button if Navigation Panel Exists
 --------------------------------------------------------------------------*/  
   this.Click("ENTER")
+  
 } //ClickEnter
 
 navigationPanel.prototype.ClickCancel = function () {  
@@ -73,6 +74,7 @@ navigationPanel.prototype.ClickCancel = function () {
   Output      : Click on Cancel button if Navigation Panel Exists
 --------------------------------------------------------------------------*/ 
   this.Click("CANCEL")
+  
 } //ClickCancel
 
 navigationPanel.prototype.Click = function (btnName) {  
