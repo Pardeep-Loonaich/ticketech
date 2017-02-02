@@ -60,5 +60,5 @@ function New() {
   This method is for instantiating numericPanel() class from other units of the project. 
 -------------------------------------------------------------------------------------------*/
 
-  return new mainOptionsPanel();  
+  return new numericPanel();  
 }
