@@ -103,7 +103,7 @@ function New() {
   
   Description:
   This method is for instantiating colorPanel() class from other units of the project. 
-------------------------------------------------------------------------------------*/
+-------------------------------------------------------------------------------------*/
 
   return new colorPanel();  
 }
