@@ -16,11 +16,11 @@
 
 function employeeInfoForm() { 
 
-/*--------------------------------------------------------------------- 
+/*-------------------------------------------------------------------------- 
   Method: employeeInfoForm() 
   
   Description: This method will the Instantiate the employeeInfoForm Wrapper
----------------------------------------------------------------------*/   
+---------------------------------------------------------------------------*/   
   this.lastError = {};
   
   this.dlgEmployeeInfo =  Sys.Process("PosApplication").WaitWinFormsObject("FormEmployeeInfo", 3000); 
@@ -61,14 +61,14 @@ employeeInfoForm.prototype.Refresh = function () {
 
 employeeInfoForm.prototype.Exists = function () {  
 
-/*-----------------------------------------------------------------
+/*---------------------------------------------------------------------
   Method      : Exists()
   
   Description : This method checks the existance of the employeeInfoForm.  
   
   Output: True if dialog Exists
           False if dialog does not Exists   
------------------------------------------------------------------*/  
+----------------------------------------------------------------------*/  
   try {
   
     this.lastError = {};
@@ -115,7 +115,7 @@ employeeInfoForm.prototype.InputAndSubmitForm = function (empID) {
     if (this.throwError) throw exception
   } //End catch
       
-} //InputandSubmitForm
+} //InputAndSubmitForm
 
 employeeInfoForm.prototype.InputAndSubmitFormWithErrors = function (empID) {  
 
@@ -128,7 +128,7 @@ employeeInfoForm.prototype.InputAndSubmitFormWithErrors = function (empID) {
 --------------------------------------------------------------------------*/  
   try {
   
-    this.InputandSubmitForm(empID);
+    this.InputAndSubmitForm(empID);
     Delay(1000);
     
     this.Refresh();

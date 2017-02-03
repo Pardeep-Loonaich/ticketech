@@ -95,7 +95,7 @@ navigationPanel.prototype.Click = function (btnName) {
               description : "Error at navigationPanel.Click"+btnName+": The Navigation Panel does not Exist.",
               message     : this.pnlNavigation + " Panel does not Exist." }             
     
-    this.pnlNavigation.WaitWinFormsObject(["Value", "Visible"], [btnName, true], 2).ClickButton();
+    this.pnlNavigation.FindChild(["Value", "Visible"], [btnName, true], 2).ClickButton();
     
   } //End try
   

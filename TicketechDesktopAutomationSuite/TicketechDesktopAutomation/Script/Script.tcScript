@@ -82,6 +82,15 @@
 		<child name="YesNoConfirmActionPanel" key="{5D210D45-B567-4E30-9D57-A56FF1B2749B}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
 			<data path="YesNoConfirmActionPanel.sj" />
 		</child>
+		<child name="DBUtility" key="{5AD2F840-44DA-4AEB-A3D9-FC9A2B0AB4D0}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="DBUtility.sj" />
+		</child>
+		<child name="TimekeeperMenuForm" key="{04AD064F-B687-402E-B3BC-F77265E8B819}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="TimekeeperMenuForm.sj" />
+		</child>
+		<child name="TimekeeperOptionsPanel" key="{156E3085-167D-4539-B514-225AA77938E8}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="TimekeeperOptionsPanel.sj" />
+		</child>
 	</children>
 	<folders>
 		<folder caption="Tests" description="A logical folder that is used to organize project items and elements." moniker="">
@@ -110,6 +119,7 @@
 						<ref key="{F62BC2A6-B160-49C1-8888-CED8FE1E8C1B}" />
 						<ref key="{EA73A69B-C9F4-4AF4-A13A-A178F9657ECE}" />
 						<ref key="{5D210D45-B567-4E30-9D57-A56FF1B2749B}" />
+						<ref key="{156E3085-167D-4539-B514-225AA77938E8}" />
 					</references>
 				</folder>
 			</folders>
@@ -120,11 +130,13 @@
 				<ref key="{273DF2D9-37A5-4C1D-8A8C-45A1EFB687B8}" />
 				<ref key="{C19A750F-0B89-4A19-A22F-5F1591C84F24}" />
 				<ref key="{564847FF-E9E7-4835-8546-4DB2129D4154}" />
+				<ref key="{04AD064F-B687-402E-B3BC-F77265E8B819}" />
 			</references>
 		</folder>
 		<folder caption="GenericUtils" description="A logical folder that is used to organize project items and elements." moniker="">
 			<references>
 				<ref key="{294D48B4-5E11-40F3-88D6-0E0D069BE2A0}" />
+				<ref key="{5AD2F840-44DA-4AEB-A3D9-FC9A2B0AB4D0}" />
 			</references>
 		</folder>
 		<folder caption="Driver" description="A logical folder that is used to organize project items and elements." moniker="">
