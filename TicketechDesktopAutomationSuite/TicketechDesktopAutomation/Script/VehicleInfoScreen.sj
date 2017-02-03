@@ -79,16 +79,16 @@ vehicleInfoScreen.prototype.EnterPlateNumber = function (plateNumber) {
     if (this.throwError) throw exception
   } //End catch
       
-} //SetEmployeeID
+} //EnterPlateNumber
 
-employeeInfoScreen.prototype.GetErrorMessage = function () {  
+vehicleInfoScreen.prototype.SelectColor = function (color) {  
 
 /*------------------------------------------------------------------------------------
-  Method      : GetErrorMessage()
+  Method      : SelectColor()
   
-  Description : This method returns the error message displayed in the info screen 
+  Description : This method selects the color of vehicle on the Vehicle Info screen
   
-  Output      : Returns the error message displayed in the emp info screen 
+  Output      : Selects the Vehicle Color in Vehicle Info screen 
 -------------------------------------------------------------------------------------*/  
   try {
   
@@ -96,11 +96,11 @@ employeeInfoScreen.prototype.GetErrorMessage = function () {
     
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
-              description : "Error at EmployeeInfoScreen.GetErrorMessage: The Info screen does not Exist.",
-              message     : this.scrnInfo + " Info does not Exist." }             
+              description : "Error at vehicleInfoScreen.SelectColor: The Info screen does not Exist.",
+              message     : this.scrnVehiInfo + " Info does not Exist." }             
     
-    return this.scrnEmployeeInfo.WinFormsObject("screenInformationFooter")
-              .WinFormsObject("labelInformation").WndCaption;
+    if (color !== undefined && color !== null)
+      this.scrnVehiInfo.FindChild(["WndCaption","Visible"], [btnName,true],2).ClickButton();
     
   } //End try
   

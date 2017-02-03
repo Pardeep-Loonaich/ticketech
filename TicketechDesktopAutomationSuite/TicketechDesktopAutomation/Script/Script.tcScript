@@ -94,6 +94,9 @@
 		<child name="VehicleInfoScreen" key="{B921D7BC-024F-43C4-A351-DFE762051775}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
 			<data path="VehicleInfoScreen.sj" />
 		</child>
+		<child name="ColorPanel" key="{9C52EFE7-B11D-42A6-B755-59E6D79ED0E8}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="ColorPanel.sj" />
+		</child>
 	</children>
 	<folders>
 		<folder caption="Tests" description="A logical folder that is used to organize project items and elements." moniker="">
@@ -124,6 +127,7 @@
 						<ref key="{5D210D45-B567-4E30-9D57-A56FF1B2749B}" />
 						<ref key="{156E3085-167D-4539-B514-225AA77938E8}" />
 						<ref key="{B921D7BC-024F-43C4-A351-DFE762051775}" />
+						<ref key="{9C52EFE7-B11D-42A6-B755-59E6D79ED0E8}" />
 					</references>
 				</folder>
 			</folders>
