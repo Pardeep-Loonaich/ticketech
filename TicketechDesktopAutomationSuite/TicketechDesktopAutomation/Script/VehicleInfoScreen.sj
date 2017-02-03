@@ -22,7 +22,7 @@ function vehicleInfoScreen() {
   
   this.scrnVehiInfo =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "ScreenVehicleInfo", 1);
   
-  this.throwError = false ; 
+  this.throwError = false; 
     
 } //VehicleInfoScreen
 
@@ -40,7 +40,7 @@ vehicleInfoScreen.prototype.Exists = function () {
   
     this.lastError = {};
 
-    return this.vehicleInfoScreen.Exists;  //Return whether vehicleInfoScreen exists or not
+    return this.scrnVehiInfo.Exists;  //Return whether vehicleInfoScreen exists or not
   
   } //End try
   
@@ -67,10 +67,10 @@ vehicleInfoScreen.prototype.EnterPlateNumber = function (plateNumber) {
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
               description : "Error at vehicleInfoScreen.EnterPlateNumber: The Vehicle Plate textfield does not Exist.",
-              message     : this.scrnEmployeeInfo + " Screen does not Exist." }             
+              message     : this.scrnVehiInfo + " Screen does not Exist." }             
     
-    if (empID !== undefined && empID !== null)
-      this.scrnEmployeeInfo.FindChild("WinFormsControlName", "labelTextBox", 2).Keys(empID);
+    if (plateNumber !== undefined && plateNumber !== null)
+      this.scrnVehiInfo.FindChild("WinFormsControlName", "labelTextBox", 2).Keys(plateNumber);
     
   } //End try
   
