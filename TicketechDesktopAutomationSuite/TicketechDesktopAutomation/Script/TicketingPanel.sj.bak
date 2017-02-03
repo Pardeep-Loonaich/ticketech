@@ -98,7 +98,7 @@ try {
               description : "Error at ticketingPanel.Click"+btnName+": The ticketing Panel does not Exist.",
               message     : this.pnlTicketing + " Panel does not Exist." }             
     
-    this.pnlTicketing.WaitWinFormsObject(["ScreenButton","Visible],[btnName,true], 1000).ClickButton();
+    this.pnlTicketing.WaitWinFormsObject("ScreenButton", btnName, 1000).ClickButton();
     
   } //End try
   
