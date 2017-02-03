@@ -40,7 +40,7 @@ vehicleInfoScreen.prototype.Exists = function () {
   
     this.lastError = {};
 
-    return this.scrnEmployeeInfo.Exists;  //Return whether employeeInfoScreen exists or not
+    return this.vehicleInfoScreen.Exists;  //Return whether vehicleInfoScreen exists or not
   
   } //End try
   
@@ -51,14 +51,14 @@ vehicleInfoScreen.prototype.Exists = function () {
       
 } //Exists
 
-employeeInfoScreen.prototype.SetEmployeeID = function (empID) {  
+vehicleInfoScreen.prototype.EnterPlateNumber = function (plateNumber) {  
 
 /*-------------------------------------------------------------------------------
-  Method      : SetEmployeeID()
+  Method      : EnterPlateNumber()
   
-  Description : This method enters the Emp ID in the Employee Info screen
+  Description : This method enters the Vehicle plate number on the Vehicle Info screen
   
-  Output      : Enters the Emp ID in the Employee Info screen 
+  Output      : Enters the Plate Number in Vehicle Info screen 
 -------------------------------------------------------------------------------*/  
   try {
   
@@ -66,7 +66,7 @@ employeeInfoScreen.prototype.SetEmployeeID = function (empID) {
     
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
-              description : "Error at employeeInfoScreen.SetEmployeeID: The Employee Info does not Exist.",
+              description : "Error at vehicleInfoScreen.EnterPlateNumber: The Vehicle Plate textfield does not Exist.",
               message     : this.scrnEmployeeInfo + " Screen does not Exist." }             
     
     if (empID !== undefined && empID !== null)

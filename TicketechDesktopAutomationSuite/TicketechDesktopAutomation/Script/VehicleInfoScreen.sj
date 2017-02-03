@@ -22,7 +22,7 @@ function vehicleInfoScreen() {
   
   this.scrnVehiInfo =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "ScreenVehicleInfo", 1);
   
-  this.throwError = false; 
+  this.throwError = false ; 
     
 } //VehicleInfoScreen
 
