@@ -91,6 +91,9 @@
 		<child name="TimekeeperOptionsPanel" key="{156E3085-167D-4539-B514-225AA77938E8}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
 			<data path="TimekeeperOptionsPanel.sj" />
 		</child>
+		<child name="VehicleInfoScreen" key="{B921D7BC-024F-43C4-A351-DFE762051775}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="VehicleInfoScreen.sj" />
+		</child>
 	</children>
 	<folders>
 		<folder caption="Tests" description="A logical folder that is used to organize project items and elements." moniker="">
@@ -120,6 +123,7 @@
 						<ref key="{EA73A69B-C9F4-4AF4-A13A-A178F9657ECE}" />
 						<ref key="{5D210D45-B567-4E30-9D57-A56FF1B2749B}" />
 						<ref key="{156E3085-167D-4539-B514-225AA77938E8}" />
+						<ref key="{B921D7BC-024F-43C4-A351-DFE762051775}" />
 					</references>
 				</folder>
 			</folders>
