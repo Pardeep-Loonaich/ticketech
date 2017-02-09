@@ -458,3 +458,85 @@ function exeCommand(keyName)  {
   } //End catch
 
 } //exeCommand
+
+  /*
+  ----------------------------------------------------------------------------------
+  Mehtod  : assertResult()
+  Desc    :To Use assert result
+  Param   : it will accept three argument 
+  bStatus : ture or False
+  sPassMsg: Pass Message
+  sFailMsg: Fail Message
+  ----------------------------------------------------------------------------------
+  */
+
+
+  function assertResult(bStatus, sPassMsg,sFailMsg)
+  {
+    if(bStatus===true)
+    {
+      TestLog.Pass(sPassMsg);
+    }
+    else
+    {
+      TestLog.Fail(sPassMsg);
+    }
+
+  }
+
+
+function getRandomString(strings)  {
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function   : getRandomString
+  Description: Return the random string from array of strings
+  Input      : Array of Strings
+  Output     : Random string
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  try {
+    return strings[Math.floor(Math.random()*strings.length)];
+  } //End try
+  
+  catch(exception) {
+    throw exception;
+  } //End catch
+
+} //getRandomString
+
+function getRandomValue(type, length)  {
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function   : getRandomValue
+  Description: Return the string with random characters with length defined
+  Input      : return type, length of characters to be returned
+  Output     : Random characters with defined length
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  try {
+    var sample;
+    var rnd;
+    var ret;
+  
+    if (type == "ALPHA")
+        sample = "abcdefghijklmnopqrstuvwxyz";
+    else if (type == "NUMERIC")
+        sample = "0123456789";
+    else
+        sample = "abcdefghijklmnopqrstuvwxyz0123456789";
+      
+    rnd = dotNET.System.Random.zctor();
+    ret = "";
+    
+    for(var i = 0; i<length; i++)
+    {
+    ret += aqString.SubString(sample, rnd.Next(aqString.GetLength(sample)), 1); 
+    }
+    return ret;
+  } //End try
+  
+  catch(exception) {
+    throw exception;
+  } //End catch
+
+} //getRandomValue
+
+

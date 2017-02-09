@@ -80,10 +80,10 @@ colorPanel.prototype.SelectColor = function (btnColor) {
   
     this.lastError = {};
     
-    if (!this.Exists())
+    if (!this.Exists)    
       throw { name        : "Wrapper Exception",
-              description : "Error at colorPanel.Click"+btnColor+": The Color Panel does not Exist.",
-              message     : this.pnlColor + " Panel does not Exist." }             
+             description : "Error at colorPanel.Click"+btnColor+": The Color Panel does not Exist.",
+             message     : this.pnlColor + " Panel does not Exist." }             
     
     this.pnlColor.FindChild(["WndCaption","Visible"], [btnColor, true], 2).ClickButton();
     
@@ -92,6 +92,7 @@ colorPanel.prototype.SelectColor = function (btnColor) {
   catch (exception) {
     for (prop in exception) this.lastError[prop] = exception[prop];
     if (this.throwError) throw exception
+    
   } //End catch
       
 } //Click

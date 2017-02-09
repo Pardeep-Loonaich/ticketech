@@ -58,9 +58,6 @@
 		<child name="UserIdentificationScreen" key="{A9221999-0EF4-4B3C-BE45-D7A7A90BCC2D}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
 			<data path="UserIdentificationScreen.sj" />
 		</child>
-		<child name="TimeKeeperMenuTest" key="{A1E72068-8D11-4E59-A77C-4258C2A945D3}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
-			<data path="TimeKeeperMenuTest.sj" />
-		</child>
 		<child name="BackPanel" key="{9B3F96D0-5403-4870-B19A-AA2FFACA2594}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
 			<data path="BackPanel.sj" />
 		</child>
@@ -97,6 +94,21 @@
 		<child name="ColorPanel" key="{9C52EFE7-B11D-42A6-B755-59E6D79ED0E8}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
 			<data path="ColorPanel.sj" />
 		</child>
+		<child name="DailyTest" key="{F1188429-1402-4C1F-A6D6-6F3C40623C19}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="DailyTest.sj" />
+		</child>
+		<child name="VehicleInfoForm" key="{25F34FF6-3EA2-4D4A-812C-DCB79510D772}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="VehicleInfoForm.sj" />
+		</child>
+		<child name="MakesPanel" key="{DAE18F57-8550-4308-BCFE-74F9BC5BDD55}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="MakesPanel.sj" />
+		</child>
+		<child name="CheckInVehicleDamageForm" key="{2E4A36F7-B88C-4140-B559-99BD99A5B351}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="CheckInVehicleDamageForm.sj" />
+		</child>
+		<child name="PrinterStatusForm" key="{EB317A24-C80F-41E9-9926-964FF45FC679}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="PrinterStatusForm.sj" />
+		</child>
 	</children>
 	<folders>
 		<folder caption="Tests" description="A logical folder that is used to organize project items and elements." moniker="">
@@ -104,7 +116,7 @@
 				<ref key="{C14968EE-A84F-47C0-85E6-9E40BCC2C4F9}" />
 				<ref key="{10C371CB-248E-4F9A-A5FA-08657276C70E}" />
 				<ref key="{250C68BE-523E-45BF-B762-A76F546EF2F6}" />
-				<ref key="{A1E72068-8D11-4E59-A77C-4258C2A945D3}" />
+				<ref key="{F1188429-1402-4C1F-A6D6-6F3C40623C19}" />
 			</references>
 		</folder>
 		<folder caption="Wrappers" description="A logical folder that is used to organize project items and elements." moniker="">
@@ -128,6 +140,7 @@
 						<ref key="{156E3085-167D-4539-B514-225AA77938E8}" />
 						<ref key="{B921D7BC-024F-43C4-A351-DFE762051775}" />
 						<ref key="{9C52EFE7-B11D-42A6-B755-59E6D79ED0E8}" />
+						<ref key="{DAE18F57-8550-4308-BCFE-74F9BC5BDD55}" />
 					</references>
 				</folder>
 			</folders>
@@ -139,6 +152,9 @@
 				<ref key="{C19A750F-0B89-4A19-A22F-5F1591C84F24}" />
 				<ref key="{564847FF-E9E7-4835-8546-4DB2129D4154}" />
 				<ref key="{04AD064F-B687-402E-B3BC-F77265E8B819}" />
+				<ref key="{25F34FF6-3EA2-4D4A-812C-DCB79510D772}" />
+				<ref key="{2E4A36F7-B88C-4140-B559-99BD99A5B351}" />
+				<ref key="{EB317A24-C80F-41E9-9926-964FF45FC679}" />
 			</references>
 		</folder>
 		<folder caption="GenericUtils" description="A logical folder that is used to organize project items and elements." moniker="">

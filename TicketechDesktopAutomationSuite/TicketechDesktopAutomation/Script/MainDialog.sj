@@ -26,7 +26,7 @@ function mainDialog() {
 ---------------------------------------------------------------------*/   
   this.lastError = {};
   
-  this.dlgMain =  Sys.Process("PosApplication").WaitWinFormsObject("FormMain", 3000); 
+  this.dlgMain =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "FormMain", 2); 
   
   this.infoScreen = InformationScreen.New();
   this.punchPanel = PunchPanel.New();
@@ -196,3 +196,68 @@ mainDialog.prototype.NavigateToTimeKeeperMenu = function () {
   } //End catch
       
 } //NavigateToTimeKeeperMenu
+
+mainDialog.prototype.GetFormInfo = function(){
+
+/*------------------------------------------------------------------------------------ 
+  Method: GetFormInfo() 
+  
+  Description:
+  This method is for getting the Info of the Screen like Title, Message etc. 
+------------------------------------------------------------------------------------*/
+
+  try {
+   
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at mainDialog.getFormInfo: The Main Dialog does not Exist.",
+              message     : this.dlgMain + " The Main Dialog does not Exist." }
+     
+    frmInfo = {  Title    : this.mainScreen.GetTitle(),
+                 Date     : this.mainScreen.GetDate(),
+                 Time     : this.mainScreen.GetTime(),
+                 Message  : this.mainScreen.GetFooterMessage()
+              };
+      
+    return frmInfo;
+      
+  }
+  
+  catch(exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  }
+}
+
+  mainDialog.prototype.clickOnDailyButton = function () {  
+
+/*--------------------------------------------------------------------------
+  Method      : clickOnDailyButton()
+  
+  Description : use this method to click on daliy button on main screen
+  
+  Output      : it will navigate to daily module after clicking on daily button
+--------------------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at mainDialog.clickOnDailyButton: The Main Dialog does not Exist.",
+              message     : this.dlgMain + " The Main Dialog does not Exist." }             
+    
+    this.ticketingPanel.ClickDaily();
+    Delay(1000);
+        
+  } //End try
+  
+  catch (exception)
+  {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+      
+} //clickOnDailyButton

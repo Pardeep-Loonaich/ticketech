@@ -16,7 +16,7 @@ function mainScreen() {
 /*------------------------------------------------------------------------------- 
   Method: mainScreen() 
   
-  Description: This method will the Instantiate the mainScreen Wrapper Helper
+  Description: This method will Instantiate the mainScreen Wrapper Helper
 --------------------------------------------------------------------------------*/   
   this.lastError = {};
   
@@ -50,6 +50,19 @@ mainScreen.prototype.Exists = function () {
       
 } //Exists
 
+mainScreen.prototype.GetTitle = function () {  
+
+/*-------------------------------------------------------------------------------
+  Method      : GetTitle()
+  
+  Description : This method returns the current Title labelled in the main screen 
+  
+  Output      : Returns the current Title labelled in the main screen 
+-------------------------------------------------------------------------------*/  
+  return   this.GetText("labelTitle");
+      
+} //GetTitle
+
 mainScreen.prototype.GetDate = function () {  
 
 /*-------------------------------------------------------------------------------
@@ -59,7 +72,7 @@ mainScreen.prototype.GetDate = function () {
   
   Output      : Returns the current date labelled in the main screen 
 -------------------------------------------------------------------------------*/  
-  this.GetText("labelDate");
+  return this.GetText("labelDate");
       
 } //GetDate
 
@@ -72,9 +85,22 @@ mainScreen.prototype.GetTime = function () {
   
   Output      : Returns the current GetTime labelled in the main screen 
 -------------------------------------------------------------------------------*/  
-  this.GetText("labelTime");
+  return this.GetText("labelTime");
       
 } //GetTime
+
+mainScreen.prototype.GetFooterMessage = function () {  
+
+/*-------------------------------------------------------------------------------
+  Method      : GetFooterMessage()
+  
+  Description : This method returns the current FooterMessage in the main screen 
+  
+  Output      : Returns the current FooterMessage in the main screen 
+-------------------------------------------------------------------------------*/  
+  return this.GetText("labelInformation");
+      
+} //GetFooterMessage
 
 mainScreen.prototype.GetText = function (objControlName) {  
 
@@ -94,7 +120,7 @@ mainScreen.prototype.GetText = function (objControlName) {
               description : "Error at mainScreen.Get"+objControlName+": The Main screen does not Exist.",
               message     : this.scrnMain + " Screen does not Exist." }             
     
-    return this.scrnMain.WaitWinFormsObject("WinFormsControlName", objControlName, 1000).WndCaption;
+    return this.scrnMain.FindChild("WinFormsControlName", objControlName, 2).WndCaption;
     
   } //End try
   

@@ -59,7 +59,7 @@ function TC_POUT_EMP_002() {
       //--------------------------------------------------------------------
       userInfo = UserInfoForm.New();
       if (home.lastError.name !== undefined) throw home.lastError;
-      TestLog.Message("Step-1: Clicked LogIn button."+objTestData.password);
+      TestLog.Message("Step-1: Clicked LogIn button.");
       //Initialize object of EmployeeInfoScreen 
       
       

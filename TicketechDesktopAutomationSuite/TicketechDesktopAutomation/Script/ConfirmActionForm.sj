@@ -28,11 +28,11 @@ function confirmActionForm() {
   
   this.dlgConfirmAction =  Sys.Process("PosApplication").WaitWinFormsObject("FormConfirmAction", 3000); 
   
-  this.infoScreen = InformationScreen.New();
-  this.confirmActionScreen = ConfirmActionScreen.New();
-  this.yesNoConfirmActionPanel = YesNoConfirmActionPanel.New();
-  this.backPanel = BackPanel.New();
-  this.navigationPanel = NavigationPanel.New();
+  this.objInfoScreen = InformationScreen.New();
+  this.objConfirmActionScreen = ConfirmActionScreen.New();
+  this.objYesNoConfirmActionPanel = YesNoConfirmActionPanel.New();
+  this.objBackPanel = BackPanel.New();
+  this.objNavigationPanel = NavigationPanel.New();
   
   this.throwError = false; 
     
@@ -49,11 +49,11 @@ confirmActionForm.prototype.Refresh = function () {
 
     this.dlgConfirmAction =  Sys.Process("PosApplication").WaitWinFormsObject("FormConfirmAction", 3000);
   
-    this.infoScreen = InformationScreen.New();
-    this.confirmActionScreen = ConfirmActionScreen.New();
-    this.yesNoConfirmActionPanel = YesNoConfirmActionPanel.New();
-    this.backPanel = BackPanel.New();
-    this.navigationPanel = NavigationPanel.New();
+    this.objInfoScreen = InformationScreen.New();
+    this.objConfirmActionScreen = ConfirmActionScreen.New();
+    this.objYesNoConfirmActionPanel = YesNoConfirmActionPanel.New();
+    this.objBackPanel = BackPanel.New();
+    this.objNavigationPanel = NavigationPanel.New();
         
   } //End try
   
@@ -107,7 +107,7 @@ confirmActionForm.prototype.ConfirmYes = function () {
               description : "Error at confirmActionForm.ConfirmYes: The ConfirmActionForm does not Exist.",
               message     : this.dlgConfirmAction + " The ConfirmActionForm does not Exist." }             
     
-    this.confirmActionScreen.ClickYes();
+    this.objYesNoConfirmActionPanel.ClickYes();
     Delay(1000);
     
   } //End try
@@ -137,7 +137,7 @@ confirmActionForm.prototype.ConfirmNo = function () {
               description : "Error at confirmActionForm.ConfirmYes: The ConfirmActionForm does not Exist.",
               message     : this.dlgConfirmAction + " The ConfirmActionForm does not Exist." }             
     
-    this.confirmActionScreen.ClickNo();
+    this.objYesNoConfirmActionPanel.ClickNo();
     Delay(1000);
     
   } //End try
@@ -159,4 +159,36 @@ function New() {
 ------------------------------------------------------------------------------------*/
 
   return new confirmActionForm();  
+}
+
+confirmActionForm.prototype.GetFormInfo = function(){
+
+/*------------------------------------------------------------------------------------ 
+  Method: GetFormInfo() 
+  
+  Description:
+  This method is for getting the Info of the Screen like Title, Message. 
+------------------------------------------------------------------------------------*/
+  try {
+   
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at confirmActionForm.getFormInfo: The confirm Action Form does not Exist.",
+              message     : this.dlgConfirmAction + " The confirm Action Form does not Exist." }
+     
+    frmInfo = {  Title          : this.confirmActionScreen.GetTitle(),
+                 ScreenText     : this.confirmActionScreen.GetScreenText(),
+                 FooterMessage  : this.confirmActionScreen.GetFooterMessage()
+              };
+      
+    return frmInfo;
+      
+  }
+  catch(exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  }
+
 }

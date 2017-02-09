@@ -40,7 +40,7 @@ navigationPanel.prototype.Exists = function () {
   
     this.lastError = {};
 
-    return this.pnlNavigation.Exists;  //Return whether punchPanel exists or not
+    return this.pnlNavigation.Exists;  //Return whether navigationPanel exists or not
   
   } //End try
   

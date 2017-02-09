@@ -129,10 +129,11 @@ userIdentificationScreen.prototype.GetMessage = function () {
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
               description : "Error at UserIdentificationScreen.GetMessage: The Info screen does not Exist.",
-              message     : this.scrnInfo + " Info does not Exist." }             
-    
-    return this.scrnUserInfo.WinFormsObject("screenInformationFooter")
-              .WinFormsObject("labelInformation").WndCaption;
+              message     : this.scrnUserInfo + " Info does not Exist." }   
+              
+    objMessage = this.scrnUserInfo.WinFormsObject("screenInformationFooter").WinFormsObject("labelInformation");          
+
+    return objMessage.WndCaption;
     
   } //End try
   

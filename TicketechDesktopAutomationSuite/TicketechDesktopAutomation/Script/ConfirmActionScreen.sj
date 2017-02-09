@@ -51,14 +51,14 @@ confirmActionScreen.prototype.Exists = function () {
       
 } //Exists
 
-confirmActionScreen.prototype.GetMessage = function () {  
+confirmActionScreen.prototype.GetText = function (objControlName) {  
 
 /*------------------------------------------------------------------------------------
-  Method      : GetMessage()
+  Method      : GetText()
   
-  Description : This method returns the message displayed in the ConfirmAction screen 
+  Description : This method returns the Text displayed in the given field of ConfirmAction screen 
   
-  Output      : Returns the message displayed in the ConfirmAction screen 
+  Output      : Returns the Text displayed in the given field of ConfirmAction screen 
 -------------------------------------------------------------------------------------*/  
   try {
   
@@ -66,40 +66,10 @@ confirmActionScreen.prototype.GetMessage = function () {
     
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
-              description : "Error at ConfirmActionScreen.GetMessage: The Info screen does not Exist.",
-              message     : this.scrnConfirmAction + " Info does not Exist." }             
+              description : "Error at ConfirmActionScreen.GetText"+objControlName+": The confirmActionScreen does not Exist.",
+              message     : this.scrnConfirmAction + " confirmActionScreen does not Exist." }             
     
-    return this.scrnConfirmAction.WinFormsObject("screenInformationFooter")
-              .WinFormsObject("labelInformation").WndCaption;
-    
-  } //End try
-  
-  catch (exception) {
-    for (prop in exception) this.lastError[prop] = exception[prop];
-    if (this.throwError) throw exception
-  } //End catch
-      
-} //GetMessage
-
-confirmActionScreen.prototype.GetScreenText = function () {  
-
-/*------------------------------------------------------------------------------------
-  Method      : GetScreenText()
-  
-  Description : This method returns the Text displayed in the ConfirmAction screen 
-  
-  Output      : Returns the Text displayed in the ConfirmAction screen 
--------------------------------------------------------------------------------------*/  
-  try {
-  
-    this.lastError = {};
-    
-    if (!this.Exists())
-      throw { name        : "Wrapper Exception",
-              description : "Error at ConfirmActionScreen.GetScreenText: The Info screen does not Exist.",
-              message     : this.scrnConfirmAction + " Info does not Exist." }             
-    
-    return this.scrnConfirmAction.FindChild("WinFormsControlName","labelText",3).WndCaption;
+    return this.scrnConfirmAction.FindChild("WinFormsControlName",objControlName,3).WndCaption;
     
   } //End try
   
@@ -109,6 +79,45 @@ confirmActionScreen.prototype.GetScreenText = function () {
   } //End catch
       
 } //GetScreenText
+
+confirmActionScreen.prototype.GetTitle = function () {  
+
+/*-------------------------------------------------------------------------------
+  Method      : GetTitle()
+  
+  Description : This method returns the current Title labelled in the ConfirmAction screen 
+  
+  Output      : Returns the current Title labelled in the ConfirmAction screen 
+-------------------------------------------------------------------------------*/  
+  return   this.GetText("labelTitle");
+  
+} //GetTitle 
+
+confirmActionScreen.prototype.GetScreenText = function () {  
+
+/*-------------------------------------------------------------------------------
+   Method      : GetScreenText()
+  
+  Description : This method returns the Text displayed in the ConfirmAction screen 
+  
+  Output      : Returns the Text displayed in the ConfirmAction screen 
+-------------------------------------------------------------------------------*/  
+  return   this.GetText("labelText");
+      
+} //GetScreenText 
+
+confirmActionScreen.prototype.GetFooterMessage = function () {  
+
+/*------------------------------------------------------------------------------------
+  Method      : GetFooterMessage()
+  
+  Description : This method returns the message displayed in the footer of ConfirmAction screen 
+  
+  Output      : Returns the message displayed in the footer of ConfirmAction screen 
+-------------------------------------------------------------------------------------*/  
+  return   this.GetText("labelInformation");
+      
+} //GetFooterMessage
 
 function New() {
 

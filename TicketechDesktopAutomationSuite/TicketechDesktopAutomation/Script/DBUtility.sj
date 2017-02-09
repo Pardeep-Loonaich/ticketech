@@ -2,21 +2,17 @@
   Function: OpenSQLConnection
   Description: To create driver instance for the DB DataBase
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-function OpenSQLConnection (strHostName, strDBDataBase) {
-  if (strDBDataBase == undefined) {
-    strDataBase = Project.Variables.DataBase;
-  }
-  if (strHostName == undefined) {
-    strHostName = Sys.HostName;
-  }
+function OpenSQLConnection () {
   
   // private variables  
   var adoDriver, strConnectionString;
-  adoDriver = ADO.CreateADOQuery();
-  strConnectionString = "Provider=SQLOLEDB.1;Database=" + strDataBase + ";Hostname=" + strHostName + ";Protocol=TCPIP;Port=" + Project.Variables.DBPort + ";Uid=" + Project.Variables.DBUserID + ";Pwd=" + Project.Variables.DBPassword;
+  //strConnectionString = "Provider=SQLOLEDB;Database=GarageABC026;Hostname=ASPIRE809\SQLEXPRESS;Protocol=TCPIP;Port=2411;Uid=sa;Pwd=projectuy";
+  strConnectionString = "Provider=SQLOLEDB;Server=ASPIRE809\\SQLEXPRESS" + ";Database=GarageABC026;Uid=sa; Pwd=projectuy;";
+  //strConnectionString = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=GarageABC026.mdb;Username=sa;Password=projectuy";
+  adoDriver = Sys.OleObject("ADODB.Connection");
   adoDriver.ConnectionString = strConnectionString;
-  
-  Logger.Info("Created DB Driver instance");
+  adoDriver.Open();  
+  adoDriver.SQL = "SELECT EmployeeID FROM [GarageABC026].[dbo].[Employees] where EmployeeDeleted = 0";
   
   this.getDriver = function() {    // returns driver object
     return adoDriver;
@@ -55,5 +51,35 @@ OpenSQLConnection.prototype.close = function() {
 function hostName(){
 conString = OpenSQLConnection().getConnectionString();
 Log.Message(conSting);
+
+}
+
+function OpenSQLConnection1 () {
+   // private variables  
+  var adoDriver, strConnectionString;
+  adoDriver = ADO.CreateADOQuery();
+  strConnectionString = "Provider=sqloledb;Server=ASPIRE809\\SQLEXPRESS" + ";Database=GarageABC026;Uid=sa; Pwd=projectuy";
+  adoDriver.ConnectionString = strConnectionString;
+  empID = "80580";
+  
+  Log.Message("Created DB Driver instance");
+  
+  adoDriver.SQL =  "SELECT EmployeeID,EmployeeLastName,EmployeeFirstName FROM [GarageABC026].[dbo].[Employees] where EmployeeDeleted = 0";
+  
+  adoDriver.Open();
+  adoDriver.First();
+  while (! adoDriver.EOF)
+  { 
+    if(adoDriver.FieldByName("EmployeeID").Value == empID){
+      Log.Message(adoDriver.FieldByName("EmployeeLastName").Value);
+      break;
+    } 
+    else{
+      Log.Message(adoDriver.FieldByName("EmployeeID").Value);
+      adoDriver.Next();
+    }
+  }
+  // Closes the query
+  adoDriver.Close();
 
 }

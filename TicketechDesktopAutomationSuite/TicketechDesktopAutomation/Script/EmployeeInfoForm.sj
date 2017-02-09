@@ -156,3 +156,63 @@ function New() {
 
   return new employeeInfoForm();  
 }
+
+employeeInfoForm.prototype.SubmitForm = function () {  
+
+/*--------------------------------------------------------------------------
+  Method      : SubmitForm()
+  
+  Description : This method Clicks enter button  
+  
+  Output      : Clicks Enter button if employeeInfo Form Exists
+--------------------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at formEmployeeInfo.SubmitForm: The Employee Info Form does not Exist.",
+              message     : this.dlgEmployeeInfo + " The Employee Info Form does not Exist." }             
+    
+    this.navigationPanel.ClickEnter();
+    Delay(1000);
+    
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+      
+} //SubmitForm
+
+employeeInfoForm.prototype.CancelForm = function () {  
+
+/*--------------------------------------------------------------------------
+  Method      : CancelForm()
+  
+  Description : This method Clicks cancel button  
+  
+  Output      : Clicks Cancel button if employeeInfo Form Exists
+--------------------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at formEmployeeInfo.CancelForm: The Employee Info Form does not Exist.",
+              message     : this.dlgEmployeeInfo + " The Employee Info Form does not Exist." }             
+    
+    this.navigationPanel.ClickCancel();
+    Delay(1000);
+    
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+      
+} //CancelForm

@@ -1,5 +1,6 @@
 ﻿//USEUNIT Utility
 
+
 /******************************************************************************
             ---------- Class Definition ----------
   Name:VehicleInfoScreen
@@ -20,7 +21,7 @@ function vehicleInfoScreen() {
 ------------------------------------------------------------------------------------*/   
   this.lastError = {};
   
-  this.scrnVehiInfo =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "ScreenVehicleInfo", 1);
+  this.scrnVehiInfo =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "FormCheckInVehiclePlate", 2).FindChild("WinFormsControlName", "ScreenVehicleInfo", 2);
   
   this.throwError = false; 
     
@@ -51,6 +52,31 @@ vehicleInfoScreen.prototype.Exists = function () {
       
 } //Exists
 
+vehicleInfoScreen.prototype.Refresh = function () {  
+
+/*---------------------------------------------------------------------
+  Method      : Refresh()
+  
+  Description : This method re-instantiate the vehicleInfoScreen.    
+----------------------------------------------------------------------*/  
+  try {
+  
+   Sys.Refresh();
+    Delay(1000);
+
+    this.scrnVehiInfo =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "ScreenVehicleInfo");
+     
+  } //End try
+  
+ catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+      
+} //Refresh
+
+
+
 vehicleInfoScreen.prototype.EnterPlateNumber = function (plateNumber) {  
 
 /*-------------------------------------------------------------------------------
@@ -70,7 +96,8 @@ vehicleInfoScreen.prototype.EnterPlateNumber = function (plateNumber) {
               message     : this.scrnVehiInfo + " Screen does not Exist." }             
     
     if (plateNumber !== undefined && plateNumber !== null)
-      this.scrnVehiInfo.FindChild("WinFormsControlName", "labelTextBox", 2).Keys(plateNumber);
+      //this.scrnVehiInfo.FindChild("WinFormsControlName", "labelTextBox", 2).Keys(plateNumber);
+      this.scrnVehiInfo.WinFormsObject("selectableTextBoxListFields").WinFormsObject("SelectableTextBox").WinFormsObject("labelTextBox").Keys(plateNumber);
     
   } //End try
   
@@ -81,27 +108,31 @@ vehicleInfoScreen.prototype.EnterPlateNumber = function (plateNumber) {
       
 } //EnterPlateNumber
 
-vehicleInfoScreen.prototype.SelectColor = function (color) {  
 
-/*------------------------------------------------------------------------------------
-  Method      : SelectColor()
+
+
+vehicleInfoScreen.prototype.verifyFocus_On_PlateTextField = function () {  
+
+/*-------------------------------------------------------------------------------
+  Method      : verifyFocus_On_PlateTextField()
   
-  Description : This method selects the color of vehicle on the Vehicle Info screen
+  Description : 
   
-  Output      : Selects the Vehicle Color in Vehicle Info screen 
--------------------------------------------------------------------------------------*/  
+  Output      :  
+-------------------------------------------------------------------------------*/  
   try {
   
     this.lastError = {};
     
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
-              description : "Error at vehicleInfoScreen.SelectColor: The Info screen does not Exist.",
-              message     : this.scrnVehiInfo + " Info does not Exist." }             
+              description : "Error at vehicleInfoScreen.verifyFocus_On_PlateTextField: The Vehicle Plate textfield does not Exist.",
+              message     : this.scrnVehiInfo + " Screen does not Exist." }             
     
-    if (color !== undefined && color !== null)
-      this.scrnVehiInfo.FindChild(["WndCaption","Visible"], [btnName,true],2).ClickButton();
-    
+   
+      return this.scrnVehiInfo.WinFormsObject("selectableTextBoxListFields")
+      .WinFormsObject("SelectableTextBox").WinFormsObject("labelTextBox").Enabled;
+      
   } //End try
   
   catch (exception) {
@@ -109,7 +140,10 @@ vehicleInfoScreen.prototype.SelectColor = function (color) {
     if (this.throwError) throw exception
   } //End catch
       
-} //GetErrorMessage
+} //verifyFocus_On_PlateTextField
+
+
+
 
 function New() {
 
@@ -120,5 +154,5 @@ function New() {
   This method is for instantiating employeeInfoForm() class from other units of the project. 
 ------------------------------------------------------------------------------------------*/
 
-  return new employeeInfoScreen();  
+  return new vehicleInfoScreen();  
 }

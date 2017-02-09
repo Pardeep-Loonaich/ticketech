@@ -91,7 +91,7 @@ employeePunchForm.prototype.SubmitForm = function () {
   
   Description : This method Clicks enter button  
   
-  Output      : Clicks Enter button if Punch Form Exists
+  Output      : Clicks Enter button if Employee Punch Form Exists
 --------------------------------------------------------------------------*/  
   try {
   
@@ -100,7 +100,7 @@ employeePunchForm.prototype.SubmitForm = function () {
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
               description : "Error at formEmployeePunch.SubmitForm: The Employee Punch Form does not Exist.",
-              message     : this.formEmployeePunch + " The Employee Punch Form does not Exist." }             
+              message     : this.dlgEmployeePunch + " The Employee Punch Form does not Exist." }             
     
     this.navigationPanel.ClickEnter();
     Delay(1000);
@@ -113,6 +113,37 @@ employeePunchForm.prototype.SubmitForm = function () {
   } //End catch
       
 } //SubmitForm
+
+employeePunchForm.prototype.CancelForm = function () {  
+
+/*--------------------------------------------------------------------------  
+  Method      : SubmitForm()
+  
+  Description : This method Clicks Cancel button  
+  
+  Output      : Clicks Cancel button if Employee Punch Form Exists
+--------------------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at formEmployeePunch.SubmitForm: The Employee Punch Form does not Exist.",
+              message     : this.dlgEmployeePunch + " The Employee Punch Form does not Exist." }             
+    
+    this.navigationPanel.ClickCancel();
+    Delay(1000);
+    
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+      
+} //CancelForm
+
 
 function New() {
 

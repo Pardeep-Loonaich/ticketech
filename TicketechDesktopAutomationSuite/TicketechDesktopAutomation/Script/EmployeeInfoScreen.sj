@@ -40,7 +40,7 @@ employeeInfoScreen.prototype.Exists = function () {
   
     this.lastError = {};
 
-    return this.scrnEmployeeInfo.Exists;  //Return whether employeeInfoScreen exists or not
+    return this.dlgEmployeeInfo.Exists;  //Return whether employeeInfoScreen exists or not
   
   } //End try
   
@@ -96,8 +96,8 @@ employeeInfoScreen.prototype.GetErrorMessage = function () {
     
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
-              description : "Error at EmployeeInfoScreen.GetErrorMessage: The Info screen does not Exist.",
-              message     : this.scrnInfo + " Info does not Exist." }             
+              description : "Error at employeeInfoScreen.GetErrorMessage: The Info screen does not Exist.",
+              message     : this.scrnEmployeeInfo + " Info does not Exist." }             
     
     return this.scrnEmployeeInfo.WinFormsObject("screenInformationFooter")
               .WinFormsObject("labelInformation").WndCaption;
