@@ -4,6 +4,8 @@
 //USEUNIT VehicleInfoForm
 //USEUNIT CheckInVehicleDamageForm
 //USEUNIT PrinterStatusForm
+//USEUNIT NavigationPanelForm
+//USEUNIT DBUtility
 
 
 function TC_DAILY_CHKN_001() {
@@ -432,6 +434,7 @@ function TC_DAILY_CHKN_005() {
        var objVehicleInfoForm;//variable to store VehicleInfoForm
        var objCheckInVehicleDamageForm;//variable to store CheckInVehicleDamageForm
        var objPrinterStatusForm;//variable to store PrinterStatusForm
+       var objNavigationPanelForm;//Variable to store NavigationPanelForm
   
   try {
   
@@ -487,15 +490,11 @@ function TC_DAILY_CHKN_005() {
       TestLog.Message("Step-2: enter vehicle Plate number, select color and Make.");
       objVehicleInfoForm.provideVehicleDetails(objTestData.VehiclePlateNumber,objTestData.VehicleColor,objTestData.VehicleMake);
       
-      //Click No for vehicle damage confirmation.
-      TestLog.Message("Step-3: Click No button to confirm vehicle not damage");
-      objCheckInVehicleDamageForm = CheckInVehicleDamageForm.New();
-      objCheckInVehicleDamageForm.ConfirmNo();
+      //Click Cancel button to cancel vehicle checkin
+      TestLog.Message("Step-3: Click Cancel button to cancel vehicle checkin");
+      objNavigationPanelForm = NavigationPanelForm.New();
+      objNavigationPanelForm.ClickCancel();
       
-      //Click on Cancel button on Printer Status window 
-      TestLog.Message("Step-4: Click Cancel button on Printer Status Window");
-      objPrinterStatusForm = PrinterStatusForm.New();
-      objPrinterStatusForm.ClickCancel();
       // Verify user navigated back to Main screen
       Utility.assertResult(objMainDialog.Exists(),"vehicle check in Successfully","somthing went wrong with over size vehicle check in. Its Failed !!");      
      
