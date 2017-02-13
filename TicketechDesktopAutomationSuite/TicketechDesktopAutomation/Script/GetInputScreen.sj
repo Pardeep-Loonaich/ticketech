@@ -2,36 +2,36 @@
 
 /******************************************************************************
             ---------- Class Definition ----------
-  Name:EmployeeCodeScreen
+  Name:GetInputScreen
   
   Description: 
   
-  This class has methods and properties to perform the EmployeeCodeScreen objects. 
+  This class has methods and properties to perform the GetInputScreen objects. 
   Instance of the class can be created by calling the constructor. 
   To call it from other units used New()method.  
 *****************************************************************************/
 
-function employeeCodeScreen() { 
+function getInputScreen() { 
 
 /*------------------------------------------------------------------------------------ 
-  Method: employeeCodeScreen() 
+  Method: getInputScreen() 
   
-  Description: This method will the Instantiate the EmployeeCodeScreen Wrapper Helper
+  Description: This method will the Instantiate the GetInputScreen Wrapper Helper
 ------------------------------------------------------------------------------------*/   
   this.lastError = {};
   
-  this.scrnEmployeeCode =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "ScreenEmployeeCode", 3);
+  this.scrnGetInput =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "ScreenGetInput", 3);
   
   this.throwError = false; 
     
-} //employeeCodeScreen
+} //getInputScreen
 
-employeeCodeScreen.prototype.Exists = function () {  
+getInputScreen.prototype.Exists = function () {  
 
 /*---------------------------------------------------------------------
   Method      : Exists()
   
-  Description : This method checks the existance of the employeeCodeScreen.  
+  Description : This method checks the existance of the getInputScreen.  
   
   Output: True if Screen Exists
           False if Screen does not Exists   
@@ -40,26 +40,25 @@ employeeCodeScreen.prototype.Exists = function () {
   
     this.lastError = {};
 
-    return this.scrnEmployeeCode.Exists;  //Return whether employeeCodeScreen exists or not
+    return this.scrnGetInput.Exists;  //Return whether getInputScreen exists or not
   
   } //End try
   
   catch (exception) {
-    TestLog.Message("Exception at employeeCodeScreen.Exists");
     for (prop in exception) this.lastError[prop] = exception[prop];
     if (this.throwError) throw exception
   } //End catch
       
 } //Exists
 
-employeeCodeScreen.prototype.SetEmployeeCode = function (code) {  
+getInputScreen.prototype.SetBarCode = function (sBarCode) {  
 
 /*-------------------------------------------------------------------------------
-  Method      : SetEmployeeCode()
+  Method      : SetBarCode()
   
   Description : This method enters the Code in the Employee Code screen
   
-  Output      : Enters the Code  in the Employee Code screen 
+  Output      : Enters the BarCode  in the Set Input screen 
 -------------------------------------------------------------------------------*/  
   try {
   
@@ -67,30 +66,29 @@ employeeCodeScreen.prototype.SetEmployeeCode = function (code) {
     
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
-              description : "Error at employeeCodeScreen.SetEmployeeCode: The EmployeeCode Screen does not Exist.",
-              message     : this.scrnEmployeeCode + " Screen does not Exist." }             
+              description : "Error at getInputScreen.SetBarCode: The Barcode Code Exist.",
+              message     : this.scrnGetInput + " Screen Exist." }             
     
-    if (code !== undefined && code !== null)
-      this.scrnEmployeeCode.FindChild("Caption","CODE",2).FindChild("WinFormsControlName", "maskedTextBoxInfo", 1).Keys(code);
-    
+    if (sBarCode !== undefined && sBarCode !== null)
+      //this.scrnGetInput.FindChild("Caption","BARCODE",1).FindChild("WinFormsControlName", "labelTextBox", 1).Keys(sBarCode);
+      Sys.Process("PosApplication").WinFormsObject("FormReservationInfo").WinFormsObject("ScreenGetInput").WinFormsObject("selectableTextBoxInput").WinFormsObject("labelTextBox").Keys(sBarCode);
   } //End try
   
   catch (exception) {
-    TestLog.Message("Exception at employeeCodeScreen.SetEmployeeCode "+code);
     for (prop in exception) this.lastError[prop] = exception[prop];
     if (this.throwError) throw exception
   } //End catch
       
-} //SetEmployeeCode
+} //SetBarCode
 
-employeeCodeScreen.prototype.GetErrorMessage = function () {  
+getInputScreen.prototype.GetErrorMessage = function () {  
 
 /*------------------------------------------------------------------------------------
   Method      : GetErrorMessage()
   
-  Description : This method returns the error message displayed in the code screen 
+  Description : This method returns the error message displayed in the barcode getInput screen 
   
-  Output      : Returns the error message displayed in the emp code screen 
+  Output      : Returns the error message displayed in the Get Input screen 
 -------------------------------------------------------------------------------------*/  
   try {
   
@@ -98,10 +96,10 @@ employeeCodeScreen.prototype.GetErrorMessage = function () {
     
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
-              description : "Error at EmployeeCodeScreen.GetErrorMessage: The Code screen does not Exist.",
-              message     : this.scrnEmployeeCode + " Code screen does not Exist." }             
+              description : "Error at GetInputScreen.GetErrorMessage: The GetInput screen does not Exist.",
+              message     : this.scrnGetInput + " GetInput screen does not Exist." }             
     
-    return this.scrnEmployeeCode.WinFormsObject("screenInformationFooter")
+    return this.scrnGetInput.WinFormsObject("screenInformationFooter")
               .WinFormsObject("labelInformation").WndCaption;
     
   } //End try
@@ -119,8 +117,8 @@ function New() {
   Method: New() 
   
   Description:
-  This method is for instantiating employeeCodeScreen() class from other units of the project. 
+  This method is for instantiating getInputScreen() class from other units of the project. 
 ------------------------------------------------------------------------------------------*/
 
-  return new employeeCodeScreen();  
+  return new getInputScreen();  
 }

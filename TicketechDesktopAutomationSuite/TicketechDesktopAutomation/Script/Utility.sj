@@ -364,7 +364,16 @@ function launchApp()  {
   }
   
   else  {
-    Log.Message("The POS app is already running.");
+    Log.Message("The POS app is already running, closing app");
+    closeApp("PosApplication");
+    Indicator.PushText("Launching POS application... again");
+    TestedApps.PosApplication.Run(); //Run the POS app
+    Delay(5000, "The POS app is being launched");
+    
+    if(appExists("PosApplication"))
+      Log.Message("Launching POS app is successful.");
+    else
+      Log.Message("Launching POS app is unsuccessful.");
   }
   
   } //End try
@@ -462,7 +471,7 @@ function exeCommand(keyName)  {
   /*
   ----------------------------------------------------------------------------------
   Mehtod  : assertResult()
-  Desc    :To Use assert result
+  Desc    : To Use assert result
   Param   : it will accept three argument 
   bStatus : ture or False
   sPassMsg: Pass Message
@@ -479,7 +488,7 @@ function exeCommand(keyName)  {
     }
     else
     {
-      TestLog.Fail(sPassMsg);
+      TestLog.Fail(sFailMsg);
     }
 
   }

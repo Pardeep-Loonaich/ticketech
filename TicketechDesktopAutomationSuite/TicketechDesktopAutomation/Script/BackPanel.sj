@@ -44,6 +44,7 @@ backPanel.prototype.Exists = function () {
   } //End try
   
   catch (exception) {
+    TestLog.Message("Exception at backPanel.Exists");
     for (prop in exception) this.lastError[prop] = exception[prop];
     if (this.throwError) throw exception
   } //End catch
@@ -52,20 +53,20 @@ backPanel.prototype.Exists = function () {
 
 backPanel.prototype.ClickBack = function () {  
 
-/*-----------------------------------------------------------------
+/*------------------------------------------------------
   Method      : ClickBack()
   
-  Description : This method Clicks Back button in the parameter  
+  Description : This method Clicks Back button 
   
-  Output      : Clicks Back button in the parameter if Back Panel Exists
------------------------------------------------------------------*/  
+  Output      : Clicks Back button if Back Panel Exists
+------------------------------------------------------*/  
   try {
   
     this.lastError = {};
     
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
-              description : "Error at backPanel.ClickBack: The Back Panel does not Exist.",
+              description : "Error at BackPanel.ClickBack: The Back Panel does not Exist.",
               message     : this.pnlBack + " Panel does not Exist." }             
     
     this.pnlBack.WaitWinFormsObject("ScreenButton", "BACK", 1000).ClickButton();
@@ -73,6 +74,7 @@ backPanel.prototype.ClickBack = function () {
   } //End try
   
   catch (exception) {
+    TestLog.Message("Exception at backPanel.ClickBack");
     for (prop in exception) this.lastError[prop] = exception[prop];
     if (this.throwError) throw exception
   } //End catch
@@ -82,12 +84,12 @@ backPanel.prototype.ClickBack = function () {
 
 function New() {
 
-/*------------------------------------------------------------------------------------ 
+/*----------------------------------------------------------------------------------- 
   Method: New() 
   
   Description:
   This method is for instantiating backPanel() class from other units of the project. 
-------------------------------------------------------------------------------------*/
+-----------------------------------------------------------------------------------*/
 
   return new backPanel();  
 }

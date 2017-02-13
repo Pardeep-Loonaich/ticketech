@@ -1,69 +1,75 @@
 ﻿//USEUNIT Utility
 //USEUNIT InformationScreen
+//USEUNIT CustomerInfoScreen
 //USEUNIT NavigationPanel
-//USEUNIT EmployeeCodeScreen
+//USEUNIT NumericPanel
+
+
 
 /*************************************************************************
             ---------- Class Definition ----------
-  Name:EmployeeCodeForm
+  Name:CheckInCustomerInfoForm
   
   Description: 
   
-  This class has methods and properties to perform the EmployeeCodeForm objects. 
+  This class has methods and properties to perform the CheckInCustomerInfoForm objects. 
   Instance of the class can be created by calling the constructor. 
   To call it from other units used New()method.  
 **************************************************************************/
 
-function employeeCodeForm() { 
+function checkInCustomerInfoForm() { 
 
 /*--------------------------------------------------------------------- 
-  Method: employeeCodeForm() 
+  Method: checkInCustomerInfoForm() 
   
-  Description: This method will the Instantiate the employeeCodeForm Wrapper
+  Description: This method will the Instantiate the checkInCustomerInfoForm Wrapper
 ---------------------------------------------------------------------*/   
   this.lastError = {};
   
-  this.dlgEmployeeCode =  Sys.Process("PosApplication").WaitWinFormsObject("FormEmployeeCode", 3000); 
+  this.dlgCheckInCustomerInfo =  Sys.Process("PosApplication").WaitWinFormsObject("FormCheckInCustomerInfo", 3000); 
   
   this.infoScreen = InformationScreen.New();
-  this.employeeCodeScreen = EmployeeCodeScreen.New();
+  this.customerInfoScreen = CustomerInfoScreen.New();
   this.navigationPanel = NavigationPanel.New();
+  this.numericPanel = NumericPanel.New();
   
   this.throwError = false; 
     
-} //employeeCodeForm
+} //checkInCustomerInfoForm
 
-employeeCodeForm.prototype.Refresh = function () {  
+checkInCustomerInfoForm.prototype.Refresh = function () {  
 
 /*-------------------------------------------------------------------------------
   Method      : Refresh()
   
-  Description : This method will the re-instantiate the employeeCodeForm Wrapper   
+  Description : This method will the re-instantiate the checkInCustomerInfoForm Wrapper   
 --------------------------------------------------------------------------------*/  
   try {
-    
-    this.dlgEmployeeCode =  Sys.Process("PosApplication").WaitWinFormsObject("FormEmployeeCode", 3000); 
+//    Sys.Refresh();
+//    Delay(1000);
+//    
+    this.dlgCheckInCustomerInfo =  Sys.Process("PosApplication").WaitWinFormsObject("FormCheckInCustomerInfo", 3000); 
   
     this.infoScreen = InformationScreen.New();
-    this.employeeCodeScreen = EmployeeCodeScreen.New();
+    this.customerInfoScreen = CustomerInfoScreen.New();
     this.navigationPanel = NavigationPanel.New();
+    this.numericPanel = NumericPanel.New();
         
   } //End try
   
   catch (exception) {
-	TestLog.Messgae("Exception at EmployeeCodeForm.Refresh");
     for (prop in exception) this.lastError[prop] = exception[prop];
     if (this.throwError) throw exception
   } //End catch
       
 } //Refresh
 
-employeeCodeForm.prototype.Exists = function () {  
+checkInCustomerInfoForm.prototype.Exists = function () {  
 
 /*-----------------------------------------------------------------
   Method      : Exists()
   
-  Description : This method checks the existance of the employeeCodeForm.  
+  Description : This method checks the existance of the checkInCustomerInfoForm.  
   
   Output: True if dialog Exists
           False if dialog does not Exists   
@@ -72,26 +78,25 @@ employeeCodeForm.prototype.Exists = function () {
   
     this.lastError = {};
 
-    return this.dlgEmployeeCode.Exists;  //Return whether employeeCodeForm exists or not
+    return this.dlgCheckInCustomerInfo.Exists;  //Return whether checkInCustomerInfoForm exists or not
   
   } //End try
   
   catch (exception) {
-	TestLog.Message("Exception at EmployeeCodeForm.Exists");
     for (prop in exception) this.lastError[prop] = exception[prop];
     if (this.throwError) throw exception
   } //End catch
       
 } //Exists
 
-employeeCodeForm.prototype.InputAndSubmitForm = function (code) {  
+checkInCustomerInfoForm.prototype.InputAndSubmitForm = function (sVehicleTag) {  
 
 /*--------------------------------------------------------------------------
   Method      : InputAndSubmitForm()
   
-  Description : This method enters Employee Code  
+  Description : This method enters tag
   
-  Output      : Enters Code if Employee Code Form Exists
+  Output      : Enters tag if CheckInCustomerInfo Form Exists
 --------------------------------------------------------------------------*/  
   try {
   
@@ -99,53 +104,53 @@ employeeCodeForm.prototype.InputAndSubmitForm = function (code) {
     
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
-              description : "Error at FormEmployeeCode.InputAndSubmitForm: The EmployeeCode Form does not Exist.",
-              message     : this.dlgEmployeeCode + " The EmployeeCode Form does not Exist." }             
+              description : "Error at checkInCustomerInfoForm.InputAndSubmitForm: The User Info Form does not Exist.",
+              message     : this.dlgCheckInCustomerInfo + " The CheckInCustomerInfo Form does not Exist." }             
     
-    this.employeeCodeScreen.SetEmployeeCode(code);
+    this.customerInfoScreen.SetVehicleTag(sVehicleTag);
     Delay(1000);
     
     this.navigationPanel.ClickEnter();
     Delay(1000);
     
+    this.Refresh();
+    
   } //End try
   
   catch (exception) {
-	TestLog.Message("Exception at EmployeeCodeForm.InputAndSubmitForm");
     for (prop in exception) this.lastError[prop] = exception[prop];
     if (this.throwError) throw exception
   } //End catch
       
-} //InputAndSubmitForm
+} //InputandSubmitForm
 
-employeeCodeForm.prototype.InputAndSubmitFormWithErrors = function (code) {  
+checkInCustomerInfoForm.prototype.InputAndSubmitFormWithErrors = function (sVehicleTag) {  
 
 /*--------------------------------------------------------------------------
   Method      : InputAndSubmitFormWithErrors()
+    
+  Description : This method enters Vehicle Tag
   
-  Description : This method enters Code and click enter button
-  
-  Output      : Enters invalid Emp Code and clicks enter button
+  Output      : Enters Vehicle Tag if CheckInCustomerInfo Form Exists
 --------------------------------------------------------------------------*/  
   try {
   
-    this.InputAndSubmitForm(code);
+    this.InputAndSubmitForm(sVehicleTag);
     Delay(1000);
     
     this.Refresh();
     Delay(1000);
     
-    return this.employeeCodeScreen.GetErrorMessage();
+    return this.customerInfoScreen.GetMessage();
     
   } //End try
   
   catch (exception) {
-	TestLog.Message("Exception at EmployeeCodeForm.InputAndSubmitFormWithErrors");
     for (prop in exception) this.lastError[prop] = exception[prop];
     if (this.throwError) throw exception
   } //End catch
       
-} //InputAndSubmitFormWithErrors()
+} //InputandSubmitFormWithErrors
 
 function New() {
 
@@ -153,8 +158,9 @@ function New() {
   Method: New() 
   
   Description:
-  This method is for instantiating employeeCodeForm() class from other units of the project. 
+  This method is for instantiating checkInCustomerInfoForm() class from other units of the project. 
 ------------------------------------------------------------------------------------*/
 
-  return new employeeCodeForm();  
+  return new checkInCustomerInfoForm();  
 }
+

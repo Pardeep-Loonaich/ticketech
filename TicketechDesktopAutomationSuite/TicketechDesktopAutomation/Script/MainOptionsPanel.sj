@@ -1,5 +1,4 @@
 ﻿//USEUNIT Utility
-//USEUNIT UserInfoForm
 
 /*******************************************************************
             ---------- Class Definition ----------
@@ -22,7 +21,7 @@ function mainOptionsPanel() {
 --------------------------------------------------------------------------------------*/   
   this.lastError = {};
   
-  this.pnlMainOptions =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "PanelMainOptions", 2);
+  this.pnlMainOptions =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "PanelMainOptions", 3);
   this.throwError = false; 
     
 } //mainOptionsPanel
@@ -41,11 +40,12 @@ mainOptionsPanel.prototype.Exists = function () {
   
     this.lastError = {};
 
-    return this.pnlMainOptions.Exists;  //Return whether punchPanel exists or not
+    return this.pnlMainOptions.Exists;  //Return whether Main Options Panel exists or not
   
   } //End try
   
   catch (exception) {
+    TestLog.Message("Exception at mainOptionsPanel.Exists");
     for (prop in exception) this.lastError[prop] = exception[prop];
     if (this.throwError) throw exception
   } //End catch
@@ -106,13 +106,15 @@ mainOptionsPanel.prototype.Click = function (btnName) {
     
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
-              description : "Error at PunchPanel.Click"+index+": The Punch Panel does not Exist.",
-              message     : this.pnlPunch + " Panel does not Exist." }             
+              description : "Error at MainOptionsPanel.Click"+index+": The MainOptions Panel does not Exist.",
+              message     : this.pnlMainOptions + " MainOptions Panel does not Exist." }             
     
-    this.pnlMainOptions.FindChild("Value", btnName, 2).ClickButton();
+    this.pnlMainOptions.FindChild("Value", btnName, 3).ClickButton();
+    Delay(500);
   } //End try
   
   catch (exception) {
+    TestLog.Message("Exception at mainOptionsPanel.Click "+btnName);
     for (prop in exception) this.lastError[prop] = exception[prop];
     if (this.throwError) throw exception
   } //End catch

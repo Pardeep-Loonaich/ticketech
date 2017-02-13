@@ -6,6 +6,7 @@
 //USEUNIT VehicleInfoScreen
 //USEUNIT ColorPanel
 //USEUNIT MakesPanel
+//USEUNIT DealsOptionsPanel
 
 /*************************************************************************
             ---------- Class Definition ----------
@@ -141,13 +142,24 @@ vehicleInfoForm.prototype.clickOnEnterButton = function () {
   objVehicleInfoScrn= NavigationPanel.New();
   //invoking mehtod from NavigationPanel
   objVehicleInfoScrn.ClickEnter();
- 
-  
-  
-
-
-      
+    
 } //clickOnEnterButton
+
+
+vehicleInfoForm.prototype.clickOnReservationButton = function () {  
+
+/*-----------------------------------------------------------------
+  Method      : clickOnReservationButton()
+  
+  Description : This method will click Reservation button on deals options panel  
+     
+-----------------------------------------------------------------*/  
+//Creating object for DealsOptionsPanel
+  objDealsOptionsPanel= DealsOptionsPanel.New();
+  //invoking mehtod from DealsOptionsPanel
+  objDealsOptionsPanel.ClickReservation();
+    
+} //clickOnReservationButton
 
 
 function New() {

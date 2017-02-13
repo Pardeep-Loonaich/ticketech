@@ -1,10 +1,9 @@
 ﻿//USEUNIT Utility
 //USEUNIT InformationScreen
-//USEUNIT EmployeeEnrollmentIdentificationScreen
+//USEUNIT EmployeeEnrollmentInfoScreen
 //USEUNIT NavigationPanel
 //USEUNIT NumericPanel
 //USEUNIT BackPanel
-
 
 
 /*************************************************************************
@@ -47,9 +46,7 @@ employeeEnrollmentInfoForm.prototype.Refresh = function () {
   Description : This method will the re-instantiate the employeeEnrollmentInfoForm Wrapper   
 ----------------------------------------------------------------------------------------*/  
   try {
-//    Sys.Refresh();
-//    Delay(1000);
-//    
+  
     this.dlgEmployeeEnrollmentInfo =  Sys.Process("PosApplication").WaitWinFormsObject("FormEmployeeEnrollmentInfo*", 3000); 
   
     this.objInfoScreen = InformationScreen.New();
@@ -61,6 +58,7 @@ employeeEnrollmentInfoForm.prototype.Refresh = function () {
   } //End try
   
   catch (exception) {
+	TestLog.Message("Exception at EmployeeEnrollmentInfoForm.Refresh");
     for (prop in exception) this.lastError[prop] = exception[prop];
     if (this.throwError) throw exception
   } //End catch
@@ -86,13 +84,14 @@ employeeEnrollmentInfoForm.prototype.Exists = function () {
   } //End try
   
   catch (exception) {
+	TestLog.Message("Exception at EmployeeEnrollmentInfoForm.Exists");
     for (prop in exception) this.lastError[prop] = exception[prop];
     if (this.throwError) throw exception
   } //End catch
       
 } //Exists
 
-employeeEnrollmentInfoForm.prototype.InputAndSubmitForm = function (enumEmployeeData) {  
+employeeEnrollmentInfoForm.prototype.InputAndSubmitForm = function (objTestData) {  
 
 /*-----------------------------------------------------------------------------------
   Method      : InputAndSubmitForm()
@@ -108,48 +107,55 @@ employeeEnrollmentInfoForm.prototype.InputAndSubmitForm = function (enumEmployee
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
               description : "Error at employeeEnrollmentInfoForm.InputAndSubmitForm: The EmployeeEnrollment Info Form does not Exist.",
-              message     : this.dlgEmployeeEnrollmentInfo + " The EmployeeEnrollment Info Form does not Exist." }             
+              message     : this.dlgEmployeeEnrollmentInfo + " The EmployeeEnrollment Info Form does not Exist." };             
     
-    this.employeeEnrollmentInfoScreen.SetEmployeeData("EMPLOYEE ID",employeeData.ID);
+    this.objEmployeeEnrollmentInfoScreen.SetEmployeeData("EMPLOYEE ID", objTestData.sEmpId);
     Delay(500);
     
-    this.navigationPanel.ClickEnter();
-    Delay(500);
-    
-    this.Refresh();
-    
-    this.employeeEnrollmentInfoScreen.SetEmployeeData("LAST NAME",employeeData.FirstName);
-    Delay(500);
-    
-    this.navigationPanel.ClickEnter();
+    this.objNavigationPanel.ClickEnter();
     Delay(500);
     
     this.Refresh();
     
-    this.employeeEnrollmentInfoScreen.SetEmployeeData("FIRST NAME",employeeData.LastName);
+    this.objEmployeeEnrollmentInfoScreen.SetEmployeeData("FIRST NAME", objTestData.sFirstName);
     Delay(500);
     
-    this.navigationPanel.ClickEnter();
+    this.objNavigationPanel.ClickEnter();
+    Delay(500);
+    
+    this.Refresh();
+    
+    this.objEmployeeEnrollmentInfoScreen.SetEmployeeData("LAST NAME", objTestData.sLastName);
+    Delay(500);
+    
+    this.objNavigationPanel.ClickEnter();
     Delay(500);
     
     this.Refresh();
     
-    this.employeeEnrollmentInfoScreen.SetEmployeeData("SOCIAL SECURITY NUMBER",employeeData.SSN);
+    this.objEmployeeEnrollmentInfoScreen.SetEmployeeData("SOCIAL SECURITY NUMBER", objTestData.iSSNum);
     Delay(500);
     
-    this.navigationPanel.ClickEnter();
+    this.objNavigationPanel.ClickEnter();
     Delay(500);
     
     this.Refresh();
+    
+    this.objEmployeeEnrollmentInfoScreen.SetEmployeeData("BIRTHDAY", objTestData.sBirthDate);
+    Delay(500);
+    
+    this.objNavigationPanel.ClickEnter();
+    Delay(500);
     
   } //End try
   
   catch (exception) {
+	TestLog.Message("Exception at EmployeeEnrollmentInfoForm.InputAndSubmitForm");
     for (prop in exception) this.lastError[prop] = exception[prop];
     if (this.throwError) throw exception
   } //End catch
       
-} //InputandSubmitForm
+} //InputAndSubmitForm
 
 employeeEnrollmentInfoForm.prototype.InputAndSubmitFormWithErrors = function (enumEmployeeData) {  
 
@@ -168,7 +174,66 @@ employeeEnrollmentInfoForm.prototype.InputAndSubmitFormWithErrors = function (en
     this.Refresh();
     Delay(500);
     
-    return this.employeeEnrollmentInfoScreen.GetMessage();
+    return this.objEmployeeEnrollmentInfoScreen.GetMessage();
+    
+  } //End try
+  
+  catch (exception) {
+	TestLog.Message("Exception at EmployeeEnrollmentInfoForm.InputAndSubmitFormWithErrors");
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+      
+} //InputAndSubmitFormWithErrors
+
+employeeEnrollmentInfoForm.prototype.UpdateAndSubmitForm = function (objTestData) {  
+
+/*-----------------------------------------------------------------------------------
+  Method      : UpdateAndSubmitForm()
+  
+  Description : This method Updates Employee Enrollment Data 
+  
+  Output      : Updates Employee Enrollment Data if EmployeeEnrollmentInfo Form Exists
+-----------------------------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at employeeEnrollmentInfoForm.UpdateAndSubmitForm: The EmployeeEnrollment Info Form does not Exist.",
+              message     : this.dlgEmployeeEnrollmentInfo + " The EmployeeEnrollment Info Form does not Exist." };             
+    
+    
+    this.objEmployeeEnrollmentInfoScreen.SetEmployeeData("FIRST NAME", objTestData.sFirstName);
+    Delay(500);
+    
+    this.objNavigationPanel.ClickEnter();
+    Delay(500);
+    
+    this.Refresh();
+    
+    this.objEmployeeEnrollmentInfoScreen.SetEmployeeData("LAST NAME", objTestData.sLastName);
+    Delay(500);
+    
+    this.objNavigationPanel.ClickEnter();
+    Delay(500);
+    
+    this.Refresh();
+    
+    this.objEmployeeEnrollmentInfoScreen.SetEmployeeData("SOCIAL SECURITY NUMBER", objTestData.iSSNum);
+    Delay(500);
+    
+    this.objNavigationPanel.ClickEnter();
+    Delay(500);
+    
+    this.Refresh();
+    
+    this.objEmployeeEnrollmentInfoScreen.SetEmployeeData("BIRTHDAY", objTestData.sBirthDate);
+    Delay(500);
+    
+    this.objNavigationPanel.ClickEnter();
+    Delay(500);
     
   } //End try
   
@@ -177,7 +242,7 @@ employeeEnrollmentInfoForm.prototype.InputAndSubmitFormWithErrors = function (en
     if (this.throwError) throw exception
   } //End catch
       
-} //InputandSubmitFormWithErrors
+} //UpdateAndSubmitForm
 
 function New() {
 

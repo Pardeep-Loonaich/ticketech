@@ -66,7 +66,7 @@ employeeEnrollmentMenuScreen.prototype.MoveToEmployeeDataRow = function (empId) 
     
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
-              description : "Error at employeeEnrollmentMenuScreen.SetUsername: The EmployeeEnrollmentMenu Screen does not Exist.",
+              description : "Error at employeeEnrollmentMenuScreen.MoveToEmployeeDataRow: The EmployeeEnrollmentMenu Screen does not Exist.",
               message     : this.scrnEmpEnrollMenu + " Screen does not Exist." }             
     
     if (empId !== undefined && empId !== null) 
@@ -79,28 +79,28 @@ employeeEnrollmentMenuScreen.prototype.MoveToEmployeeDataRow = function (empId) 
     if (this.throwError) throw exception
   } //End catch
       
-} //SetUserName
+} //MoveToEmployeeDataRow
 
-employeeEnrollmentMenuScreen.prototype.GetMessage = function () {  
 
-/*--------------------------------------------------------------------------------------------
-  Method      : GetMessage()
+employeeEnrollmentMenuScreen.prototype.GetText = function (objControlName) {  
+
+/*-------------------------------------------------------------------------------
+  Method      : GetText()
   
-  Description : This method returns the message displayed in the EmployeeEnrollmentMenu screen 
+  Description : This method returns the label of the given objControlName in the employeeEnrollmentMenu Screen 
   
-  Output      : Returns the the message displayed in the EmployeeEnrollmentMenu screen 
----------------------------------------------------------------------------------------------*/  
+  Output      : Returns the label of the given object in the employeeEnrollmentMenu Screen 
+-------------------------------------------------------------------------------*/  
   try {
   
     this.lastError = {};
     
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
-              description : "Error at EmployeeEnrollmentMenuScreen.GetMessage: The Info screen does not Exist.",
-              message     : this.scrnInfo + " Info does not Exist." }             
+              description : "Error at employeeEnrollmentMenuScreen.Get"+objControlName+": The EmployeeEnrollmentMenu screen does not Exist.",
+              message     : this.scrnEmpEnrollMenu + " EmployeeEnrollmentMenu Screen does not Exist." }             
     
-    return this.scrnEmpEnrollMenu.WinFormsObject("screenInformationFooter")
-              .WinFormsObject("labelInformation").WndCaption;
+    return this.scrnEmpEnrollMenu.FindChild("WinFormsControlName", objControlName, 2).WndCaption;
     
   } //End try
   
@@ -109,7 +109,21 @@ employeeEnrollmentMenuScreen.prototype.GetMessage = function () {
     if (this.throwError) throw exception
   } //End catch
       
-} //GetMessage
+} //GetText
+
+employeeEnrollmentMenuScreen.prototype.GetTitle = function () {  
+
+/*-------------------------------------------------------------------------------
+  Method      : GetTitle()
+  
+  Description : This method returns the current Title labelled in the employeeEnrollmentMenuS screen 
+  
+  Output      : Returns the current Title labelled in the employeeEnrollmentMenu screen 
+-------------------------------------------------------------------------------*/  
+  return   this.GetText("labelTitle");
+      
+} //GetTitle
+
 
 function New() {
 
@@ -135,7 +149,7 @@ function MoveAndGetRowDataByID(value){
   
     var objGrid = Sys.Process("PosApplication").FindChild("WinFormsControlName", "customDataGridInformation", 3);
     var iRowCount = objGrid.wRowCount;
-    var employeeData = {ID,LastName,FirstName};
+    var employeeData = {ID : null,LastName : null,FirstName : null};
 
     if(iRowCount > 0)
        for(iCurrentRow=0;iCurrentRow<iRowCount;iCurrentRow++) {
@@ -149,6 +163,8 @@ function MoveAndGetRowDataByID(value){
        }
     return employeeData; 
   }
+  
+
   catch(exception) {
     TestLog.Message("Error in MoveAndGetRowDataByID method: "+ exception);
   }

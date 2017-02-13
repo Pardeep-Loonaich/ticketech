@@ -70,12 +70,13 @@ userIdentificationScreen.prototype.SetUsername = function (username) {
               message     : this.scrnUserInfo + " Screen does not Exist." }             
     
     if (username !== undefined && username !== null)
-      this.scrnUserInfo.FindChild("Caption", "USERNAME",2).FindChild("WinFormsControlName","maskedTextBoxInfo",0).Keys(username);
+      this.scrnUserInfo.FindChild("Caption", "USERNAME",3).FindChild("WinFormsControlName","maskedTextBoxInfo",1).Keys(username);
       
     
   } //End try
   
   catch (exception) {
+    TestLog.Message("Error in userIdentificationScreen.SetUsername");
     for (prop in exception) this.lastError[prop] = exception[prop];
     if (this.throwError) throw exception
   } //End catch
@@ -101,12 +102,13 @@ userIdentificationScreen.prototype.SetPassword = function (password) {
               message     : this.scrnUserInfo + " Screen does not Exist." }             
     
     if (password !== undefined && password !== null)
-      this.scrnUserInfo.FindChild("Caption", "PASSWORD",2).FindChild("WinFormsControlName","maskedTextBoxInfo",0,true).Keys(password);
+      this.scrnUserInfo.FindChild("Caption", "PASSWORD",3).FindChild("WinFormsControlName","maskedTextBoxInfo",1).Keys(password);
       
     
   } //End try
   
   catch (exception) {
+    TestLog.Message("Error in userIdentificationScreen.SetPassowrd");
     for (prop in exception) this.lastError[prop] = exception[prop];
     if (this.throwError) throw exception
   } //End catch

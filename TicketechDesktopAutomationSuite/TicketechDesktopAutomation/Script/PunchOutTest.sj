@@ -840,9 +840,119 @@ function TC_POUT_EMP_007() {
 
 function TC_POUT_EMP_008() {
   
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  TC_POUT_EMP_008 : Verify the PunchOut of an employee who has already punched out 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  TC_POUT_EMP_008 : Verify that employee gets back to the previous screen when 'No' button is clicked
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  //Variable Declaration 
+  //---------------------
+  var home; //Stores the instance of home screen
+  var frmEmployeeInfo; //Stores the instance of Employee Info Screen
+  //var frmEmployeeCode; //Stores the instance of Employee Code Screen
+  //var expectedErrorMessage = "CODE ENTERED NOT VALID."; //Stores the expected error message    
+  //var actualErrorMessage; //Stores the error message to be dispalyed    
+  
+  try {
+  
+    //Connecting to testdata file & reading the given data
+    TestDataIdx = 0;
+    DataPool.FilePath = Project.Path + "TestData\\";
+    DataPool.FileName = "PunchOut.xls";
+    DataPool.SheetName = "TC_POUT_EMP_008";
+    DataPool.New(); //Creating a New Data Connection
+  
+    //Verify if test data exists in the test data sheet
+    if (DataPool.EOF) {
+      TestLog.Warning("No TestData found.");
+      DataPool.Close();
+      return;
+    }
+    
+  } //End try
+  
+  catch (exception) {
+    TestLog.Error(exception.description, Utility.formattedException(exception));
+    DataPool.Close();
+    return;
+  } //End catch
+    
+  while (!DataPool.EOF) {
+    
+    try {
+
+      TestDataIdx++;       
+      TestLog.AddTestDataInfo(TestDataIdx, DataPool.Columns, DataPool.Item); // Printing given testdata info to Log
+      
+      objTestData = {
+                      EmployeeID   : DataPool.Item("EmpID")
+                      }; //TestData object to punch in an employee
+     
+      //Step-1: Launching the POS application and Initialize the home screen
+      //--------------------------------------------------------------------
+      Utility.launchApp();
+      home = MainDialog.New();
+      
+      //Step-2: Navigate into Employee info screen and submit invalid emp ID
+      //--------------------------------------------------------------------
+      home.NavigateToPunchInScreen();
+      if (home.lastError.name !== undefined) throw home.lastError;
+      
+      TestLog.Message("Step-1: Clicked Punch Out button.");
+      
+      //Initialize object of EmployeeInfoForm 
+      frmEmployeeInfo = new EmployeeInfoForm.New();
+      
+      //Set data in Employee ID field and click Enter button from Navigation panel
+      frmEmployeeInfo.InputAndSubmitForm(objTestData.EmployeeID);
+      if (frmEmployeeInfo.lastError.name !== undefined) throw frmEmployeeInfo.lastError;
+      
+      TestLog.Message("Step-2: Navigated to EmployeeInfo Form and submitted valid emp id.");
+      
+      //Step-3: Navigate to confirm Action screen and click yes button
+      //---------------------------------------------------------------
+      confirmAction = new ConfirmActionForm.New();
+      TestLog.Message("Step-3 : Navigated to ConfirmAction Form");
+     
+       //Click Yes button from YesNoConfirmAction panel
+      confirmAction.ConfirmNo();
+      if (confirmAction.lastError.name !== undefined) throw confirmAction.lastError;
+      TestLog.Message("Step-4 :Clicked No Button");
+     
+     //Step-3:/Navigate to the Employee info form and click cancel button
+      
+       //Set data in Employee ID field and click Enter button from Navigation panel
+      frmEmployeeInfo.CancelForm(objTestData.EmployeeID);
+      if (frmEmployeeInfo.lastError.name !== undefined) throw frmEmployeeInfo.lastError;
+      
+      TestLog.Message("Step-2: Navigated to EmployeeInfo Form and clicked cancel button.");
+      
+                              
+    } //End try
+        
+    catch(exception) {
+      TestLog.Error(exception.description, Utility.formattedException(exception));
+    } //End catch
+    
+    finally {
+      //Close the POS Application
+      Utility.closePOSProcess();  
+      DataPool.NextItem(); //Moving to next given testdata
+      Log.PopLogFolder();
+    } //End finally
+    
+  } // while EOF
+  
+  //Disposing objects 
+  home = null;
+  frmEmployeeInfo = null;
+  DataPool.Close(); 
+}
+
+function TC_POUT_EMP_009() {
+  
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  TC_POUT_EMP_009 : Verify the PunchOut of an employee who has already punched out within an hour
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
   //Variable Declaration 
   //---------------------
@@ -857,7 +967,7 @@ function TC_POUT_EMP_008() {
     TestDataIdx = 0;
     DataPool.FilePath = Project.Path + "TestData\\";
     DataPool.FileName = "PunchOut.xls";
-    DataPool.SheetName = "TC_POUT_EMP_008";
+    DataPool.SheetName = "TC_POUT_EMP_009";
     DataPool.New(); //Creating a New Data Connection
   
     //Verify if test data exists in the test data sheet
@@ -940,11 +1050,11 @@ function TC_POUT_EMP_008() {
 }
 
 
-function TC_POUT_EMP_009() {
+function TC_POUT_EMP_010() {
   
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  TC_POUT_EMP_009 : Verify the PunchOut of an employee who has already punched In   
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  TC_POUT_EMP_010 : Verify the PunchOut of an employee who has already punched In a day ago  
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
   //Variable Declaration 
   //---------------------
@@ -959,7 +1069,7 @@ function TC_POUT_EMP_009() {
     TestDataIdx = 0;
     DataPool.FilePath = Project.Path + "TestData\\";
     DataPool.FileName = "PunchOut.xls";
-    DataPool.SheetName = "TC_POUT_EMP_009";
+    DataPool.SheetName = "TC_POUT_EMP_010";
     DataPool.New(); //Creating a New Data Connection
   
     //Verify if test data exists in the test data sheet

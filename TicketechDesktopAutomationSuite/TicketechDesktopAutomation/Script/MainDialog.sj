@@ -26,7 +26,7 @@ function mainDialog() {
 ---------------------------------------------------------------------*/   
   this.lastError = {};
   
-  this.dlgMain =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "FormMain", 2); 
+  this.dlgMain =  Sys.Process("PosApplication").WaitWinFormsObject("FormMain", 3000); 
   
   this.infoScreen = InformationScreen.New();
   this.punchPanel = PunchPanel.New();
@@ -160,7 +160,6 @@ mainDialog.prototype.NavigateToUserInfoScreen = function () {
   } //End try
   
   catch (exception) {
-    TestLog.Message(2);
     for (prop in exception) this.lastError[prop] = exception[prop];
     if (this.throwError) throw exception
   } //End catch
@@ -177,15 +176,20 @@ mainDialog.prototype.NavigateToTimeKeeperMenu = function () {
   Output      : Clicks TimeKeeperMenu button
 --------------------------------------------------------------------------*/  
   try {
-  
+    var flag = false;
     this.lastError = {};
     
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
               description : "Error at mainDialog.NavigateToTimeKeeperMenu: The Main Dialog does not Exist.",
-              message     : this.dlgMain + " The Main Dialog does not Exist." }             
-    
-    this.punchPanel.ClickTimeKeeperMenu();
+              message     : this.dlgMain + " The Main Dialog does not Exist." }
+                 
+    if(this.punchPanel.IsBtnVisible("TIMEKEEPER MENU")) {
+        this.punchPanel.ClickTimeKeeperMenu();
+        flag = true;
+    }
+ 
+    return flag;
     Delay(1000);
         
   } //End try
@@ -229,7 +233,38 @@ mainDialog.prototype.GetFormInfo = function(){
     for (prop in exception) this.lastError[prop] = exception[prop];
     if (this.throwError) throw exception
   }
+
 }
+
+mainDialog.prototype.NavigateToMonthlyScreen = function () {  
+
+/*--------------------------------------------------------------------------
+  Method      : NavigateToMonthlyScreen()
+  
+  Description : This method clicks Monthly button
+  
+  Output      : Clicks Monthly button
+--------------------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at mainDialog.NavigateToMonthlyScreen: The Main Dialog does not Exist.",
+              message     : this.dlgMain + " The Main Dialog does not Exist." }             
+    
+    this.ticketingPanel.ClickMonthly();
+    Delay(1000);
+        
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+  
+} //NavigateToMonthlyScreen
 
   mainDialog.prototype.clickOnDailyButton = function () {  
 

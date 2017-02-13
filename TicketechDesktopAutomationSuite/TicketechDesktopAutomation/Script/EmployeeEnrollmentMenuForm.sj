@@ -35,6 +35,7 @@ function employeeEnrollmentMenuForm() {
   this.navigationPanel = NavigationPanel.New();
   this.backPanel = BackPanel.New();
   this.cursorsPanel = CursorsPanel.New();
+  this.sTitle = this.employeeEnrollmentMenuScreen.GetTitle();
   
   this.throwError = false; 
     
@@ -48,9 +49,7 @@ employeeEnrollmentMenuForm.prototype.Refresh = function () {
   Description : This method will the re-instantiate the employeeEnrollmentMenuForm Wrapper   
 -----------------------------------------------------------------------------------------*/  
   try {
-//    Sys.Refresh();
-//    Delay(1000);
-//    
+   
     this.dlgEmployeeEnrollmentMenu =  Sys.Process("PosApplication").WaitWinFormsObject("FormEmployeeEnrollmentMenu", 3000); 
   
     this.infoScreen = InformationScreen.New();
@@ -59,6 +58,7 @@ employeeEnrollmentMenuForm.prototype.Refresh = function () {
     this.navigationPanel = NavigationPanel.New();
     this.backPanel = BackPanel.New();
     this.cursorsPanel = CursorsPanel.New();
+    this.sTitle = this.employeeEnrollmentMenuScreen.GetTitle();
         
   } //End try
   
@@ -112,7 +112,7 @@ employeeEnrollmentMenuForm.prototype.NavigateToAddEmployeeForm = function () {
               description : "Error at formEmployeeEnrollmentMenu.NavigateToAddEmployeeForm: The EmployeeEnrollmentMenu Form does not Exist.",
               message     : this.dlgEmployeeEnrollmentMenu + " The EmployeeEnrollmentMenu Form does not Exist." }             
     
-    this.employeeEnrollmentMenuPanel.ClickAdd();
+    this.employeeEnrollmentMenuPanel.ClickAddEmployee();
     Delay(1000);
     
   } //End try
@@ -123,6 +123,70 @@ employeeEnrollmentMenuForm.prototype.NavigateToAddEmployeeForm = function () {
   } //End catch
       
 } //NavigateToAddEmployeeForm
+
+
+employeeEnrollmentMenuForm.prototype.NaviagteToUpdateEmployeeDataForm = function (empId) {  
+
+/*------------------------------------------------------------------------------------------------------------------------------
+  Method      : NaviagteToUpdateEmployeeDataForm()
+  
+  Description : This method finds the employee whose data is to be corrected and Clicks Correct button  
+  
+  Output      : Finds the employee whose data is to be corrected and Clicks Correct button if EmployeeEnrollmentMenu Form Exists
+-------------------------------------------------------------------------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at formEmployeeEnrollmentMenu.NavigateToCorrectEmployeeForm: The EmployeeEnrollmentMenu Form does not Exist.",
+              message     : this.dlgEmployeeEnrollmentMenu + " The EmployeeEnrollmentMenu Form does not Exist." }
+                 
+    this.employeeEnrollmentMenuScreen.MoveToEmployeeDataRow(empId);
+    this.employeeEnrollmentMenuPanel.ClickCorrect();
+    Delay(1000);
+    
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+      
+} //NaviagteToUpdateEmployeeDataForm
+
+employeeEnrollmentMenuForm.prototype.NavigateToCorrectEnrollmentForm = function (empId) {  
+
+/*------------------------------------------------------------------------------------------------------------------------------
+  Method      : NaviagteToCorrectEnrollmentForm()
+  
+  Description : This method finds the employee whose Enrollment type is to be corrected and Clicks Correct Enrollment button  
+  
+  Output      : Finds the employee whose Enrollment type is to be corrected and Clicks Correct button if EmployeeEnrollmentMenu Form Exists
+-------------------------------------------------------------------------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at formEmployeeEnrollmentMenu.NavigateToCorrectEmployeeForm: The EmployeeEnrollmentMenu Form does not Exist.",
+              message     : this.dlgEmployeeEnrollmentMenu + " The EmployeeEnrollmentMenu Form does not Exist." }
+                 
+    this.employeeEnrollmentMenuScreen.MoveToEmployeeDataRow(empId);
+    this.employeeEnrollmentMenuPanel.ClickCorrectEnrollment();
+    Delay(1000);
+    
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+      
+} //NavigateToCorrectEnrollmentForm
+
 
 function New() {
 

@@ -2,6 +2,7 @@
 //USEUNIT InformationScreen
 //USEUNIT NavigationPanel
 //USEUNIT TimekeeperOptionsPanel
+//USEUNIT TimekeeperMenuScreen
 //USEUNIT BackPanel
 
 
@@ -29,6 +30,7 @@ function timekeeperMenuForm() {
   
   this.infoScreen = InformationScreen.New();
   this.timekeeperOptionsPanel = TimekeeperOptionsPanel.New();
+  this.timekeeperMenuScreen - TimekeeperMenuScreen.New();
   this.navigationPanel = NavigationPanel.New();
   this.backPanel = BackPanel.New();
   
@@ -44,13 +46,12 @@ timekeeperMenuForm.prototype.Refresh = function () {
   Description : This method will the re-instantiate the timekeeperMenuForm Wrapper   
 --------------------------------------------------------------------------------*/  
   try {
-//    Sys.Refresh();
-//    Delay(1000);
-//    
+    
     this.dlgTimekeeperMenu =  Sys.Process("PosApplication").WaitWinFormsObject("FormTimekeeperMenu", 3000); 
   
     this.infoScreen = InformationScreen.New();
     this.timekeeperOptionsPanel = TimekeeperOptionsPanel.New();
+    this.timekeeperMenuScreen - TimekeeperMenuScreen.New();
     this.navigationPanel = NavigationPanel.New();
     this.backPanel = BackPanel.New();
         
@@ -98,16 +99,21 @@ timekeeperMenuForm.prototype.NavigateToEnrollmentForm = function () {
   Output      : Clicks Enrollment button if TimekeeperMenu Form Exists
 --------------------------------------------------------------------------*/  
   try {
-  
+    var flag = false;
     this.lastError = {};
     
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
-              description : "Error at formTimekeeperMenu.NavigateToEnrollmentForm: The TimekeeperMenu Form does not Exist.",
-              message     : this.dlgTimekeeperMenu + " The TimekeeperMenu Form does not Exist." }             
-    
-    this.timekeeperOptionsPanel.ClickEnrollment();
-    Delay(1000);
+              description : "Error at TimekeeperMenuForm.NavigateToEnrollmentForm: The TimekeeperMenu Form does not Exist.",
+              message     : this.dlgTimekeeperMenu + " The TimekeeperMenu Form does not Exist." }   
+              
+      if(this.timekeeperOptionsPanel.IsBtnVisible("ENROLLMENT")) {
+        this.timekeeperOptionsPanel.ClickEnrollment();
+        flag = true;
+    }
+ 
+    return flag;
+    Delay(1000);          
     
   } //End try
   

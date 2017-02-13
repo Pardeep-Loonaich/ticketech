@@ -24,7 +24,7 @@ function cursorsPanel() {
   this.pnlCursors =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "PanelCursors", 2);
   this.throwError = false; 
     
-} //numericPanel
+} //cursorsPanel
 
 cursorsPanel.prototype.Exists = function () {  
 
@@ -45,6 +45,7 @@ cursorsPanel.prototype.Exists = function () {
   } //End try
   
   catch (exception) {
+    TestLog.Message("Exception at cursorsPanel.Exists");
     for (prop in exception) this.lastError[prop] = exception[prop];
     if (this.throwError) throw exception
   } //End catch
@@ -118,7 +119,7 @@ cursorsPanel.prototype.Click = function (btnName) {
     
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
-              description : "Error at cursorsPanel.Click"+btnName+": The Cursors Panel does not Exist.",
+              description : "Error at CursorsPanel.Click"+btnName+": The Cursors Panel does not Exist.",
               message     : this.pnlCursors + " Panel does not Exist." }             
     
     this.pnlCursors.FindChild(["Value", "Visible"], [btnName, true], 2).ClickButton();
@@ -126,6 +127,7 @@ cursorsPanel.prototype.Click = function (btnName) {
   } //End try
   
   catch (exception) {
+    TestLog.Message("Exception at cursorsPanel.Click "+btnName);
     for (prop in exception) this.lastError[prop] = exception[prop];
     if (this.throwError) throw exception
   } //End catch

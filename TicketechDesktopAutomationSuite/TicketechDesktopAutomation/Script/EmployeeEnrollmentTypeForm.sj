@@ -15,10 +15,10 @@
   To call it from other units used New()method.  
 **************************************************************************/
 
-function EmployeeEnrollmentTypeForm() { 
+function employeeEnrollmentTypeForm() { 
 
 /*-------------------------------------------------------------------------------- 
-  Method: EmployeeEnrollmentTypeForm() 
+  Method: employeeEnrollmentTypeForm() 
   
   Description: This method will Instantiate the EmployeeEnrollmentTypeForm Wrapper
 --------------------------------------------------------------------------------*/   
@@ -35,7 +35,7 @@ function EmployeeEnrollmentTypeForm() {
     
 } //timekeeperMenuForm
 
-EmployeeEnrollmentTypeForm.prototype.Refresh = function () {  
+employeeEnrollmentTypeForm.prototype.Refresh = function () {  
 
 /*------------------------------------------------------------------------------------
   Method      : Refresh()
@@ -60,7 +60,7 @@ EmployeeEnrollmentTypeForm.prototype.Refresh = function () {
       
 } //Refresh
 
-EmployeeEnrollmentTypeForm.prototype.Exists = function () {  
+employeeEnrollmentTypeForm.prototype.Exists = function () {  
 
 /*-----------------------------------------------------------------
   Method      : Exists()
@@ -85,7 +85,7 @@ EmployeeEnrollmentTypeForm.prototype.Exists = function () {
       
 } //Exists
 
-EmployeeEnrollmentTypeForm.prototype.SelectEnrollmentType = function () {  
+employeeEnrollmentTypeForm.prototype.SelectEnrollmentType = function () {  
 
 /*------------------------------------------------------------------------------
   Method      : SelectEnrollmentType
@@ -103,7 +103,7 @@ EmployeeEnrollmentTypeForm.prototype.SelectEnrollmentType = function () {
               description : "Error at EmployeeEnrollmentTypeForm.SelectEnrollmentType: The Employee Enrollment Type Form does not Exist.",
               message     : this.dlgEmpEnrolType + " The Employee Enrollment Type Form does not Exist." }             
     
-    this.EmployeeEnrollmentTypeMenuPanel.Click("CODE");
+    this.objEmpEnrolTypeMenuPanel.Click("CODE");
     Delay(1000);
     
   } //End try
@@ -113,7 +113,99 @@ EmployeeEnrollmentTypeForm.prototype.SelectEnrollmentType = function () {
     if (this.throwError) throw exception
   } //End catch
       
-} //SubmitCode
+} //SelectEnrollmentType
+
+employeeEnrollmentTypeForm.prototype.SelectFingerPrintType = function () {  
+
+/*------------------------------------------------------------------------------
+  Method      : SelectFingerPrintType
+  
+  Description : This method Clicks on the given Finger Print button  
+  
+  Output      : Clicks the given button if Employee Enrollment Type Form Exists
+-------------------------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at EmployeeEnrollmentTypeForm.SelectFingerPrintType: The Employee Enrollment Type Form does not Exist.",
+              message     : this.dlgEmpEnrolType + " The Employee Enrollment Type Form does not Exist." }             
+    
+    this.objEmpEnrolTypeMenuPanel.Click("FINGERPRINT");
+    Delay(1000);
+    
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+      
+} //SelectFingerPrintType
+
+
+employeeEnrollmentTypeForm.prototype.SubmitForm = function () {  
+
+/*--------------------------------------------------------------------------
+  Method      : SubmitForm()
+  
+  Description : This method Clicks enter button  
+  
+  Output      : Clicks Enter button if employeeEnrollmentTypeForm Exists
+--------------------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at EmployeeEnrollmentTypeForm.SubmitForm: The Employee Enrollment Type Form does not Exist.",
+              message     : this.dlgEmpEnrolType + " The Employee Enrollment Type Form does not Exist." }      
+    
+    this.objNavigationPanel.ClickEnter();
+    Delay(1000);
+    
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+      
+} //SubmitForm
+
+employeeEnrollmentTypeForm.prototype.CancelForm = function () {  
+
+/*--------------------------------------------------------------------------  
+  Method      : CancelForm()
+  
+  Description : This method Clicks Cancel button  
+  
+  Output      : Clicks Cancel button if employeeEnrollmentTypeForm Exists
+--------------------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at EmployeeEnrollmentTypeForm.CancelForm: The Employee Enrollment Type Form does not Exist.",
+              message     : this.dlgEmpEnrolType + " The Employee Enrollment Type Form does not Exist." }              
+    
+    this.objNavigationPanel.ClickCancel();
+    Delay(1000);
+    
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+      
+} //CancelForm
+
 
 function New() {
 
@@ -124,5 +216,5 @@ function New() {
   This method is for instantiating EmployeeEnrollmentTypeForm() class from other units of the project. 
 ------------------------------------------------------------------------------------*/
 
-  return new EmployeeEnrollmentTypeForm();  
+  return new employeeEnrollmentTypeForm();  
 }

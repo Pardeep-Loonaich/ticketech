@@ -41,9 +41,7 @@ employeeInfoForm.prototype.Refresh = function () {
   Description : This method will the re-instantiate the employeeInfoForm Wrapper   
 --------------------------------------------------------------------------------*/  
   try {
-//    Sys.Refresh();
-//    Delay(1000);
-//    
+  
     this.dlgEmployeeInfo =  Sys.Process("PosApplication").WaitWinFormsObject("FormEmployeeInfo", 3000); 
   
     this.infoScreen = InformationScreen.New();
@@ -124,7 +122,7 @@ employeeInfoForm.prototype.InputAndSubmitFormWithErrors = function (empID) {
   
   Description : This method enters Employee ID and click enter button
   
-  Output      : Enters Emp ID if Employee Info Form and click enter button
+  Output      : Enters Emp ID in Employee Info Form and click enter button
 --------------------------------------------------------------------------*/  
   try {
   

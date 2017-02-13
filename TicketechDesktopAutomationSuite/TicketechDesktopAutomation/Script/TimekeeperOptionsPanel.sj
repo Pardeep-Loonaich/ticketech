@@ -92,6 +92,35 @@ timekeeperOptionsPanel.prototype.ClickEnrollment = function () {
       
 } //ClickEnrollment
 
+timekeeperOptionsPanel.prototype.IsBtnVisible = function (btnName) {  
+
+/*---------------------------------------------------------------------------------------------
+  Method      : IsBtnVisible(btnName)
+  
+  Description : This method Checks the required button given as the parameter is visible/available 
+  
+  Output      : Checks the required button is visible/available if TimekeeperOptions Panel Exists
+----------------------------------------------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at timekeeperOptionsPanel.IsBtnVisible"+btnName+": The TimekeeperOptions Panel does not Exist.",
+              message     : this.pnlTimekeeperOptions + " Panel does not Exist." }             
+    
+   return this.pnlTimekeeperOptions.FindChild("WndCaption", btnName,2).Visible;
+    
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+      
+} //IsBtnVisible
+
 timekeeperOptionsPanel.prototype.ClickSchedule = function () {  
 
 /*-------------------------------------------------------------------------
@@ -195,6 +224,7 @@ timekeeperOptionsPanel.prototype.ClickPrintTimeCard = function () {
   this.Click("PRINT TIMECARD");
       
 } //ClickPrintTimeCard
+
 
 function New() {
 

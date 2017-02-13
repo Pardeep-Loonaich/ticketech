@@ -21,7 +21,7 @@ function navigationPanelForm() {
 ---------------------------------------------------------------------------*/   
   this.lastError = {};
   
-  this.pnlNavigationForm =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "PanelNavigation", 2000);
+  this.pnlNavigationForm =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "PanelNavigation", 2);
   this.objNavigationPanel = NavigationPanel.New();
   this.throwError = false; 
     

@@ -26,7 +26,7 @@ function userInfoForm() {
 ---------------------------------------------------------------------*/   
   this.lastError = {};
   
-  this.dlgUserInfo =  Sys.Process("PosApplication").WaitWinFormsObject("FormUserInfo*", 3000); 
+  this.dlgUserInfo =  Sys.Process("PosApplication").FindChild("WinFormsControlName","FormUserInfo*", 2); 
   
   this.infoScreen = InformationScreen.New();
   this.userInfoScreen = UserIdentificationScreen.New();
@@ -58,6 +58,7 @@ userInfoForm.prototype.Refresh = function () {
   } //End try
   
   catch (exception) {
+    TestLog.Message("Exception at userInfoForm.Exists");
     for (prop in exception) this.lastError[prop] = exception[prop];
     if (this.throwError) throw exception
   } //End catch
@@ -124,11 +125,12 @@ userInfoForm.prototype.InputAndSubmitForm = function (username,password) {
   } //End try
   
   catch (exception) {
+    TestLog.Message("Exception at userInfoForm.InputAndSubmitForm");
     for (prop in exception) this.lastError[prop] = exception[prop];
     if (this.throwError) throw exception
   } //End catch
       
-} //InputandSubmitForm
+} //InputAndSubmitForm
 
 userInfoForm.prototype.InputAndSubmitFormWithErrors = function (username,password) {  
 
@@ -152,11 +154,12 @@ userInfoForm.prototype.InputAndSubmitFormWithErrors = function (username,passwor
   } //End try
   
   catch (exception) {
+    TestLog.Message("Exception at userInfoForm.InputAndSubmitFormWithErrors");
     for (prop in exception) this.lastError[prop] = exception[prop];
     if (this.throwError) throw exception
   } //End catch
       
-} //InputandSubmitFormWithErrors
+} //InputAndSubmitFormWithErrors
 
 function New() {
 

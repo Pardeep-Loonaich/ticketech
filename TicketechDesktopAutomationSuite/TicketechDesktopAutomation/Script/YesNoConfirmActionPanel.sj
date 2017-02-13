@@ -20,7 +20,7 @@ function yesNoConfirmActionPanel() {
 ---------------------------------------------------------------------------*/   
   this.lastError = {};
   
-  this.pnlYesNo =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "PanelYesNo*", 2000);
+  this.pnlYesNo =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "PanelYesNo*", 2);
   this.throwError = false; 
     
 } //yesNoConfirmActionPanel

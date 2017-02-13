@@ -84,6 +84,7 @@ punchPanel.prototype.ClickTimeKeeperMenu = function () {
   Output      : Click on TimeKeeper Menu button if Punch Panel Exists
 -----------------------------------------------------------------*/  
  this.Click("TIMEKEEPER MENU");
+ 
 }//ClickTimeKeeperMenu
 
 punchPanel.prototype.Click = function (btnName) {  
@@ -114,6 +115,39 @@ punchPanel.prototype.Click = function (btnName) {
   } //End catch
       
 } //Click
+
+punchPanel.prototype.IsBtnVisible = function (btnName) {  
+
+/*-----------------------------------------------------------------
+  Method      : IsBtnVisible(btnName)
+  
+  Description : This method Checks the required button given as the parameter is visible/available 
+  
+  Output      : Checks the required button is visible/available if Punch Panel Exists
+-----------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at PunchPanel.IsBtnVisible"+btnName+": The Punch Panel does not Exist.",
+              message     : this.pnlPunch + " Panel does not Exist." } 
+                
+   if (this.pnlPunch.FindChild("WndCaption", btnName,2).Exists) 
+   return this.pnlPunch.FindChild("WndCaption", btnName,2).Visible;
+   else
+   return false;
+    
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+      
+} //IsBtnVisible
+
 
 function New() {
 

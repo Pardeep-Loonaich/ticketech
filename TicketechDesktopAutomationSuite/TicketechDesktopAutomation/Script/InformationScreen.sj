@@ -110,7 +110,7 @@ informationScreen.prototype.GetText = function (objControlName) {
               description : "Error at informationScreen.Get"+objControlName+": The Main screen does not Exist.",
               message     : this.scrnInfo + " Screen does not Exist." }             
     
-    return this.scrnMain.WaitWinFormsObject("WinFormsControlName", objControlName, 1000).WndCaption;
+    return this.scrnInfo.WaitWinFormsObject("WinFormsControlName", objControlName, 1000).WndCaption;
     
   } //End try
   

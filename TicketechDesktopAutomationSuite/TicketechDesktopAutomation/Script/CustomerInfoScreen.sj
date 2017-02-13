@@ -2,36 +2,36 @@
 
 /******************************************************************************
             ---------- Class Definition ----------
-  Name:EmployeeCodeScreen
+  Name:CustomerInfoScreen
   
   Description: 
   
-  This class has methods and properties to perform the EmployeeCodeScreen objects. 
+  This class has methods and properties to perform the CustomerInfoScreen objects. 
   Instance of the class can be created by calling the constructor. 
   To call it from other units used New()method.  
 *****************************************************************************/
 
-function employeeCodeScreen() { 
+function customerInfoScreen() { 
 
 /*------------------------------------------------------------------------------------ 
-  Method: employeeCodeScreen() 
+  Method: customerInfoScreen() 
   
-  Description: This method will the Instantiate the EmployeeCodeScreen Wrapper Helper
+  Description: This method will the Instantiate the CustomerInfoScreen Wrapper Helper
 ------------------------------------------------------------------------------------*/   
   this.lastError = {};
   
-  this.scrnEmployeeCode =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "ScreenEmployeeCode", 3);
+  this.scrnCustomerInfo =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "ScreenCustomerInfo", 3);
   
   this.throwError = false; 
     
-} //employeeCodeScreen
+} //customerInfoScreen
 
-employeeCodeScreen.prototype.Exists = function () {  
+customerInfoScreen.prototype.Exists = function () {  
 
 /*---------------------------------------------------------------------
   Method      : Exists()
   
-  Description : This method checks the existance of the employeeCodeScreen.  
+  Description : This method checks the existance of the customerInfoScreen.  
   
   Output: True if Screen Exists
           False if Screen does not Exists   
@@ -40,57 +40,55 @@ employeeCodeScreen.prototype.Exists = function () {
   
     this.lastError = {};
 
-    return this.scrnEmployeeCode.Exists;  //Return whether employeeCodeScreen exists or not
+    return this.scrnCustomerInfo.Exists;  //Return whether customerInfoScreen exists or not
   
   } //End try
   
   catch (exception) {
-    TestLog.Message("Exception at employeeCodeScreen.Exists");
     for (prop in exception) this.lastError[prop] = exception[prop];
     if (this.throwError) throw exception
   } //End catch
       
 } //Exists
 
-employeeCodeScreen.prototype.SetEmployeeCode = function (code) {  
+customerInfoScreen.prototype.SetVehicleTag = function (sVehicleTag) {  
 
 /*-------------------------------------------------------------------------------
-  Method      : SetEmployeeCode()
+  Method      : SetsVehicleTag()
   
-  Description : This method enters the Code in the Employee Code screen
+  Description : This method enters the Code in the Customer Info screen
   
-  Output      : Enters the Code  in the Employee Code screen 
+  Output      : Enters the Code  in the Customer Info screen 
 -------------------------------------------------------------------------------*/  
   try {
-  
+    
     this.lastError = {};
     
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
-              description : "Error at employeeCodeScreen.SetEmployeeCode: The EmployeeCode Screen does not Exist.",
-              message     : this.scrnEmployeeCode + " Screen does not Exist." }             
+              description : "Error at customerInfoScreen.SetVehicleTag: The Customer Info Exist.",
+              message     : this.scrnCustomerInfo + " Screen Exist." }             
     
-    if (code !== undefined && code !== null)
-      this.scrnEmployeeCode.FindChild("Caption","CODE",2).FindChild("WinFormsControlName", "maskedTextBoxInfo", 1).Keys(code);
-    
+    if (sVehicleTag!== undefined && sVehicleTag !== null)
+       this.scrnCustomerInfo.FindChild("WinFormsControlName", "maskedTextBoxInfo", 3).Keys(sVehicleTag.toString());
+       Log.Message(sVehicleTag);
   } //End try
   
   catch (exception) {
-    TestLog.Message("Exception at employeeCodeScreen.SetEmployeeCode "+code);
     for (prop in exception) this.lastError[prop] = exception[prop];
     if (this.throwError) throw exception
   } //End catch
       
-} //SetEmployeeCode
+} //SetVehilceTag
 
-employeeCodeScreen.prototype.GetErrorMessage = function () {  
+customerInfoScreen.prototype.GetErrorMessage = function () {  
 
 /*------------------------------------------------------------------------------------
   Method      : GetErrorMessage()
   
-  Description : This method returns the error message displayed in the code screen 
+  Description : This method returns the error message displayed in the customer info screen 
   
-  Output      : Returns the error message displayed in the emp code screen 
+  Output      : Returns the error message displayed in the customer info screen 
 -------------------------------------------------------------------------------------*/  
   try {
   
@@ -98,10 +96,10 @@ employeeCodeScreen.prototype.GetErrorMessage = function () {
     
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
-              description : "Error at EmployeeCodeScreen.GetErrorMessage: The Code screen does not Exist.",
-              message     : this.scrnEmployeeCode + " Code screen does not Exist." }             
+              description : "Error at CustomerInfoScreen.GetErrorMessage: The Customer info screen  does not Exist.",
+              message     : this.scrncustomerInfo + " Customer info screen  does not Exist." }             
     
-    return this.scrnEmployeeCode.WinFormsObject("screenInformationFooter")
+    return this.scrncustomerInfo.WinFormsObject("screenInformationFooter")
               .WinFormsObject("labelInformation").WndCaption;
     
   } //End try
@@ -119,8 +117,8 @@ function New() {
   Method: New() 
   
   Description:
-  This method is for instantiating employeeCodeScreen() class from other units of the project. 
+  This method is for instantiating checkInCustomerInfoForm() class from other units of the project. 
 ------------------------------------------------------------------------------------------*/
 
-  return new employeeCodeScreen();  
+  return new customerInfoScreen();  
 }

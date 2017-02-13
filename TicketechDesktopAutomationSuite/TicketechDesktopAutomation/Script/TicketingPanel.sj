@@ -85,7 +85,8 @@ ticketingPanel.prototype.ClickReplace = function () {
   
   Output      : Click on Replace button if Ticketing Panel Exists
 -----------------------------------------------------------------*/                
-    this.Click("REPLACE");     
+    this.Click("REPLACE");  
+   
 } //ClickReplace
 
 ticketingPanel.prototype.Click = function(btnName){
@@ -106,7 +107,7 @@ try {
     for (prop in exception) this.lastError[prop] = exception[prop];
     if (this.throwError) throw exception
   } //End catch
-}
+}//Click
 
 function New() {
 

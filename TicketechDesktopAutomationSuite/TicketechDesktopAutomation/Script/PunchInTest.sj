@@ -4,6 +4,8 @@
 //USEUNIT ConfirmActionForm
 //USEUNIT MainDialog
 //USEUNIT Utility
+//USEUNIT DBUtility
+//USEUNIT FingerPrintForm
 
 
 function TC_PIN_EMP_001() {
@@ -18,6 +20,7 @@ function TC_PIN_EMP_001() {
   var frmEmployeeInfo; //Stores the instance of Employee Info Form
   var frmEmployeeCode; //Stores the instance of Employee Code Form
   var frmEmployeePunch; //Stores the instance of Employee Punch Form
+  
   try {
   
     //Connecting to testdata file & reading the given data
@@ -53,6 +56,7 @@ function TC_PIN_EMP_001() {
                       EmployeeID : DataPool.Item("EmpID"), 
                       EmployeeCode : DataPool.Item("EmpCode")                                            
                     }; //TestData object to punch in an employee
+                    
      
       //Step-1: Launching the POS application and Initialize the home screen
       //--------------------------------------------------------------------
@@ -923,7 +927,8 @@ function TC_PIN_EMP_009() {
   //Variable Declaration 
   //---------------------
   var home; //Stores the instance of home screen
-  var frmEmployeeInfo;; //Stores the instance of Employee Info Screen
+  var frmEmployeeInfo; //Stores the instance of Employee Info Screen
+  var screenTitle;
   //var expectedErrorMessage = "YOU ARE ALREADY PUNCHED IN AT"; //Stores the expected error message    
   //var actualErrorMessage; //Stores the error message to be dispalyed    
   
@@ -984,7 +989,14 @@ function TC_PIN_EMP_009() {
       
       TestLog.Message("Step-2: Navigated to EmployeeInfo Form and clicked cancel button.");
       
-      
+      //Verification : To verify whether the expected title is displayed
+      //-----------------------------------------------------------------~
+      screenTitle = home.sTitle;
+      if(screenTitle === "MAIN MENU")
+        TestLog.Pass("TestCase Passed. Navigated to MainDialog Form");
+      else
+        TestLog.Fail("TestCase Failed. Failed to Navigate to MainDialog Form");
+      //Checks the title
       
        } //End try
         
@@ -1022,6 +1034,8 @@ function TC_PIN_EMP_010() {
   var frmEmployeeInfo; //Stores the instance of Employee Info Form
   var frmEmployeeCode; //Stores the instance of Employee Code Form
   var frmEmployeePunch; //Stores the instance of Employee Punch Form
+  var screenTitle;
+  
   try {
   
     //Connecting to testdata file & reading the given data
@@ -1097,6 +1111,15 @@ function TC_PIN_EMP_010() {
       
       TestLog.Message("Step-4: Navigated to Employee Punch screen and Clicked Cancel.");
       
+      //Verification : To verify whether the expected title is displayed
+      //-----------------------------------------------------------------~
+      screenTitle = home.sTitle;
+      if(screenTitle === "MAIN MENU")
+        TestLog.Pass("TestCase Passed. Navigated to MainDialog Form");
+      else
+        TestLog.Fail("TestCase Failed. Failed to Navigate to MainDialog Form");
+      //Checks the title
+      
        } //End try
         
     catch(exception) {
@@ -1119,3 +1142,221 @@ function TC_PIN_EMP_010() {
   frmEmployeePunch = null;
   DataPool.Close(); 
 }
+
+
+function TC_PIN_EMP_011() {
+  
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  TC_PIN_EMP_011 : Verify that employee is able to duplicate punch in
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  //Variable Declaration 
+  //---------------------
+  var home; //Stores the instance of home screen
+  var frmEmployeeInfo; //Stores the instance of Employee Info Screen
+  //var frmEmployeeCode; //Stores the instance of Employee Code Screen
+  //var expectedErrorMessage = "CODE ENTERED NOT VALID."; //Stores the expected error message    
+  //var actualErrorMessage; //Stores the error message to be dispalyed    
+  
+  try {
+  
+    //Connecting to testdata file & reading the given data
+    TestDataIdx = 0;
+    DataPool.FilePath = Project.Path + "TestData\\";
+    DataPool.FileName = "PunchIn.xls";
+    DataPool.SheetName = "TC_PIN_EMP_011";
+    DataPool.New(); //Creating a New Data Connection
+  
+    //Verify if test data exists in the test data sheet
+    if (DataPool.EOF) {
+      TestLog.Warning("No TestData found.");
+      DataPool.Close();
+      return;
+    }
+    
+  } //End try
+  
+  catch (exception) {
+    TestLog.Error(exception.description, Utility.formattedException(exception));
+    DataPool.Close();
+    return;
+  } //End catch
+    
+  while (!DataPool.EOF) {
+    
+    try {
+
+      TestDataIdx++;       
+      TestLog.AddTestDataInfo(TestDataIdx, DataPool.Columns, DataPool.Item); // Printing given testdata info to Log
+      
+      objTestData = {
+                      EmployeeID   : DataPool.Item("EmpID")
+                      }; //TestData object to punch in an employee
+     
+      //Step-1: Launching the POS application and Initialize the home screen
+      //--------------------------------------------------------------------
+      Utility.launchApp();
+      home = MainDialog.New();
+      
+      //Step-2: Navigate into Employee info screen and submit invalid emp ID
+      //--------------------------------------------------------------------
+      home.NavigateToPunchInScreen();
+      if (home.lastError.name !== undefined) throw home.lastError;
+      
+      TestLog.Message("Step-1: Clicked Punch In button.");
+      
+      //Initialize object of EmployeeInfoForm 
+      frmEmployeeInfo = new EmployeeInfoForm.New();
+      
+      //Set data in Employee ID field and click Enter button from Navigation panel
+      frmEmployeeInfo.InputAndSubmitForm(objTestData.EmployeeID);
+      if (frmEmployeeInfo.lastError.name !== undefined) throw frmEmployeeInfo.lastError;
+      
+      TestLog.Message("Step-2: Navigated to EmployeeInfo Form and submitted valid emp id.");
+      
+      //Step-3: Navigate to confirm Action screen and click yes button
+      //---------------------------------------------------------------
+      confirmAction = new ConfirmActionForm.New();
+      TestLog.Message("Step-3 : Navigated to ConfirmAction Form");
+     
+       //Click Yes button from YesNoConfirmAction panel
+      confirmAction.ConfirmNo();
+      if (confirmAction.lastError.name !== undefined) throw confirmAction.lastError;
+      TestLog.Message("Step-4 :Clicked No Button");
+     
+     //Step-3:/Navigate to the Employee info form and click cancel button
+      
+       //Set data in Employee ID field and click Enter button from Navigation panel
+      frmEmployeeInfo.CancelForm(objTestData.EmployeeID);
+      if (frmEmployeeInfo.lastError.name !== undefined) throw frmEmployeeInfo.lastError;
+      
+      TestLog.Message("Step-2: Navigated to EmployeeInfo Form and clicked cancel button.");
+      
+      } //End try
+        
+    catch(exception) {
+      TestLog.Error(exception.description, Utility.formattedException(exception));
+    } //End catch
+    
+    finally {
+      //Close the POS Application
+      Utility.closePOSProcess();  
+      DataPool.NextItem(); //Moving to next given testdata
+      Log.PopLogFolder();
+    } //End finally
+    
+  } // while EOF
+  
+  //Disposing objects 
+  home = null;
+  frmEmployeeInfo = null;
+  DataPool.Close(); 
+}
+
+
+
+function TC_PIN_EMP_012() {
+  
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  TC_PIN_EMP_012 : Verify that an employee with fingerprint enrollment type can navigate to capture finger print screen when given valid Employee ID
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  //Variable Declaration 
+  //---------------------
+  var home; //Stores the instance of home screen
+  var frmEmployeeInfo; //Stores the instance of Employee Info Screen
+  var frmFingerPrint; //Stores the instance of Employee Code Screen
+  var screenTitle;
+  var frmInfo;
+  
+  try {
+  
+    //Connecting to testdata file & reading the given data
+    TestDataIdx = 0;
+    DataPool.FilePath = Project.Path + "TestData\\";
+    DataPool.FileName = "PunchIn.xls";
+    DataPool.SheetName = "TC_PIN_EMP_012";
+    DataPool.New(); //Creating a New Data Connection
+  
+    //Verify if test data exists in the test data sheet
+    if (DataPool.EOF) {
+      TestLog.Warning("No TestData found.");
+      DataPool.Close();
+      return;
+    }
+    
+  } //End try
+  
+  catch (exception) {
+    TestLog.Error(exception.description, Utility.formattedException(exception));
+    DataPool.Close();
+    return;
+  } //End catch
+    
+  while (!DataPool.EOF) {
+    
+    try {
+
+      TestDataIdx++;       
+      TestLog.AddTestDataInfo(TestDataIdx, DataPool.Columns, DataPool.Item); // Printing given testdata info to Log
+      
+      objTestData = {
+                      EmployeeID   : DataPool.Item("EmpID")
+                      }; //TestData object to punch in an employee
+     
+      //Step-1: Launching the POS application and Initialize the home screen
+      //--------------------------------------------------------------------
+      Utility.launchApp();
+      home = MainDialog.New();
+      
+      //Step-2: Navigate into Employee info screen and submit invalid emp ID
+      //--------------------------------------------------------------------
+      home.NavigateToPunchInScreen();
+      if (home.lastError.name !== undefined) throw home.lastError;
+      
+      TestLog.Message("Step-1: Clicked Punch In button.");
+      
+      //Initialize object of EmployeeInfoForm 
+      frmEmployeeInfo = new EmployeeInfoForm.New();
+      
+      //Set data in Employee ID field and click Enter button from Navigation panel
+      frmEmployeeInfo.InputAndSubmitForm(objTestData.EmployeeID);
+      if (frmEmployeeInfo.lastError.name !== undefined) throw frmEmployeeInfo.lastError;
+      
+      TestLog.Message("Step-2: Navigated to EmployeeInfo Form and submitted valid emp id.");
+      
+      //Step-3: Navigate into Finger Print screen 
+      //-------------------------------------------
+      
+      //Initialize object of FingerPrintForm
+      frmFingerPrint = FingerPrintForm.New();
+      screenTitle = frmFingerPrint.sTitle;
+      if(screenTitle === "CAPTURE FINGERPRINT")
+        TestLog.Pass("TestCase Passed. Navigated to FingerPrint Form");
+      else
+        TestLog.Fail("TestCase Failed. Failed to Navigate to FingerPrint Form");
+      //Checks the title
+      
+      } //End try
+        
+    catch(exception) {
+      TestLog.Error(exception.description, Utility.formattedException(exception));
+    } //End catch
+    
+    finally {
+      //Close the POS Application
+      Utility.closePOSProcess();  
+      DataPool.NextItem(); //Moving to next given testdata
+      Log.PopLogFolder();
+    } //End finally
+    
+  } // while EOF
+  
+  //Disposing objects 
+  home = null;
+  frmEmployeeInfo = null;
+  frmFingerPrint = null;
+  DataPool.Close(); 
+}
+      
+      

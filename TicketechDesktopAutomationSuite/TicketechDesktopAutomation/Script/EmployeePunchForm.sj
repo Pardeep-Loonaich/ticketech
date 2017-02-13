@@ -26,7 +26,6 @@ function employeePunchForm() {
   this.dlgEmployeePunch =  Sys.Process("PosApplication").WaitWinFormsObject("FormEmployeePunch", 3000); 
   
   this.InfoScreen = InformationScreen.New();
-  //this.employeeInfoScreen = EmployeeInfoScreen.New();
   this.navigationPanel = NavigationPanel.New();
   
   this.throwError = false; 
@@ -41,13 +40,10 @@ employeePunchForm.prototype.Refresh = function () {
   Description : This method will the re-instantiate the employeePunchForm Wrapper   
 --------------------------------------------------------------------------------*/  
   try {
-//    Sys.Refresh();
-//    Delay(1000);
-//    
+  
     this.dlgEmployeePunch =  Sys.Process("PosApplication").WaitWinFormsObject("FormEmployeePunch", 3000); 
   
     this.infoScreen = InformationScreen.New();
- //   this.employeeInfoScreen = EmployeeInfoScreen.New();
     this.navigationPanel = NavigationPanel.New();
         
   } //End try
@@ -117,7 +113,7 @@ employeePunchForm.prototype.SubmitForm = function () {
 employeePunchForm.prototype.CancelForm = function () {  
 
 /*--------------------------------------------------------------------------  
-  Method      : SubmitForm()
+  Method      : CancelForm()
   
   Description : This method Clicks Cancel button  
   

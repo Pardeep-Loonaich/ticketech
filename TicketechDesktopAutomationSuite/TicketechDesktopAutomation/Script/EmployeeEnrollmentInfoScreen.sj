@@ -69,7 +69,7 @@ EmployeeEnrollmentInfoScreen.prototype.SetEmployeeData = function (sCaption,sEmp
               description : "Error at EmployeeEnrollmentInfoScreen.SetEmployeeData: The Employee Enrollment Info screen does not Exist.",
               message     : this.scrnEmpEnrolInfo + " Screen does not Exist." }             
     
-    if (empData !== undefined && empData !== null)
+    if (sEmpData !== undefined && sEmpData !== null)
       this.scrnEmpEnrolInfo.FindChild("Caption", sCaption,2).FindChild("WinFormsControlName","maskedTextBoxInfo",0).Keys(sEmpData);
       
     
