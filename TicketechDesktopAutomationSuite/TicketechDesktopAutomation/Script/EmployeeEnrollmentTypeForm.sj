@@ -85,40 +85,11 @@ employeeEnrollmentTypeForm.prototype.Exists = function () {
       
 } //Exists
 
-employeeEnrollmentTypeForm.prototype.SelectEnrollmentType = function () {  
+
+employeeEnrollmentTypeForm.prototype.SelectFingerPrint = function () {  
 
 /*------------------------------------------------------------------------------
-  Method      : SelectEnrollmentType
-  
-  Description : This method Clicks on the given EnrollmentType button  
-  
-  Output      : Clicks the given button if Employee Enrollment Type Form Exists
--------------------------------------------------------------------------------*/  
-  try {
-  
-    this.lastError = {};
-    
-    if (!this.Exists())
-      throw { name        : "Wrapper Exception",
-              description : "Error at EmployeeEnrollmentTypeForm.SelectEnrollmentType: The Employee Enrollment Type Form does not Exist.",
-              message     : this.dlgEmpEnrolType + " The Employee Enrollment Type Form does not Exist." }             
-    
-    this.objEmpEnrolTypeMenuPanel.Click("CODE");
-    Delay(1000);
-    
-  } //End try
-  
-  catch (exception) {
-    for (prop in exception) this.lastError[prop] = exception[prop];
-    if (this.throwError) throw exception
-  } //End catch
-      
-} //SelectEnrollmentType
-
-employeeEnrollmentTypeForm.prototype.SelectFingerPrintType = function () {  
-
-/*------------------------------------------------------------------------------
-  Method      : SelectFingerPrintType
+  Method      : SelectFingerPrint
   
   Description : This method Clicks on the given Finger Print button  
   
@@ -130,7 +101,7 @@ employeeEnrollmentTypeForm.prototype.SelectFingerPrintType = function () {
     
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
-              description : "Error at EmployeeEnrollmentTypeForm.SelectFingerPrintType: The Employee Enrollment Type Form does not Exist.",
+              description : "Error at EmployeeEnrollmentTypeForm.SelectFingerPrint: The Employee Enrollment Type Form does not Exist.",
               message     : this.dlgEmpEnrolType + " The Employee Enrollment Type Form does not Exist." }             
     
     this.objEmpEnrolTypeMenuPanel.Click("FINGERPRINT");
@@ -144,6 +115,36 @@ employeeEnrollmentTypeForm.prototype.SelectFingerPrintType = function () {
   } //End catch
       
 } //SelectFingerPrintType
+
+employeeEnrollmentTypeForm.prototype.SelectCode = function () {  
+
+/*------------------------------------------------------------------------------
+  Method      : SelectCode
+  
+  Description : This method Clicks on the given Code button  
+  
+  Output      : Clicks the given button if Employee Enrollment Type Form Exists
+-------------------------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at EmployeeEnrollmentTypeForm.SelectCode: The Employee Enrollment Type Form does not Exist.",
+              message     : this.dlgEmpEnrolType + " The Employee Enrollment Type Form does not Exist." }             
+    
+    this.objEmpEnrolTypeMenuPanel.Click("CODE");
+    Delay(1000);
+    
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+      
+} //SelectCode
 
 
 employeeEnrollmentTypeForm.prototype.SubmitForm = function () {  

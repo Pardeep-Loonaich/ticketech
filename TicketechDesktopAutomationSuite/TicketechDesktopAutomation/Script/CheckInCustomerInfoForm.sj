@@ -141,7 +141,43 @@ checkInCustomerInfoForm.prototype.InputAndSubmitFormWithErrors = function (sVehi
     this.Refresh();
     Delay(1000);
     
-    return this.customerInfoScreen.GetMessage();
+    return this.customerInfoScreen.GetErrorMessage();
+    
+  } //End try
+  
+  catch (exception) {
+    TestLog.Message("Exception at CheckIncustomerInfoForm.InputAndSubmitFormWithErrors")
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+      
+} //InputandSubmitFormWithErrors
+
+checkInCustomerInfoForm.prototype.ClickCancel = function (sVehicleTag) {  
+
+/*--------------------------------------------------------------------------
+  Method      : ClickCancel()
+  
+  Description : This method enters tag and clicks cancel
+  
+  Output      : Enters tag if CheckInCustomerInfo Form Exists and clicks Cancel
+--------------------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at checkInCustomerInfoForm.ClickCancel: The User Info Form does not Exist.",
+              message     : this.dlgCheckInCustomerInfo + " The CheckInCustomerInfo Form does not Exist." }             
+    
+    this.customerInfoScreen.SetVehicleTag(sVehicleTag);
+    Delay(1000);
+    
+    this.navigationPanel.ClickCancel();
+    Delay(1000);
+    
+    this.Refresh();
     
   } //End try
   
@@ -150,7 +186,7 @@ checkInCustomerInfoForm.prototype.InputAndSubmitFormWithErrors = function (sVehi
     if (this.throwError) throw exception
   } //End catch
       
-} //InputandSubmitFormWithErrors
+} //InputandSubmitForm
 
 function New() {
 

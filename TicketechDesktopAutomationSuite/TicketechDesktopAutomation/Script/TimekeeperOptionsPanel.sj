@@ -212,18 +212,18 @@ timekeeperOptionsPanel.prototype.ClickPrintWeeklyReports = function () {
       
 } //ClickPrintWeeklyReports
 
-timekeeperOptionsPanel.prototype.ClickPrintTimeCard = function () {  
+timekeeperOptionsPanel.prototype.ClickPrintTimecard = function () {  
 
 /*----------------------------------------------------------------------------
-  Method      : ClickPrintTimeCard()
+  Method      : ClickPrintTimecard()
   
-  Description : This method Clicks the PrintTimeCard button  
+  Description : This method Clicks the PrintTimecard button  
   
   Output      : Click on PrintTimeCard button if TimekeeperOptions Panel Exists
 ----------------------------------------------------------------------------*/  
   this.Click("PRINT TIMECARD");
       
-} //ClickPrintTimeCard
+} //ClickPrintTimecard
 
 
 function New() {

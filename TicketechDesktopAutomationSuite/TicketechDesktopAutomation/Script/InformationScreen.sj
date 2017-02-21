@@ -121,6 +121,76 @@ informationScreen.prototype.GetText = function (objControlName) {
       
 } //GetText
 
+informationScreen.prototype.VerifyVehicleCheckinInfo = function(iTicketNum){
+/*------------------------------------------------------------------------------------------
+  Method      : VerifyVehicleCheckinInfo()
+  
+  Description : This method returns vehicle information for given ticket number if exists on screen
+  
+  Output      : true/false
+-------------------------------------------------------------------------------------------*/ 
+  try {
+  
+    var objTable = Sys.Process("PosApplication").WinFormsObject("FormMain").WinFormsObject("ScreenInformation").WinFormsObject("activities").WinFormsObject("activities");
+    var iItemCount = objTable.wItemCount;
+    var vehicleData = {Color : null,Make : null,TicketNumber : null};
+
+    if(iItemCount > 0)
+       for(iCurrentItem=0;iCurrentItem<=iItemCount;iCurrentItem++) {
+          if(aqString.Trim(objTable.wItem(iCurrentItem,3))=== iTicketNum){
+             vehicleData.Color = aqString.Trim(objTable.wItem(iCurrentItem,1));
+             vehicleData.Make = aqString.Trim(objTable.wItem(iCurrentItem,2));
+             vehicleData.TicketNumber = aqString.Trim(objTable.wItem(iCurrentItem,3));
+             break;
+          }
+       }
+    return vehicleData; 
+  }
+  
+
+  catch(exception) {
+    TestLog.Message("Error in VerifyVehicleCheckinInfo method: "+ exception);
+  }
+}
+
+informationScreen.prototype.VerifyTicketExists = function (iTicketNum) {  
+
+/*------------------------------------------------------------------------------------------
+  Method      : VerifyTicketExists()
+  
+  Description : This method verifies if ticket number exists or not
+  
+  Output      : true/false
+-------------------------------------------------------------------------------------------*/  
+  try {
+
+    var VehicleInfo; 
+    
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at informationScreen.VerifyTicketExists: The InformationScreen Screen does not Exist.",
+              message     : this.scrnInfo + " Screen does not Exist." }             
+    
+    if (iTicketNum !== undefined && iTicketNum !== null) 
+      VehicleInfo = this.VerifyVehicleCheckinInfo(iTicketNum);
+      if(VehicleInfo.TicketNumber === iTicketNum){
+      return true;      
+      } else {
+      return false;
+      }
+
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+      
+} //VerifyTicketExists
+
+
 function New() {
 
 /*------------------------------------------------------------------------------------------- 

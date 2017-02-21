@@ -26,20 +26,39 @@ function DBConnection () {
 
 DBConnection.prototype.ExecuteQuery = function(strQuery) {
 
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   Function: ExecuteQuery
-  Description: To post a SQL query to the DataBase
+  Description: To post a Select query to the DataBase
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
   try {
   
     var currentDriver = this.getDriver();
-    currentDriver.SQL = strQuery;
-    currentDriver.Open();    
+    currentDriver.SQL = strQuery;  
+    currentDriver.Open(); 
+       
     return currentDriver;
     
   }
   catch (ex) {
-    TestLog.Error("Error while peforming select command ('" + strQuery + "') : " + ex.description);
+    TestLog.Warning("Error while peforming select command ('" + strQuery + "') : " + ex.description);
+  }
+}
+
+DBConnection.prototype.ExecuteNonQuery = function(strQuery) {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function: ExecuteQuery
+  Description: To post a update, insert, delete SQL to the DataBase
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+  try {
+  
+    var currentDriver = this.getDriver();
+    currentDriver.SQL = strQuery;  
+    
+    return currentDriver.ExecSQL();   
+  }
+  catch (ex) {
+    TestLog.Warning("Error while peforming non select command ('" + strQuery + "') : " + ex.description);
   }
 }
 

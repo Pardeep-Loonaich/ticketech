@@ -468,30 +468,24 @@ function exeCommand(keyName)  {
 
 } //exeCommand
 
-  /*
-  ----------------------------------------------------------------------------------
+function assertResult(bStatus, sPassMsg, sFailMsg) {
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   Mehtod  : assertResult()
   Desc    : To Use assert result
   Param   : it will accept three argument 
-  bStatus : ture or False
+  bStatus : ture or false
   sPassMsg: Pass Message
   sFailMsg: Fail Message
-  ----------------------------------------------------------------------------------
-  */
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-
-  function assertResult(bStatus, sPassMsg,sFailMsg)
-  {
-    if(bStatus===true)
-    {
+   if(bStatus){
       TestLog.Pass(sPassMsg);
-    }
-    else
-    {
+   } else {
       TestLog.Fail(sFailMsg);
-    }
+   }
 
-  }
+}//assertResult
 
 
 function getRandomString(strings)  {
@@ -512,6 +506,7 @@ function getRandomString(strings)  {
 
 } //getRandomString
 
+
 function getRandomValue(type, length)  {
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   Function   : getRandomValue
@@ -526,11 +521,11 @@ function getRandomValue(type, length)  {
     var ret;
   
     if (type == "ALPHA")
-        sample = "abcdefghijklmnopqrstuvwxyz";
+        sample = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     else if (type == "NUMERIC")
         sample = "0123456789";
     else
-        sample = "abcdefghijklmnopqrstuvwxyz0123456789";
+        sample = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
       
     rnd = dotNET.System.Random.zctor();
     ret = "";

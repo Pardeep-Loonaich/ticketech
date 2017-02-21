@@ -1,4 +1,6 @@
 ﻿//USEUNIT Utility
+//USEUNIT DBUtility
+//USEUNIT SQLQueries
 //USEUNIT MainDialog
 //USEUNIT EmployeeInfoForm
 //USEUNIT EmployeeCodeForm
@@ -14,118 +16,104 @@ function TC_POUT_EMP_001() {
 
   //Variable Declaration 
   //---------------------
-  var home; //Stores the instance of home screen
-  var employeeCode; //Stores the instance of Employee Info Screen
-  //var expectedErrorMessage = "PLEASE WAIT..."; //Stores the expected error message    
-  //var actualErrorMessage; //Stores the error message to be dispalyed    
+  var objMainDialog; //Stores the instance of MainDialog
+  var objEmployeeInfoForm; //Stores the instance of Employee Info Form
+  var objEmployeeCodeForm; //Stores the instance of Employee Code Form
+  var objEmployeePunchForm; //Stores the instance of Employee Punch Form
   
-  try {
+  var bTestCaseResult;//Boolean variable to store TestCase result
   
-    //Connecting to testdata file & reading the given data
-    TestDataIdx = 0;
-    DataPool.FilePath = Project.Path + "TestData\\";
-    DataPool.FileName = "PunchOut.xls";
-    DataPool.SheetName = "TC_POUT_EMP_001";
-    DataPool.New(); //Creating a New Data Connection
+  //Getting Employee whose punch Details are available in Punches Table
+  var eEmpLastPunchDetails = SQLQueries.getPunchInOutEmployee();
+ 
+  //Declaring and initializing Test Data object 
+  var objTestData = { EmployeeID : eEmpLastPunchDetails.sEmployeeID, EmployeeCode : null }; 
+
+  //setting EmployeeID as EmployeeCode after updating via SQL in DB
+  if(SQLQueries.updateEmployeeCode(objTestData.EmployeeID))
+   objTestData.EmployeeCode = objTestData.EmployeeID;
+
+  //Update Last punch Details of the Employee
+  if(eEmpLastPunchDetails.bPunchInOutStatus == 0)
+    SQLQueries.updateEmployeePunchDetails(eEmpLastPunchDetails.sEmployeeGUID,1,eEmpLastPunchDetails.sLastPunchDateTime);
   
-    //Verify if test data exists in the test data sheet
-    if (DataPool.EOF) {
-      TestLog.Warning("No TestData found.");
-      DataPool.Close();
-      return;
-    }
+  var eEmpCurrentPunchDetails;//stores the latest punch Out Details of the Employee after Test case execution
     
+  try {
+
+    //Step-1: Launching the POS application and Initialize the MainDialog
+    //-------------------------------------------------------------------
+    Utility.launchApp();
+    objMainDialog = MainDialog.New();
+
+    //Step-2: Navigate into EmployeeInfo Form and submit valid emp ID
+    //--------------------------------------------------------------------
+    objMainDialog.NavigateToPunchOutScreen();    
+    if (objMainDialog.lastError.name !== undefined) throw objMainDialog.lastError;
+      
+    TestLog.Message("Step-1: Clicked Punch Out button.");
+      
+    //Initialize object of EmployeeInfoForm
+    objEmployeeInfoForm = EmployeeInfoForm.New();
+      
+    //Set data in Employee ID field and click Enter button from Navigation panel
+    objEmployeeInfoForm.InputAndSubmitForm(objTestData.EmployeeID);
+    if (objEmployeeInfoForm.lastError.name !== undefined) throw objEmployeeInfoForm.lastError;
+      
+    TestLog.Message("Step-2: Navigated to Employee Info screen and submitted valid emp id.");
+      
+    //Step-3: Navigate into EmployeeCode Form and submit valid code
+    //-------------------------------------------------------------
+    objEmployeeCodeForm = EmployeeCodeForm.New();
+      
+    //Set data in Employee Code field and click Enter button from Navigation panel
+    objEmployeeCodeForm.InputAndSubmitForm(objTestData.EmployeeCode);
+    if (objEmployeeCodeForm.lastError.name !== undefined) throw objEmployeeCodeForm.lastError;
+      
+    TestLog.Message("Step-3: Navigated to Employee Code screen and submitted valid code.");
+      
+    //Step-4: Navigate into Employee punch screen and click Enter button
+    //--------------------------------------------------------------------
+    objEmployeePunchForm = EmployeePunchForm.New();
+      
+    //Click Enter button from Navigation panel
+    objEmployeePunchForm.SubmitForm();
+    if (objEmployeePunchForm.lastError.name !== undefined) throw objEmployeePunchForm.lastError;
+    
+    TestLog.Message("Step-4: Navigated to Employee Punch screen and Clicked Enter.");
+      
+    //TestCase Result : verify the last punch details with the latest punch detail, punch detail change indicates the test case is passed
+    eEmpCurrentPunchDetails =  SQLQueries.getPunchInOutEmployee(objTestData.EmployeeID);
+    sLastPunchDate = eEmpLastPunchDetails.sLastPunchDateTime;
+    sCurrPunchDate = eEmpCurrentPunchDetails.sLastPunchDateTime;
+    
+    bTestCaseResult = ((eEmpCurrentPunchDetails.bPunchInOutStatus == 0 )&& (sLastPunchDate != sCurrPunchDate));
+    sPassMessage    = "TestCase Passed. The Employee "+objTestData.EmployeeID+" PunchOut Successfully";
+    sFailMessage    = "TestCase Failed. The Employee "+objTestData.EmployeeID+" PunchOut Failed";
+    
+    TestLog.Message("EmployeeID: " +objTestData.EmployeeID+ "'s Current Punch Status " +eEmpCurrentPunchDetails.bPunchInOutStatus+ " and Current Punch DateTime: "+sCurrPunchDate);
+    
+    //Assert Result
+    Utility.assertResult(bTestCaseResult, sPassMessage, sFailMessage);                                             
   } //End try
-  
-  catch (exception) {
+        
+  catch(exception) {
+    //Sys.Process("PosApplication").FindChild("WinFormsControlName", "Form*", 1).Picture();
     TestLog.Error(exception.description, Utility.formattedException(exception));
-    DataPool.Close();
-    return;
   } //End catch
     
-  while (!DataPool.EOF) {
+  finally {
+    //Close the POS Application
+    Utility.closePOSProcess();  
+    Log.PopLogFolder();
+  } //End finally
     
-    try {
-
-      TestDataIdx++;       
-      TestLog.AddTestDataInfo(TestDataIdx, DataPool.Columns, DataPool.Item); // Printing given testdata info to Log
-      
-      objTestData = {
-                      EmployeeID : DataPool.Item("EmpID"),EmployeeCode : DataPool.Item("code")                                         
-                    }; //TestData object to punch out an employee
-                    
-     
-      //Step-1: Launching the POS application and Initialize the home screen
-      //--------------------------------------------------------------------
-      Utility.launchApp();
-      home = MainDialog.New();
-      
-      
-
-      //Step-2: Navigate into Employee info screen and submit valid emp ID
-     //--------------------------------------------------------------------
-      home.NavigateToPunchOutScreen();
-      
-      if (home.lastError.name !== undefined) throw home.lastError;
-      
-      TestLog.Message("Step-1: Clicked Punch Out button.");
-      
-      //Initialize object of EmployeeInfoScreen 
-      employeeInfo = new EmployeeInfoForm.New();
-      
-      //Set data in Employee ID field and click Enter button from Navigation panel
-      employeeInfo.InputAndSubmitForm(objTestData.EmployeeID);
-      if (employeeInfo.lastError.name !== undefined) throw employeeInfo.lastError;
-      
-      TestLog.Message("Step-2: Navigated to Employee Info screen and submitted valid emp id.");
-      
-      //Step-3: Navigate into Employee code screen and submit valid code
-      //--------------------------------------------------------------------
-       
-      //Initialize object of EmployeeCodeScreen 
-      employeeCode = new EmployeeCodeForm.New();
-      
-      //Set data in Employee Code field and click Enter button from Navigation panel
-      employeeCode.InputAndSubmitForm(objTestData.EmployeeCode);
-      if (employeeCode.lastError.name !== undefined) throw employeeCode.lastError;
-      
-      TestLog.Message("Step-3: Navigated to Employee Code screen and submitted valid code.");
-      TestLog.Message(objTestData.EmployeeCode);
-      
-       //Step-4: Navigate into Employee punch screen and click Enter button
-      //--------------------------------------------------------------------
-      
-      //Initialize object of EmployeePunchScreen 
-      employeePunch = new EmployeePunchForm.New();
-      
-      //Click Enter button from Navigation panel
-      employeePunch.SubmitForm();
-      if (employeePunch.lastError.name !== undefined) throw employeePunch.lastError;
-      
-      TestLog.Message("TestCase Passed.The Employee is punched out successfully");
-       
-       } //End try 
-        
-    catch(exception) {
-      TestLog.Error(exception.description, Utility.formattedException(exception));
-    } //End catch
-    
-    finally {
-      //Close the POS Application
-      Utility.closePOSProcess();  
-    
-      DataPool.NextItem(); //Moving to next given testdata
-      Log.PopLogFolder();
-    } //End finally
-    
-  } // while EOF
-  
   //Disposing objects 
-  home = null;
-  employeeInfo = null;
-  employeeCode=null;
-  DataPool.Close(); 
-
+  objMainDialog = null;
+  objEmployeeInfoForm = null;
+  objEmployeeCodeForm = null;
+  objEmployeePunchForm = null;
+//
 }
 
 
@@ -137,96 +125,67 @@ function TC_POUT_EMP_002() {
 
   //Variable Declaration 
   //---------------------
-  var home; //Stores the instance of home screen
-  var employeeInfo; //Stores the instance of Employee Info Screen
-  var expectedErrorMessage = "EMPLOYEE NOT FOUND."; //Stores the expected error message    
-  var actualErrorMessage; //Stores the error message to be dispalyed    
+  var objMainDialog; //Stores the instance of MainDialog
+  var objEmployeeInfoForm; //Stores the instance of Employee Info Form
+  
+  var bTestCaseResult;//Boolean variable to store TestCase result  
+  var sExpectedErrorMessage = "EMPLOYEE NOT FOUND."; //Stores the expected error message    
+  var sActualErrorMessage; //Stores the error message to be dispalyed
+  
+  var objTestData = {EmployeeID : null};
+  
+  var sDeletedEmployee = SQLQueries.getDeletedEmployee();//get a deleted employee from DB - Invalid
+  
+  //if no deleted employee available in DB - generate a random EmployeeID
+  if (sDeletedEmployee.sEmployeeId != null) 
+    objTestData.EmployeeID = sDeletedEmployee.sEmployeeId;
+  else
+    objTestData.EmployeeID = Utility.getRandomValue("ALPHANUMERIC",6);  
   
   try {
-  
-    //Connecting to testdata file & reading the given data
-    TestDataIdx = 0;
-    DataPool.FilePath = Project.Path + "TestData\\";
-    DataPool.FileName = "PunchOut.xls";
-    DataPool.SheetName = "TC_POUT_EMP_002";
-    DataPool.New(); //Creating a New Data Connection
-  
-    //Verify if test data exists in the test data sheet
-    if (DataPool.EOF) {
-      TestLog.Warning("No TestData found.");
-      DataPool.Close();
-      return;
-    }
+
+    //Step-1: Launching the POS application and Initialize the MainDialog
+    //--------------------------------------------------------------------
+    Utility.launchApp();
+    objMainDialog = MainDialog.New();
+      
+   //Step-2: Navigate into Employee info screen and submit invalid emp ID
+   //--------------------------------------------------------------------
+    objMainDialog.NavigateToPunchOutScreen();
+    if (objMainDialog.lastError.name !== undefined) throw objMainDialog.lastError;
+    TestLog.Message("Step-1: Clicked Punch Out button.");
+      
+    //Initialize object of EmployeeInfoForm
+    objEmployeeInfoForm = EmployeeInfoForm.New();
+      
+    //Set data in Employee ID field and click Enter button from Navigation panel
+    sActualErrorMessage = objEmployeeInfoForm.InputAndSubmitFormWithErrors(objTestData.EmployeeID);
+    if (objEmployeeInfoForm.lastError.name !== undefined) throw objEmployeeInfoForm.lastError;
+      
+    TestLog.Message("Step-2: Navigated to Employee Info screen and submitted invalid emp id");
+      
+    //TestCase Result : verify the Actual Error Message respective to expected error message
+    bTestCaseResult = (sActualErrorMessage === sExpectedErrorMessage);
+    sPassMessage    = "TestCase Passed. The error message is displayed as expected for invalid employee ID";
+    sFailMessage    = "TestCase Failed. Unexpected/No error message is displayed for the invalid employee ID";
     
+    //Assert Result
+    Utility.assertResult(bTestCaseResult, sPassMessage, sFailMessage);                                             
   } //End try
-  
-  catch (exception) {
+        
+  catch(exception) {
     TestLog.Error(exception.description, Utility.formattedException(exception));
-    DataPool.Close();
-    return;
   } //End catch
     
-  while (!DataPool.EOF) {
-    
-    try {
-
-      TestDataIdx++;       
-      TestLog.AddTestDataInfo(TestDataIdx, DataPool.Columns, DataPool.Item); // Printing given testdata info to Log
-      
-      objTestData = {
-                      EmployeeID : DataPool.Item("EmpID")                                         
-                    }; //TestData object to punch out an employee
-                    
-      TestLog.Message(objTestData.EmployeeID);
-      //Step-1: Launching the POS application and Initialize the home screen
-      //--------------------------------------------------------------------
-      Utility.launchApp();
-      home = MainDialog.New();
-      
-     //Step-2: Navigate into Employee info screen and submit invalid emp ID
-     //--------------------------------------------------------------------
-      home.NavigateToPunchOutScreen();
-      if (home.lastError.name !== undefined) throw home.lastError;
-      TestLog.Message("Step-1: Clicked Punch Out button.");
-      
-      //Initialize object of EmployeeInfoScreen 
-      employeeInfo = new EmployeeInfoForm.New();
-      
-      //Set data in Employee ID field and click Enter button from Navigation panel
-      actualErrorMessage = employeeInfo.InputAndSubmitFormWithErrors(objTestData.EmployeeID);
-      if (employeeInfo.lastError.name !== undefined) throw employeeInfo.lastError;
-      
-      TestLog.Message("Step-2: Navigated to Employee Info screen and submitted invalid emp id");
-      
-       //Verification : To verify if the expected error message is displayed
-      //-------------------------------------------------------------------
-      if (actualErrorMessage === expectedErrorMessage)
-        TestLog.Pass("TestCase Passed. Expected error message displayed successfuly for Punch Out with Invalid Employee ID");    
-      else if (actualErrorMessage === "THE SYSTEM IS WAITING FOR YOUR SELECTION")  
-        TestLog.Fail("TestCase Failed. No error message is displayed for the invalid employee ID");
-      else
-        TestLog.Fail("TestCase Failed. Unexpected error message is displayed for the invalid employee ID");    
-                                             
-        } //End try
-        
-    catch(exception) {
-      TestLog.Error(exception.description, Utility.formattedException(exception));
-    } //End catch
-    
-    finally {
-      //Close the POS Application
-      Utility.closePOSProcess();  
-    
-      DataPool.NextItem(); //Moving to next given testdata
-      Log.PopLogFolder();
-    } //End finally
-    
-  } // while EOF
+  finally {
+    //Close the POS Application
+    Utility.closePOSProcess();
+    Log.PopLogFolder();
+  } //End finally
   
   //Disposing objects 
-  home = null;
-  employeeInfo = null;
-  DataPool.Close(); 
+  objMainDialog = null;
+  objEmployeeInfoForm = null;
 
 }
 
@@ -239,99 +198,59 @@ function TC_POUT_EMP_003() {
 
   //Variable Declaration 
   //---------------------
-  var home; //Stores the instance of home screen
-  var employeeCode; //Stores the instance of Employee Info Screen
-  var expectedErrorMessage = "EMPLOYEE ID CANNOT BE EMPTY."; //Stores the expected error message    
-  var actualErrorMessage; //Stores the error message to be dispalyed    
+  var objMainDialog; //Stores the instance of MainDialog
+  var objEmployeeInfoForm; //Stores the instance of Employee Info Screen
+
+  var bTestCaseResult;//Boolean variable to store TestCase result  
+  var sExpectedErrorMessage = "EMPLOYEE ID CANNOT BE EMPTY."; //Stores the expected error message    
+  var sActualErrorMessage; //Stores the error message to be dispalyed    
   
-  try {
-  
-    //Connecting to testdata file & reading the given data
-    TestDataIdx = 0;
-    DataPool.FilePath = Project.Path + "TestData\\";
-    DataPool.FileName = "PunchOut.xls";
-    DataPool.SheetName = "TC_POUT_EMP_003";
-    DataPool.New(); //Creating a New Data Connection
-  
-    //Verify if test data exists in the test data sheet
-    if (DataPool.EOF) {
-      TestLog.Warning("No TestData found.");
-      DataPool.Close();
-      return;
-    }
+  var objTestData = {EmployeeID : ""}; //Blank Employee ID  
     
+  try {                  
+     
+    //Step-1: Launching the POS application and Initialize the MainDialog
+    //--------------------------------------------------------------------
+    Utility.launchApp();
+    objMainDialog = MainDialog.New();
+      
+    //Step-2: Navigate into Employee info screen and submit empty emp ID
+    //--------------------------------------------------------------------
+    objMainDialog.NavigateToPunchOutScreen();
+    if (objMainDialog.lastError.name !== undefined) throw objMainDialog.lastError;
+    TestLog.Message("Step-1: Clicked Punch Out button.");
+      
+    //Initialize object of EmployeeInfoForm
+    objEmployeeInfoForm = EmployeeInfoForm.New();
+      
+    //Set data in Employee ID field and click Enter button from Navigation panel
+    sActualErrorMessage=objEmployeeInfoForm.InputAndSubmitFormWithErrors(objTestData.EmployeeID);
+    if (objEmployeeInfoForm.lastError.name !== undefined) throw objEmployeeInfoForm.lastError;
+      
+    TestLog.Message("Step-2: Navigated to Employee Info screen and submitted empty emp id.");
+       
+    //TestCase Result : verify the Actual Error Message respective to expected error message
+    bTestCaseResult = (sActualErrorMessage === sExpectedErrorMessage);
+    sPassMessage    = "TestCase Passed. The error message is displayed as expected for empty/blank employee ID";
+    sFailMessage    = "TestCase Failed. Unexpected/No error message is displayed for empty/blank employee ID";
+    
+    //Assert Result
+    Utility.assertResult(bTestCaseResult, sPassMessage, sFailMessage);                                             
   } //End try
-  
-  catch (exception) {
+        
+  catch(exception) {
     TestLog.Error(exception.description, Utility.formattedException(exception));
-    DataPool.Close();
-    return;
   } //End catch
     
-  while (!DataPool.EOF) {
+  finally {
+    //Close the POS Application
+    Utility.closePOSProcess();  
+    Log.PopLogFolder();
+  } //End finally
     
-    try {
-
-      TestDataIdx++;       
-      TestLog.AddTestDataInfo(TestDataIdx, DataPool.Columns, DataPool.Item); // Printing given testdata info to Log
-      
-      objTestData = {
-                      EmployeeID : DataPool.Item("EmpID")                                         
-                    }; //TestData object to punch out an employee
-                    
-     
-      //Step-1: Launching the POS application and Initialize the home screen
-      //--------------------------------------------------------------------
-      Utility.launchApp();
-      home = MainDialog.New();
-      
-      //Step-2: Navigate into Employee info screen and submit valid emp ID
-      //--------------------------------------------------------------------
-      home.NavigateToPunchOutScreen();
-      if (home.lastError.name !== undefined) throw home.lastError;
-      TestLog.Message("Step-1: Clicked Punch Out button.");
-      
-      //Initialize object of EmployeeInfoScreen 
-      employeeInfo = new EmployeeInfoForm.New();
-      
-      //Set data in Employee ID field and click Enter button from Navigation panel
-      actualErrorMessage=employeeInfo.InputAndSubmitFormWithErrors(objTestData.EmployeeID);
-      if (employeeInfo.lastError.name !== undefined) throw employeeInfo.lastError;
-      
-      TestLog.Message("Step-2: Navigated to Employee Info screen and submitted empty emp id.");
-      
-      
-      //Verification : To verify if the expected error message is displayed
-      //-------------------------------------------------------------------
-      if (actualErrorMessage === expectedErrorMessage)
-        TestLog.Pass("TestCase Passed. The error message is displayed as expected when blank Employee ID is given");    
-      else if (actualErrorMessage === "THE SYSTEM IS WAITING FOR YOUR SELECTION")  
-        TestLog.Fail("TestCase Failed. No error message is displayed for the empty Employee ID");
-      else
-        TestLog.Fail("TestCase Failed. Unexpected error message is displayed for the Employee ID");    
-                                             
-    } //End try
-        
-    catch(exception) {
-      TestLog.Error(exception.description, Utility.formattedException(exception));
-    } //End catch
-    
-    finally {
-      //Close the POS Application
-      Utility.closePOSProcess();  
-    
-      DataPool.NextItem(); //Moving to next given testdata
-      Log.PopLogFolder();
-    } //End finally
-    
-  } // while EOF
-  
   //Disposing objects 
-  home = null;
-  employeeInfo = null;
-  employeeCode=null;
-  DataPool.Close(); 
-
+  objMainDialog = null;
+  objEmployeeInfoForm = null;
 }
 
 
@@ -343,88 +262,58 @@ function TC_POUT_EMP_004() {
 
   //Variable Declaration 
   //---------------------
-  var home; //Stores the instance of home screen
-  var employeeCode; //Stores the instance of Employee Info Screen
-  var expectedErrorMessage = "TEMPLATE ENTERED NOT MATCH."; //Stores the expected error message    
-  var actualErrorMessage; //Stores the error message to be dispalyed    
+  var objMainDialog; //Stores the instance of MainDialog
+  var objEmployeeInfoForm; //Stores the instance of Employee Info Form
+  var objEmployeeCodeForm; //Stores the instance of Employee Code Form
   
-  try {
+  var bTestCaseResult;//Boolean variable to store TestCase result
+  var sExpectedErrorMessage = "TEMPLATE ENTERED NOT MATCH."; //Stores the expected error message    
+  var sActualErrorMessage; //Stores the error message to be dispalyed    
   
-    //Connecting to testdata file & reading the given data
-    TestDataIdx = 0;
-    DataPool.FilePath = Project.Path + "TestData\\";
-    DataPool.FileName = "PunchOut.xls";
-    DataPool.SheetName = "TC_POUT_EMP_004";
-    DataPool.New(); //Creating a New Data Connection
-  
-    //Verify if test data exists in the test data sheet
-    if (DataPool.EOF) {
-      TestLog.Warning("No TestData found.");
-      DataPool.Close();
-      return;
-    }
-    
-  } //End try
-  
-  catch (exception) {
-    TestLog.Error(exception.description, Utility.formattedException(exception));
-    DataPool.Close();
-    return;
-  } //End catch
-    
-  while (!DataPool.EOF) {
-    
-    try {
-
-      TestDataIdx++;       
-      TestLog.AddTestDataInfo(TestDataIdx, DataPool.Columns, DataPool.Item); // Printing given testdata info to Log
-      
-      objTestData = {
-                      EmployeeID : DataPool.Item("EmpID"),EmployeeCode : DataPool.Item("code")                                         
+  var objTestData = {
+                      EmployeeID   :  SQLQueries.getValidEmployeeID(),
+                      EmployeeCode :  Utility.getRandomValue("ALPHANUMERIC",4)                                          
                     }; //TestData object to punch out an employee
-                    
+  
+  try {          
      
-      //Step-1: Launching the POS application and Initialize the home screen
-      //--------------------------------------------------------------------
-      Utility.launchApp();
-      home = MainDialog.New();
+    //Step-1: Launching the POS application and Initialize the MainDialog
+    //--------------------------------------------------------------------
+    Utility.launchApp();
+    objMainDialog = MainDialog.New();
       
-      //Step-2: Navigate into Employee info screen and submit valid emp ID
-      //--------------------------------------------------------------------
-      home.NavigateToPunchOutScreen();
-      if (home.lastError.name !== undefined) throw home.lastError;
-      TestLog.Message("Step-1: Clicked Punch Out button.");
-      //Initialize object of EmployeeInfoScreen 
-      employeeInfo = new EmployeeInfoForm.New();
+    //Step-2: Navigate into Employee info screen and submit valid emp ID
+    //--------------------------------------------------------------------
+    objMainDialog.NavigateToPunchOutScreen();
+    if (objMainDialog.lastError.name !== undefined) throw objMainDialog.lastError;
+    TestLog.Message("Step-1: Clicked Punch Out button.");
+    
+    //Initialize object of EmployeeInfoForm
+    objEmployeeInfoForm = EmployeeInfoForm.New();
       
-      //Set data in Employee ID field and click Enter button from Navigation panel
-      employeeInfo.InputAndSubmitForm(objTestData.EmployeeID);
-      if (employeeInfo.lastError.name !== undefined) throw employeeInfo.lastError;
+    //Set data in Employee ID field and click Enter button from Navigation panel
+    objEmployeeInfoForm.InputAndSubmitForm(objTestData.EmployeeID);
+    if (objEmployeeInfoForm.lastError.name !== undefined) throw objEmployeeInfoForm.lastError;
       
-      TestLog.Message("Step-2: Navigated to Employee Info screen and submitted valid emp id.");
+    TestLog.Message("Step-2: Navigated to Employee Info screen and submitted valid emp id.");
       
-      //Step-3: Navigate into Employee code screen and submit invalid code
-      //--------------------------------------------------------------------
-       
-      //Initialize object of EmployeeCodeScreen 
-      employeeCode = new EmployeeCodeForm.New();
+    //Step-3: Navigate into Employee code screen and submit invalid code
+    //--------------------------------------------------------------------
+    objEmployeeCodeForm = EmployeeCodeForm.New();
       
-      //Set data in Employee Code field and click Enter button from Navigation panel
-      actualErrorMessage=employeeCode.InputAndSubmitFormWithErrors(objTestData.EmployeeCode);
-      if (employeeCode.lastError.name !== undefined) throw employeeCode.lastError;
+    //Set data in Employee Code field and click Enter button from Navigation panel
+    sActualErrorMessage=objEmployeeCodeForm.InputAndSubmitFormWithErrors(objTestData.EmployeeCode);
+    if (objEmployeeCodeForm.lastError.name !== undefined) throw objEmployeeCodeForm.lastError;
       
-      TestLog.Message("Step-2: Navigated to Employee Code screen and submitted invalid code.");
-      TestLog.Message(objTestData.EmployeeCode);
+    TestLog.Message("Step-3: Navigated to Employee Code screen and submitted invalid code.");
       
-      //Verification : To verify if the expected error message is displayed
-      //-------------------------------------------------------------------
-      if (actualErrorMessage === expectedErrorMessage)
-        TestLog.Pass("TestCase Passed. Expected error message displayed successfuly for Punch Out with Invalid Employee Code");    
-      else if (actualErrorMessage === "THE SYSTEM IS WAITING FOR YOUR SELECTION")  
-        TestLog.Fail("TestCase Failed. No error message is displayed for the  invalid Code");
-      else
-        TestLog.Fail("TestCase Failed. Unexpected error message is displayed for the  invalid Code"); 
-              
+    //TestCase Result : verify the Actual Error Message respective to expected error message
+    bTestCaseResult = (sActualErrorMessage === sExpectedErrorMessage);
+    sPassMessage    = "TestCase Passed. Expected error message displayed for PunchOut with Invalid Employee Code";
+    sFailMessage    = "TestCase Failed. Unexpected/No error message is displayed for the Invalid Employee Code";
+    
+    //Assert Result
+    Utility.assertResult(bTestCaseResult, sPassMessage, sFailMessage);         
      
        } //End try
         
@@ -434,160 +323,130 @@ function TC_POUT_EMP_004() {
     
     finally {
       //Close the POS Application
-      Utility.closePOSProcess();  
-    
-      DataPool.NextItem(); //Moving to next given testdata
+      Utility.closePOSProcess(); 
       Log.PopLogFolder();
     } //End finally
-    
-  } // while EOF
   
   //Disposing objects 
-  home = null;
-  employeeInfo = null;
-  employeeCode=null;
-  DataPool.Close(); 
-
+  objMainDialog = null;
+  objEmployeeInfoForm = null;
+  objEmployeeCodeForm = null;
 }
 
 
 function TC_POUT_EMP_005() {
   
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  TC_POUT_EMP_005 : Verify Transaction timed out for punch out an employee after entering details
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  TC_POUT_EMP_005 : Verify Transaction time out during PunchOut an employee after entering details
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
   //Variable Declaration 
   //---------------------
-  var home; //Stores the instance of home screen
-  var employeeCode; //Stores the instance of Employee Info Screen
-  var expectedErrorMessage = "PUNCH TRANSACTION HAS TIMED OUT. PLEASE, TRY AGAIN."; //Stores the expected error message    
-  var actualErrorMessage; //Stores the error message to be dispalyed    
+  var objMainDialog; //Stores the instance of MainDialog
+  var objEmployeeInfoForm; //Stores the instance of Employee Info Form
+  var objEmployeeCodeForm; //Stores the instance of Employee Code Form
+  var objEmployeePunchForm; //Stores the instance of Employee Punch Form
   
-  try {
+  var bTestCaseResult;//Boolean variable to store TestCase result
+  var sExpectedErrorMessage = "PUNCH TRANSACTION HAS TIMED OUT. PLEASE, TRY AGAIN."; //Stores the expected error message    
+  var sActualErrorMessage; //Stores the error message to be dispalyed    
+
+  //Getting Employee whose punch Details are available in Punches Table
+  var eEmpLastPunchDetails = SQLQueries.getPunchInOutEmployee();
+ 
+  //Declaring and initializing Test Data object 
+  var objTestData = { EmployeeID : eEmpLastPunchDetails.sEmployeeID, EmployeeCode : null }; 
+
+  //setting EmployeeID as EmployeeCode after updating via SQL in DB
+  if(SQLQueries.updateEmployeeCode(objTestData.EmployeeID))
+   objTestData.EmployeeCode = objTestData.EmployeeID;
+
+  //Update Last punch Details of the Employee
+  if(eEmpLastPunchDetails.bPunchInOutStatus == 0)
+    SQLQueries.updateEmployeePunchDetails(eEmpLastPunchDetails.sEmployeeGUID,1,eEmpLastPunchDetails.sLastPunchDateTime);
   
-    //Connecting to testdata file & reading the given data
-    TestDataIdx = 0;
-    DataPool.FilePath = Project.Path + "TestData\\";
-    DataPool.FileName = "PunchOut.xls";
-    DataPool.SheetName = "TC_POUT_EMP_005";
-    DataPool.New(); //Creating a New Data Connection
+  var eEmpCurrentPunchDetails;//stores the latest punch Out Details of the Employee after Test case execution
   
-    //Verify if test data exists in the test data sheet
-    if (DataPool.EOF) {
-      TestLog.Warning("No TestData found.");
-      DataPool.Close();
-      return;
-    }
+  try {                 
+     
+    //Step-1: Launching the POS application and Initialize the MainDialog
+    //--------------------------------------------------------------------
+    Utility.launchApp();
+    objMainDialog = MainDialog.New();
+      
+    //Step-2: Navigate into Employee info screen and submit valid emp ID
+    //--------------------------------------------------------------------
+    objMainDialog.NavigateToPunchOutScreen();
+    if (objMainDialog.lastError.name !== undefined) throw objMainDialog.lastError;
+    TestLog.Message("Step-1: Clicked Punch Out button.");
+      
+    //Initialize object of EmployeeInfoForm
+    objEmployeeInfoForm = EmployeeInfoForm.New();
+      
+    //Set data in Employee ID field and click Enter button from Navigation panel
+    objEmployeeInfoForm.InputAndSubmitForm(objTestData.EmployeeID);
+    if (objEmployeeInfoForm.lastError.name !== undefined) throw objEmployeeInfoForm.lastError;
+      
+    TestLog.Message("Step-2: Navigated to Employee Info screen and submitted valid emp id.");
+      
+    //Step-3: Navigate into Employee code screen and submit valid code
+    //----------------------------------------------------------------- 
+    objEmployeeCodeForm = EmployeeCodeForm.New();
+      
+    //Set data in Employee Code field and click Enter button from Navigation panel
+    objEmployeeCodeForm.InputAndSubmitForm(objTestData.EmployeeCode);
+    if (objEmployeeCodeForm.lastError.name !== undefined) throw objEmployeeCodeForm.lastError;
+      
+    TestLog.Message("Step-3: Navigated to Employee Code screen and submitted valid code.");
+      
+    //Step-4: Navigate into Employee punch screen and click Enter button after 3 minutes
+    //------------------------------------------------------------------------------------
+    objEmployeePunchForm = EmployeePunchForm.New();
+      
+    //Delay the script for 3 minutes for the transaction to get timed out
+    Delay(180000);
+      
+    //Click Enter button from Navigation panel
+    objEmployeePunchForm.SubmitForm();
+    if (objEmployeePunchForm.lastError.name !== undefined) throw objEmployeePunchForm.lastError;
     
-  } //End try
-  
-  catch (exception) {
+    TestLog.Message("Step-4 :Navigated into Employee punch screen and clicked Enter button after 3 minutes");
+      
+    //Step-5: Navigate into MainDialog and check the error message
+    //-----------------------------------------------------------------
+    objMainDialog = MainDialog.New();
+    eMainDialogDetails = objMainDialog.GetFormInfo();
+
+    sActualErrorMessage = eMainDialogDetails.Message;
+    if (objMainDialog.lastError.name !== undefined) throw objMainDialog.lastError;
+    
+    TestLog.Message("Step-5 :Error Message: "+eMainDialogDetails.Message);  
+    
+    //TestCase Result : verify the Actual Error Message respective to expected error message
+    bTestCaseResult = (sActualErrorMessage === sExpectedErrorMessage);
+    sPassMessage    = "TestCase Passed. Expected error message displayed for Punch Transaction TimeOut";
+    sFailMessage    = "TestCase Failed. Unexpected/No error message is displayed for Punch Transaction TimeOut";
+    
+    //Assert Result
+    Utility.assertResult(bTestCaseResult, sPassMessage, sFailMessage);         
+  } //End try 
+        
+  catch(exception) {
     TestLog.Error(exception.description, Utility.formattedException(exception));
-    DataPool.Close();
-    return;
   } //End catch
     
-  while (!DataPool.EOF) {
+  finally {
+    Utility.closePOSProcess(); //Close the POS Application 
+    Log.PopLogFolder();    
+  } //End finally
     
-    try {
-
-      TestDataIdx++;       
-      TestLog.AddTestDataInfo(TestDataIdx, DataPool.Columns, DataPool.Item); // Printing given testdata info to Log
-      
-      objTestData = {
-                      EmployeeID : DataPool.Item("EmpID"),EmployeeCode : DataPool.Item("code")                                         
-                    }; //TestData object to punch out an employee
-                    
-     
-      //Step-1: Launching the POS application and Initialize the home screen
-      //--------------------------------------------------------------------
-      Utility.launchApp();
-      home = MainDialog.New();
-      frmInfo = home.GetFormInfo();
-      
-      //Step-2: Navigate into Employee info screen and submit valid emp ID
-      //--------------------------------------------------------------------
-      home.NavigateToPunchOutScreen();
-      if (home.lastError.name !== undefined) throw home.lastError;
-      TestLog.Message("Step-1: Clicked Punch Out button.");
-      
-      //Initialize object of EmployeeInfoScreen 
-      employeeInfo = new EmployeeInfoForm.New();
-      
-      //Set data in Employee ID field and click Enter button from Navigation panel
-      employeeInfo.InputAndSubmitForm(objTestData.EmployeeID);
-      if (employeeInfo.lastError.name !== undefined) throw employeeInfo.lastError;
-      
-      TestLog.Message("Step-2: Navigated to Employee Info screen and submitted valid emp id.");
-      
-      //Step-3: Navigate into Employee code screen and submit valid code
-      //-----------------------------------------------------------------
-       
-      //Initialize object of EmployeeCodeScreen 
-      employeeCode = new EmployeeCodeForm.New();
-      
-      //Set data in Employee Code field and click Enter button from Navigation panel
-      employeeCode.InputAndSubmitForm(objTestData.EmployeeCode);
-      if (employeeCode.lastError.name !== undefined) throw employeeCode.lastError;
-      
-      TestLog.Message("Step-3: Navigated to Employee Code screen and submitted valid code.");
-      TestLog.Message(objTestData.EmployeeCode);
-      
-       //Step-4: Navigate into Employee punch screen and click Enter button after 3 minutes
-      //------------------------------------------------------------------------------------
-      
-      //Initialize object of EmployeePunchScreen 
-      employeePunch = new EmployeePunchForm.New();
-      Delay(180000);
-      
-      //Click Enter button from Navigation panel
-      employeePunch.SubmitForm();
-      if (employeePunch.lastError.name !== undefined) throw employeePunch.lastError;
-      TestLog.Message("Step-4 :Clicked Enter Button");
-      
-      //Step-5: Navigate into home screen and check the error message
-      //-----------------------------------------------------------------
-      home = MainDialog.New();
-      frmInfo = home.GetFormInfo();
-      Log.Message (frmInfo.Message);
-      actualErrorMessage = frmInfo.Message;
-      
-      
-      //Verification : To verify if the expected error message is displayed
-      //-------------------------------------------------------------------
-      if (actualErrorMessage === expectedErrorMessage)
-        TestLog.Pass("TestCase Passed. Expected error message displayed successfuly for PunchOut Transaction TimeOut");    
-      else if (actualErrorMessage === "THE SYSTEM IS WAITING FOR YOUR SELECTION")  
-        TestLog.Fail("TestCase Failed. No error message is displayed for Transaction TimeOut");
-      else
-        TestLog.Fail("TestCase Failed. Unexpected error message is displayed for Transaction TimeOut"); 
-              
-    
-      } //End try 
-        
-    catch(exception) {
-      TestLog.Error(exception.description, Utility.formattedException(exception));
-    } //End catch
-    
-    finally {
-      //Close the POS Application
-      Utility.closePOSProcess();  
-    
-      DataPool.NextItem(); //Moving to next given testdata
-      Log.PopLogFolder();
-      
-    } //End finally
-    
-  } // while EOF
-  
   //Disposing objects 
-  home = null;
-  employeeInfo = null;
-  employeeCode=null;
-  DataPool.Close(); 
-
+  objMainDialog = null;
+  objEmployeeInfoForm = null;
+  objEmployeeCodeForm = null;
+  objEmployeePunchForm = null;
 }
+
 
 function TC_POUT_EMP_006() {
   
@@ -597,244 +456,188 @@ function TC_POUT_EMP_006() {
 
   //Variable Declaration 
   //---------------------
-  var home; //Stores the instance of home screen
-  var employeeCode; //Stores the instance of Employee Info Screen
-  var expectedErrorMessage = "PUNCH TRANSACTION HAS TIMED OUT. PLEASE, TRY AGAIN."; //Stores the expected error message    
-  var actualErrorMessage; //Stores the error message to be dispalyed    
+  var objMainDialog; //Stores the instance of MainDialog
+  var objEmployeeInfoForm; //Stores the instance of Employee Info Form
+  
+  var bTestCaseResult; //Boolean variable to store TestCase result
+  var sExpectedErrorMessage = "PUNCH TRANSACTION HAS TIMED OUT. PLEASE, TRY AGAIN."; //Stores the expected error message    
+  var sActualErrorMessage; //Stores the error message to be dispalyed    
   
   try {
   
-    //Connecting to testdata file & reading the given data
-    TestDataIdx = 0;
-    DataPool.FilePath = Project.Path + "TestData\\";
-    DataPool.FileName = "PunchOut.xls";
-    DataPool.SheetName = "TC_POUT_EMP_006";
-    DataPool.New(); //Creating a New Data Connection
-  
-    //Verify if test data exists in the test data sheet
-    if (DataPool.EOF) {
-      TestLog.Warning("No TestData found.");
-      DataPool.Close();
-      return;
-    }
+    //Step-1: Launching the POS application and Initialize the MainDialog
+    //--------------------------------------------------------------------
+    Utility.launchApp();
+    objMainDialog = MainDialog.New();
+      
+    //Step-2: Navigate into Employee info screen and submit valid emp ID
+    //--------------------------------------------------------------------
+    objMainDialog.NavigateToPunchOutScreen();
+    if (objMainDialog.lastError.name !== undefined) throw objMainDialog.lastError;
+    TestLog.Message("Step-1: Clicked Punch Out button.");
+      
+    //Initialize object of EmployeeInfoForm
+    objEmployeeInfoForm = EmployeeInfoForm.New();
     
-  } //End try
-  
-  catch (exception) {
+    //Delay the script for 3 minutes for the transaction to get timed out
+    Delay(180000);
+      
+    //Click Enter button from Navigation panel
+    objEmployeeInfoForm.SubmitForm();
+    if (objEmployeeInfoForm.lastError.name !== undefined) throw objEmployeeInfoForm.lastError;
+    
+    TestLog.Message("Step-4 :Clicked Enter Button");
+      
+    //Step-3: Navigate into MainDialog and check the error message
+    //------------------------------------------------------------
+    objMainDialog = MainDialog.New();
+    eMainDialogDetails = objMainDialog.GetFormInfo();
+
+    sActualErrorMessage = eMainDialogDetails.Message;
+    if (objMainDialog.lastError.name !== undefined) throw objMainDialog.lastError;
+    
+    TestLog.Message("Step-5 :Error Message: "+eMainDialogDetails.Message);  
+    
+    //TestCase Result : verify the Actual Error Message respective to expected error message
+    bTestCaseResult = (sActualErrorMessage === sExpectedErrorMessage);
+    sPassMessage    = "TestCase Passed. Expected error message displayed for Punch Transaction TimeOut";
+    sFailMessage    = "TestCase Failed. Unexpected/No error message is displayed for Punch Transaction TimeOut";
+    
+    //Assert Result
+    Utility.assertResult(bTestCaseResult, sPassMessage, sFailMessage);         
+  } //End try 
+        
+  catch(exception) {
     TestLog.Error(exception.description, Utility.formattedException(exception));
-    DataPool.Close();
-    return;
   } //End catch
     
-  while (!DataPool.EOF) {
-    
-    try {
-
-      TestDataIdx++;       
-      TestLog.AddTestDataInfo(TestDataIdx, DataPool.Columns, DataPool.Item); // Printing given testdata info to Log
-      objTestData = {
-                      EmployeeID : DataPool.Item("EmpID")                                        
-                    }; //TestData object to punch out an employee
-                    
-    
-      //Step-1: Launching the POS application and Initialize the home screen
-      //--------------------------------------------------------------------
-      Utility.launchApp();
-      home = MainDialog.New();
-      frmInfo = home.GetFormInfo();
-      
-      //Step-2: Navigate into Employee info screen and submit valid emp ID
-      //--------------------------------------------------------------------
-      home.NavigateToPunchOutScreen();
-      if (home.lastError.name !== undefined) throw home.lastError;
-      TestLog.Message("Step-1: Clicked Punch Out button.");
-      
-      //Initialize object of EmployeeInfoScreen 
-      employeeInfo = new EmployeeInfoForm.New();
-      Delay(180000);
-      
-      //Click Enter button from Navigation panel
-      employeeInfo.SubmitForm();
-      if (employeeInfo.lastError.name !== undefined) throw employeeInfo.lastError;
-      TestLog.Message("Step-4 :Clicked Enter Button");
-      
-      //Step-5: Navigate into home screen and check the error message
-      //-----------------------------------------------------------------
-      home = MainDialog.New();
-      frmInfo = home.GetFormInfo();
-      Log.Message (frmInfo.Message);
-      actualErrorMessage = frmInfo.Message;
-      
-      
-      //Verification : To verify if the expected error message is displayed
-      //-------------------------------------------------------------------
-      if (actualErrorMessage === expectedErrorMessage)
-        TestLog.Pass("TestCase Passed. Expected error message displayed successfuly for PunchOut Transaction TimeOut");    
-      else if (actualErrorMessage === "THE SYSTEM IS WAITING FOR YOUR SELECTION")  
-        TestLog.Fail("TestCase Failed. No error message is displayed for Transaction TimeOut");
-      else
-        TestLog.Fail("TestCase Failed. Unexpected error message is displayed for Transaction TimeOut"); 
-              
-    
-      } //End try 
-        
-    catch(exception) {
-      TestLog.Error(exception.description, Utility.formattedException(exception));
-    } //End catch
-    
-    finally {
-      //Close the POS Application
-      Utility.closePOSProcess();  
-    
-      DataPool.NextItem(); //Moving to next given testdata
-      Log.PopLogFolder();
-      
-    } //End finally
-    
-  } // while EOF
+  finally {
+    Utility.closePOSProcess(); //Close the POS Application 
+    Log.PopLogFolder();
+  } //End finally
   
   //Disposing objects 
-  home = null;
-  employeeInfo = null;
-  employeeCode=null;
-  DataPool.Close(); 
-
+  objMainDialog = null;
+  objEmployeeInfoForm = null;
 }
+
 
 function TC_POUT_EMP_007() {
   
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  TC_POUT_EMP_007 : Verify that employee is able to duplicate punch out .
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  TC_POUT_EMP_007 : Verify that employee is able to do duplicate punch out
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
   //Variable Declaration 
   //---------------------
-  var home; //Stores the instance of home screen
-  var employeeInfo; //Stores the instance of Employee Info Screen
-  var employeeCode; //Stores the instance of Employee Code Screen
-  //var expectedErrorMessage = "CODE ENTERED NOT VALID."; //Stores the expected error message    
-  //var actualErrorMessage; //Stores the error message to be dispalyed    
+  var objMainDialog; //Stores the instance of MainDialog
+  var objEmployeeInfoForm; //Stores the instance of Employee Info Form
+  var objEmployeeCodeForm; //Stores the instance of Employee Code Screen
+  var objEmployeePunchForm; //Stores the instance of Employee Punch Form
+  var objConfirmActionForm; //Stores the instance of ConfirmAction Form
+  var bTestCaseResult; //Boolean variable to store TestCase result
   
+  //Getting Employee whose punch Details are available in Punches Table
+  var eEmpLastPunchDetails = SQLQueries.getPunchInOutEmployee();
+ 
+  //Declaring and initializing Test Data object 
+  var objTestData = { EmployeeID : eEmpLastPunchDetails.sEmployeeID, EmployeeCode : null }; 
+
+  //setting EmployeeID as EmployeeCode after updating via SQL in DB
+  if(SQLQueries.updateEmployeeCode(objTestData.EmployeeID))
+   objTestData.EmployeeCode = objTestData.EmployeeID;
+
+  //Update Last punch Details of the Employee
+  SQLQueries.updateEmployeePunchDetails(eEmpLastPunchDetails.sEmployeeGUID,0,eEmpLastPunchDetails.sLastPunchDateTime,1);
+  
+  eEmpLastPunchDetails = SQLQueries.getPunchInOutEmployee(objTestData.EmployeeID);
+  
+  var eEmpCurrentPunchDetails;//stores the latest punch Out Details of the Employee after Test case execution
+ 
   try {
-  
-    //Connecting to testdata file & reading the given data
-    TestDataIdx = 0;
-    DataPool.FilePath = Project.Path + "TestData\\";
-    DataPool.FileName = "PunchOut.xls";
-    DataPool.SheetName = "TC_POUT_EMP_007";
-    DataPool.New(); //Creating a New Data Connection
-  
-    //Verify if test data exists in the test data sheet
-    if (DataPool.EOF) {
-      TestLog.Warning("No TestData found.");
-      DataPool.Close();
-      return;
-    }
+     
+    //Step-1: Launching the POS application and Initialize the MainDialog
+    //--------------------------------------------------------------------
+    Utility.launchApp();
+    objMainDialog = MainDialog.New();
+      
+    //Step-2: Navigate into Employee info screen and submit valid emp ID
+    //--------------------------------------------------------------------
+    objMainDialog.NavigateToPunchOutScreen();
+    if (objMainDialog.lastError.name !== undefined) throw objMainDialog.lastError;
+      
+    TestLog.Message("Step-1: Clicked Punch Out button.");
+      
+    //Initialize object of EmployeeInfoForm 
+    objEmployeeInfoForm = EmployeeInfoForm.New();
+      
+    //Set data in Employee ID field and click Enter button from Navigation panel
+    objEmployeeInfoForm.InputAndSubmitForm(objTestData.EmployeeID);
+    if (objEmployeeInfoForm.lastError.name !== undefined) throw objEmployeeInfoForm.lastError;
+      
+    TestLog.Message("Step-2: Navigated to EmployeeInfo Form and submitted valid emp id.");
+      
+    //Step-3: Navigate to confirm Action screen and click yes button
+    //-----------------------------------------------------------------
+    confirmAction = ConfirmActionForm.New();
+    TestLog.Message("Step-3 : Navigated to ConfirmAction Form");
+      
+    //Click Yes button from YesNoConfirmAction panel
+    confirmAction.ConfirmYes();
+    if (confirmAction.lastError.name !== undefined) throw confirmAction.lastError;
     
+    TestLog.Message("Step-4 :Clicked Yes Button in confirm action form");
+     
+    //Step-3: Navigate into Employee code screen and submit valid code
+    //--------------------------------------------------------------------
+    objEmployeeCodeForm = EmployeeCodeForm.New();
+      
+    //Set data in Employee Code field and click Enter button from Navigation panel
+    objEmployeeCodeForm.InputAndSubmitForm(objTestData.EmployeeCode);
+    if (objEmployeeCodeForm.lastError.name !== undefined) throw objEmployeeCodeForm.lastError;
+      
+    TestLog.Message("Step-3: Navigated to Employee Code screen and submitted valid code.");
+         
+    //Step-4: Navigate into Employee punch screen and click Enter button
+    //------------------------------------------------------------------
+    objEmployeePunchForm = EmployeePunchForm.New();
+      
+    //Click Enter button from Navigation panel
+    objEmployeePunchForm.SubmitForm();
+    if (objEmployeePunchForm.lastError.name !== undefined) throw objEmployeePunchForm.lastError;
+      
+    TestLog.Message("Step-6: Navigated to Employee Punch screen and Clicked Enter.");
+      
+    //TestCase Result : verify the last punch details with the latest punch detail, punch detail change indicates the test case is passed
+    eEmpCurrentPunchDetails =  SQLQueries.getPunchInOutEmployee(objTestData.EmployeeID);
+    sLastPunchDate = eEmpLastPunchDetails.sLastPunchDateTime;
+    sCurrPunchDate = eEmpCurrentPunchDetails.sLastPunchDateTime;
+    
+    bTestCaseResult = ((eEmpCurrentPunchDetails.bPunchInOutStatus == 0 )&& (sLastPunchDate != sCurrPunchDate));
+    sPassMessage    = "TestCase Passed. The Employee "+objTestData.EmployeeID+" can do duplicate PunchOut";
+    sFailMessage    = "TestCase Failed. Duplicate PunchOut had unexpeceted behaviour";
+    
+    TestLog.Message("EmployeeID: " +objTestData.EmployeeID+ "'s Current Punch Status " +eEmpCurrentPunchDetails.bPunchInOutStatus+ " and Current Punch DateTime: "+sCurrPunchDate);
+    
+    //Assert Result
+    Utility.assertResult(bTestCaseResult, sPassMessage, sFailMessage);                                       
   } //End try
-  
-  catch (exception) {
+        
+  catch(exception) {
     TestLog.Error(exception.description, Utility.formattedException(exception));
-    DataPool.Close();
-    return;
   } //End catch
     
-  while (!DataPool.EOF) {
-    
-    try {
-
-      TestDataIdx++;       
-      TestLog.AddTestDataInfo(TestDataIdx, DataPool.Columns, DataPool.Item); // Printing given testdata info to Log
-      
-      objTestData = {
-                      EmployeeID   : DataPool.Item("EmpID"),
-                      EmployeeCode : DataPool.Item("Code")                                        
-                    }; //TestData object to punch in an employee
-     
-      //Step-1: Launching the POS application and Initialize the home screen
-      //--------------------------------------------------------------------
-      Utility.launchApp();
-      home = MainDialog.New();
-      
-      //Step-2: Navigate into Employee info screen and submit valid emp ID
-      //--------------------------------------------------------------------
-      home.NavigateToPunchOutScreen();
-      if (home.lastError.name !== undefined) throw home.lastError;
-      
-      TestLog.Message("Step-1: Clicked Punch Out button.");
-      
-      //Initialize object of EmployeeInfoForm 
-      employeeInfo = new EmployeeInfoForm.New();
-      
-      //Set data in Employee ID field and click Enter button from Navigation panel
-      employeeInfo.InputAndSubmitForm(objTestData.EmployeeID);
-      if (employeeInfo.lastError.name !== undefined) throw employeeInfo.lastError;
-      
-      TestLog.Message("Step-2: Navigated to EmployeeInfo Form and submitted valid emp id.");
-      
-      //Step-3: Navigate to confirm Action screen and click yes button
-      //-----------------------------------------------------------------
-      confirmAction = new ConfirmActionForm.New();
-      TestLog.Message("Step-3 : Navigated to ConfirmAction Form");
-      
-      //Click Yes button from YesNoConfirmAction panel
-      confirmAction.ConfirmYes();
-      if (confirmAction.lastError.name !== undefined) throw confirmAction.lastError;
-      TestLog.Message("Step-4 :Clicked Yes Button");
-     
-     ///Step-3: Navigate into Employee code screen and submit valid code
-      //--------------------------------------------------------------------
-       
-      //Initialize object of EmployeeCodeScreen 
-      employeeCode = new EmployeeCodeForm.New();
-      
-      //Set data in Employee Code field and click Enter button from Navigation panel
-      employeeCode.InputAndSubmitForm(objTestData.EmployeeCode);
-      if (employeeCode.lastError.name !== undefined) throw employeeCode.lastError;
-      
-      TestLog.Message("Step-3: Navigated to Employee Code screen and submitted valid code.");
-      TestLog.Message(objTestData.EmployeeCode);
-      
-       //Step-4: Navigate into Employee punch screen and click Enter button
-      //--------------------------------------------------------------------
-      
-      //Initialize object of EmployeePunchScreen 
-      employeePunch = new EmployeePunchForm.New();
-      
-      //Click Enter button from Navigation panel
-      employeePunch.SubmitForm();
-      if (employeePunch.lastError.name !== undefined) throw employeePunch.lastError;
-      
-      TestLog.Message("TestCase Passed.The Employee is punched out successfully");
-      
-      //DB Verification : To verify if the employee PunchIn is successful
-      //------------------------------------------------------------------
-      //if (actualErrorMessage === expectedErrorMessage)
-        TestLog.Pass("TestCase Passed. The Employee "+objTestData.EmployeeID+" PunchOut Successfully");    
-      //else (actualErrorMessage === "THE SYSTEM IS WAITING FOR YOUR SELECTION")  
-      //  TestLog.Fail("TestCase Failed. The Employee "+objTestData.EmployeeID+" PunchIn Failed");  
-                                             
-    } //End try
-        
-    catch(exception) {
-      TestLog.Error(exception.description, Utility.formattedException(exception));
-    } //End catch
-    
-    finally {
-      //Close the POS Application
-      Utility.closePOSProcess();  
-      DataPool.NextItem(); //Moving to next given testdata
-      Log.PopLogFolder();
-    } //End finally
-    
-  } // while EOF
+  finally {
+    Utility.closePOSProcess(); //Close the POS Application
+    Log.PopLogFolder();
+  } //End finally
   
   //Disposing objects 
-  home = null;
-  frmEmployeeInfo = null;
-  frmEmployeeCode = null;
-  frmEmployeePunch = null;
-  DataPool.Close(); 
+  objMainDialog = null;
+  objEmployeeInfoForm = null;
+  objEmployeeCodeForm = null;
+  objEmployeePunchForm = null;
+  objConfirmActionForm = null;
 }
 
 
@@ -846,207 +649,170 @@ function TC_POUT_EMP_008() {
 
   //Variable Declaration 
   //---------------------
-  var home; //Stores the instance of home screen
-  var frmEmployeeInfo; //Stores the instance of Employee Info Screen
-  //var frmEmployeeCode; //Stores the instance of Employee Code Screen
-  //var expectedErrorMessage = "CODE ENTERED NOT VALID."; //Stores the expected error message    
-  //var actualErrorMessage; //Stores the error message to be dispalyed    
+  var objMainDialog; //Stores the instance of MainDialog
+  var objEmployeeInfoForm; //Stores the instance of Employee Info Form
+  var objEmployeeCodeForm; //Stores the instance of Employee Code Form
+  var objConfirmActionForm; //Stores the instance of ConfirmAction Form
+  var bTestCaseResult; //Boolean variable to store TestCase result
+  
+  //Getting Employee whose punch Details are available in Punches Table
+  var eEmpLastPunchDetails = SQLQueries.getPunchInOutEmployee();
+ 
+  //Declaring and initializing Test Data object 
+  var objTestData = { EmployeeID : eEmpLastPunchDetails.sEmployeeID, EmployeeCode : null }; 
+
+  //setting EmployeeID as EmployeeCode after updating via SQL in DB
+  if(SQLQueries.updateEmployeeCode(objTestData.EmployeeID))
+   objTestData.EmployeeCode = objTestData.EmployeeID;
+
+  //Update Last punch Details of the Employee
+  SQLQueries.updateEmployeePunchDetails(eEmpLastPunchDetails.sEmployeeGUID,0,eEmpLastPunchDetails.sLastPunchDateTime,1);
+  
+  eEmpLastPunchDetails = SQLQueries.getPunchInOutEmployee(objTestData.EmployeeID);
+  
+  var eEmpCurrentPunchDetails;//stores the latest punch Out Details of the Employee after Test case execution
   
   try {
   
-    //Connecting to testdata file & reading the given data
-    TestDataIdx = 0;
-    DataPool.FilePath = Project.Path + "TestData\\";
-    DataPool.FileName = "PunchOut.xls";
-    DataPool.SheetName = "TC_POUT_EMP_008";
-    DataPool.New(); //Creating a New Data Connection
-  
-    //Verify if test data exists in the test data sheet
-    if (DataPool.EOF) {
-      TestLog.Warning("No TestData found.");
-      DataPool.Close();
-      return;
-    }
+    //Step-1: Launching the POS application and Initialize the MainDialog
+    //--------------------------------------------------------------------
+    Utility.launchApp();
+    objMainDialog = MainDialog.New();
+      
+    //Step-2: Navigate into Employee info screen and submit valid emp ID
+    //------------------------------------------------------------------
+    objMainDialog.NavigateToPunchInScreen();
+    if (objMainDialog.lastError.name !== undefined) throw objMainDialog.lastError;
+      
+    TestLog.Message("Step-1: Clicked Punch Out button.");
+      
+    //Initialize object of EmployeeInfoForm 
+    objEmployeeInfoForm = EmployeeInfoForm.New();
+      
+    //Set data in Employee ID field and click Enter button from Navigation panel
+    objEmployeeInfoForm.InputAndSubmitForm(objTestData.EmployeeID);
+    if (objEmployeeInfoForm.lastError.name !== undefined) throw objEmployeeInfoForm.lastError;
+      
+    TestLog.Message("Step-2: Navigated to EmployeeInfo Form and submitted valid emp id.");
+      
+    //Step-3: Navigate to confirm Action screen and click No button
+    //-------------------------------------------------------------
+    objConfirmActionForm = ConfirmActionForm.New();
+    TestLog.Message("Step-3 : Navigated to ConfirmAction Form");
+     
+    //Click No button from YesNoConfirmAction panel
+    objConfirmActionForm.ConfirmNo();
+    if (objConfirmActionForm.lastError.name !== undefined) throw objConfirmActionForm.lastError;
+    TestLog.Message("Step-4 :Clicked No Button in Confirm Action screen");
+        
+    //TestCase Result : verify the last punch details with the latest punch detail, punch detail indicates the test case is passed
+    eEmpCurrentPunchDetails =  SQLQueries.getPunchInOutEmployee(objTestData.EmployeeID);
+    sLastPunchDate = eEmpLastPunchDetails.sLastPunchDateTime;
+    sCurrPunchDate = eEmpCurrentPunchDetails.sLastPunchDateTime;
     
+    bTestCaseResult = (sLastPunchDate === sCurrPunchDate);
+    sPassMessage    = "TestCase Passed. The Employee Duplicate PunchOut Terminated successfully by clicking No";
+    sFailMessage    = "TestCase Failed. The Employee Duplicate PunchOut Termination had unexpected behaviour";
+    
+    TestLog.Message("EmployeeID: " +objTestData.EmployeeID+ "'s Last Punch DateTime: "+sCurrPunchDate);
+    
+    //Assert Result
+    Utility.assertResult(bTestCaseResult, sPassMessage, sFailMessage);     
   } //End try
-  
-  catch (exception) {
+        
+  catch(exception) {
     TestLog.Error(exception.description, Utility.formattedException(exception));
-    DataPool.Close();
-    return;
   } //End catch
     
-  while (!DataPool.EOF) {
-    
-    try {
-
-      TestDataIdx++;       
-      TestLog.AddTestDataInfo(TestDataIdx, DataPool.Columns, DataPool.Item); // Printing given testdata info to Log
-      
-      objTestData = {
-                      EmployeeID   : DataPool.Item("EmpID")
-                      }; //TestData object to punch in an employee
-     
-      //Step-1: Launching the POS application and Initialize the home screen
-      //--------------------------------------------------------------------
-      Utility.launchApp();
-      home = MainDialog.New();
-      
-      //Step-2: Navigate into Employee info screen and submit invalid emp ID
-      //--------------------------------------------------------------------
-      home.NavigateToPunchInScreen();
-      if (home.lastError.name !== undefined) throw home.lastError;
-      
-      TestLog.Message("Step-1: Clicked Punch Out button.");
-      
-      //Initialize object of EmployeeInfoForm 
-      frmEmployeeInfo = new EmployeeInfoForm.New();
-      
-      //Set data in Employee ID field and click Enter button from Navigation panel
-      frmEmployeeInfo.InputAndSubmitForm(objTestData.EmployeeID);
-      if (frmEmployeeInfo.lastError.name !== undefined) throw frmEmployeeInfo.lastError;
-      
-      TestLog.Message("Step-2: Navigated to EmployeeInfo Form and submitted valid emp id.");
-      
-      //Step-3: Navigate to confirm Action screen and click yes button
-      //---------------------------------------------------------------
-      confirmAction = new ConfirmActionForm.New();
-      TestLog.Message("Step-3 : Navigated to ConfirmAction Form");
-     
-       //Click Yes button from YesNoConfirmAction panel
-      confirmAction.ConfirmNo();
-      if (confirmAction.lastError.name !== undefined) throw confirmAction.lastError;
-      TestLog.Message("Step-4 :Clicked No Button");
-     
-     //Step-3:/Navigate to the Employee info form and click cancel button
-      
-       //Set data in Employee ID field and click Enter button from Navigation panel
-      frmEmployeeInfo.CancelForm(objTestData.EmployeeID);
-      if (frmEmployeeInfo.lastError.name !== undefined) throw frmEmployeeInfo.lastError;
-      
-      TestLog.Message("Step-2: Navigated to EmployeeInfo Form and clicked cancel button.");
-      
-                              
-    } //End try
-        
-    catch(exception) {
-      TestLog.Error(exception.description, Utility.formattedException(exception));
-    } //End catch
-    
-    finally {
-      //Close the POS Application
-      Utility.closePOSProcess();  
-      DataPool.NextItem(); //Moving to next given testdata
-      Log.PopLogFolder();
-    } //End finally
-    
-  } // while EOF
+  finally {
+    Utility.closePOSProcess(); //Close the POS Application
+    Log.PopLogFolder();
+  } //End finally
   
   //Disposing objects 
-  home = null;
-  frmEmployeeInfo = null;
-  DataPool.Close(); 
+  objMainDialog = null;
+  objEmployeeInfoForm = null;
+  objEmployeeCodeForm = null;
+  objConfirmActionForm = null;
 }
 
 function TC_POUT_EMP_009() {
   
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  TC_POUT_EMP_009 : Verify the PunchOut of an employee who has already punched out within an hour
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  TC_POUT_EMP_009 : Verify the PunchOut of an employee who has already punched out but tries to punch out again within an hour
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
   //Variable Declaration 
   //---------------------
-  var home; //Stores the instance of home screen
-  var employeeInfo; //Stores the instance of Employee Info Screen
-  var expectedErrorMessage = "YOU ARE ALREADY PUNCHED OUT AT"; //Stores the expected error message    
-  var actualErrorMessage; //Stores the error message to be dispalyed    
+  var objMainDialog; //Stores the instance of MainDialog
+  var objEmployeeInfoForm; //Stores the instance of Employee Info Form
   
+  var sExpectedErrorMessage = "YOU ARE ALREADY PUNCHED OUT AT"; //Stores the expected error message    
+  var sActualErrorMessage; //Stores the error message to be dispalyed  
+  var bTestCaseResult; //Boolean variable to store TestCase result
+  
+  //Getting Employee whose punch Details are available in Punches Table
+  var eEmpLastPunchDetails = SQLQueries.getPunchInOutEmployee();
+ 
+  //Declaring and initializing Test Data object 
+  var objTestData = { EmployeeID : eEmpLastPunchDetails.sEmployeeID, EmployeeCode : null }; 
+
+  //setting EmployeeID as EmployeeCode after updating via SQL in DB
+  if(SQLQueries.updateEmployeeCode(objTestData.EmployeeID))
+   objTestData.EmployeeCode = objTestData.EmployeeID;
+
+  //Update Last punch Details of the Employee
+  SQLQueries.updateEmployeePunchDetails(eEmpLastPunchDetails.sEmployeeGUID,0,eEmpLastPunchDetails.sLastPunchDateTime,0);
+  
+  eEmpLastPunchDetails = SQLQueries.getPunchInOutEmployee(objTestData.EmployeeID);
+  
+  var eEmpCurrentPunchDetails;//stores the latest punch Out Details of the Employee after Test case execution
+ 
   try {
-  
-    //Connecting to testdata file & reading the given data
-    TestDataIdx = 0;
-    DataPool.FilePath = Project.Path + "TestData\\";
-    DataPool.FileName = "PunchOut.xls";
-    DataPool.SheetName = "TC_POUT_EMP_009";
-    DataPool.New(); //Creating a New Data Connection
-  
-    //Verify if test data exists in the test data sheet
-    if (DataPool.EOF) {
-      TestLog.Warning("No TestData found.");
-      DataPool.Close();
-      return;
-    }
+
+    //Step-1: Launching the POS application and Initialize the MainDialog
+    //--------------------------------------------------------------------
+    Utility.launchApp();
+    objMainDialog = MainDialog.New();
+      
+    //Step-2: Navigate into Employee info screen and submit valid emp ID
+    //--------------------------------------------------------------------
+    objMainDialog.NavigateToPunchOutScreen();
+    if (objMainDialog.lastError.name !== undefined) throw objMainDialog.lastError;
+    TestLog.Message("Step-1: Clicked Punch Out button.");
+      
+    //Initialize object of EmployeeInfoForm
+    objEmployeeInfoForm = EmployeeInfoForm.New();
+      
+    //Set data in Employee ID field and click Enter button from Navigation panel
+    sActualErrorMessage=objEmployeeInfoForm.InputAndSubmitFormWithErrors(objTestData.EmployeeID);
+    if (objEmployeeInfoForm.lastError.name !== undefined) throw objEmployeeInfoForm.lastError;
+      
+    TestLog.Message("Step-2: Navigated to EmployeeInfo Form and submitted valid emp id.");
+      
+    //TestCase Result : verify the Actual Error Message respective to expected error message
+    bTestCaseResult = (aqString.Find(sActualErrorMessage,sExpectedErrorMessage)!=-1);
+    sPassMessage    = "TestCase Passed. Expected error message is displayed for already PunchOut employee";
+    sFailMessage    = "TestCase Failed. Unexpected/No error message is displayed for already PunchOut employee";
     
+    TestLog.Message("Error Message: "+sActualErrorMessage);
+    
+    //Assert Result
+    Utility.assertResult(bTestCaseResult, sPassMessage, sFailMessage);                                        
   } //End try
-  
-  catch (exception) {
+     
+  catch(exception) {
     TestLog.Error(exception.description, Utility.formattedException(exception));
-    DataPool.Close();
-    return;
   } //End catch
     
-  while (!DataPool.EOF) {
-    
-    try {
-
-      TestDataIdx++;       
-      TestLog.AddTestDataInfo(TestDataIdx, DataPool.Columns, DataPool.Item); // Printing given testdata info to Log
-      
-      objTestData = {
-                      EmployeeID : DataPool.Item("EmpID")                                         
-                    }; //TestData object to punch out an employee
-                    
-      TestLog.Message(objTestData.EmployeeID);
-      //Step-1: Launching the POS application and Initialize the home screen
-      //--------------------------------------------------------------------
-      Utility.launchApp();
-      home = MainDialog.New();
-      
-     //Step-2: Navigate into Employee info screen and submit invalid emp ID
-     //--------------------------------------------------------------------
-      home.NavigateToPunchOutScreen();
-      if (home.lastError.name !== undefined) throw home.lastError;
-      TestLog.Message("Step-1: Clicked Punch Out button.");
-      
-      //Initialize object of EmployeeInfoScreen 
-      employeeInfo = new EmployeeInfoForm.New();
-      
-      //Set data in Employee ID field and click Enter button from Navigation panel
-      actualErrorMessage = employeeInfo.InputAndSubmitFormWithErrors(objTestData.EmployeeID);
-      if (employeeInfo.lastError.name !== undefined) throw employeeInfo.lastError;
-      
-      TestLog.Message("Step-2: Navigated to Employee Info screen and submitted invalid emp id");
-      
-       //Verification : To verify if the expected error message is displayed
-      //-------------------------------------------------------------------
-      if (aqString.Find(actualErrorMessage,expectedErrorMessage)!=-1)
-        TestLog.Pass("TestCase Passed. Expected error message is displayed successfuly for already punched out employee ");    
-      else if (actualErrorMessage === "THE SYSTEM IS WAITING FOR YOUR SELECTION")  
-        TestLog.Fail("TestCase Failed. No error message is displayed for the already punched out employee");
-      else
-        TestLog.Fail("TestCase Failed. Unexpected error message is displayed for the already punched out employee");    
-                                             
-        } //End try
-        
-    catch(exception) {
-      TestLog.Error(exception.description, Utility.formattedException(exception));
-    } //End catch
-    
-    finally {
-      //Close the POS Application
-      Utility.closePOSProcess();  
-    
-      DataPool.NextItem(); //Moving to next given testdata
-      Log.PopLogFolder();
-    } //End finally
-    
-  } // while EOF
+  finally {
+    Utility.closePOSProcess(); //Close the POS Application 
+    Log.PopLogFolder();
+  } //End finally
   
   //Disposing objects 
-  home = null;
-  employeeInfo = null;
-  DataPool.Close(); 
-
+  objMainDialog = null;
+  objEmployeeInfoForm = null;
 }
 
 
@@ -1058,95 +824,75 @@ function TC_POUT_EMP_010() {
 
   //Variable Declaration 
   //---------------------
-  var home; //Stores the instance of home screen
-  var employeeInfo; //Stores the instance of Employee Info Screen
-  var expectedErrorMessage = "YOU MISSED OUT THE PUNCH OUT TIME. PUNCH OUT CANCELLED. PREVIOUS PUNCH IN AT";//Stores the expected error message 
-  var actualErrorMessage; //Stores the error message to be dispalyed    
+  var objMainDialog; //Stores the instance of MainDialog
+  var objEmployeeInfoForm; //Stores the instance of Employee Info Form
   
-  try {
+  var sExpectedErrorMessage = "YOU MISSED OUT THE PUNCH OUT TIME. PUNCH OUT CANCELLED. PREVIOUS PUNCH IN AT";//Stores the expected error message 
+  var sActualErrorMessage; //Stores the error message to be dispalyed    
+  var bTestCaseResult; //Boolean variable to store TestCase result
   
-    //Connecting to testdata file & reading the given data
-    TestDataIdx = 0;
-    DataPool.FilePath = Project.Path + "TestData\\";
-    DataPool.FileName = "PunchOut.xls";
-    DataPool.SheetName = "TC_POUT_EMP_010";
-    DataPool.New(); //Creating a New Data Connection
+  //Getting Employee whose punch Details are available in Punches Table
+  var eEmpLastPunchDetails = SQLQueries.getPunchInOutEmployee();
+ 
+  //Declaring and initializing Test Data object 
+  var objTestData = { EmployeeID : eEmpLastPunchDetails.sEmployeeID, EmployeeCode : null }; 
+
+  //setting EmployeeID as EmployeeCode after updating via SQL in DB
+  if(SQLQueries.updateEmployeeCode(objTestData.EmployeeID))
+   objTestData.EmployeeCode = objTestData.EmployeeID;
+
+  //Update Last punch Details of the Employee
+  SQLQueries.updateEmployeePunchDetails(eEmpLastPunchDetails.sEmployeeGUID,1,eEmpLastPunchDetails.sLastPunchDateTime,24);
   
-    //Verify if test data exists in the test data sheet
-    if (DataPool.EOF) {
-      TestLog.Warning("No TestData found.");
-      DataPool.Close();
-      return;
-    }
+  eEmpLastPunchDetails = SQLQueries.getPunchInOutEmployee(objTestData.EmployeeID);
+  
+  var eEmpCurrentPunchDetails;//stores the latest punch Out Details of the Employee after Test case execution
     
+  try {
+    
+    //Step-1: Launching the POS application and Initialize the MainDialog
+    //--------------------------------------------------------------------
+    Utility.launchApp();
+    objMainDialog = MainDialog.New();
+      
+    //Step-2: Navigate into Employee info screen and submit valid emp ID
+    //--------------------------------------------------------------------
+    objMainDialog.NavigateToPunchOutScreen();
+    if (objMainDialog.lastError.name !== undefined) throw objMainDialog.lastError;
+    
+    TestLog.Message("Step-1: Clicked Punch Out button.");
+      
+    //Initialize object of EmployeeInfoForm
+    objEmployeeInfoForm = EmployeeInfoForm.New();
+      
+    //Set data in Employee ID field and click Enter button from Navigation panel
+    sActualErrorMessage = objEmployeeInfoForm.InputAndSubmitFormWithErrors(objTestData.EmployeeID);
+    if (objEmployeeInfoForm.lastError.name !== undefined) throw objEmployeeInfoForm.lastError;
+      
+    TestLog.Message("Step-2: Navigated to Employee Info screen and submitted valid emp id");
+        
+    //TestCase Result : verify the Actual Error Message respective to expected error message
+    bTestCaseResult = (aqString.Find(sActualErrorMessage,sExpectedErrorMessage)!=-1);
+    sPassMessage    = "TestCase Passed. Expected error message is displayed for Cancelled PunchOut";
+    sFailMessage    = "TestCase Failed. Unexpected/No error message is displayed for Cancelled PunchOut";
+    
+    TestLog.Message("Error Message: "+sActualErrorMessage);
+    
+    //Assert Result
+    Utility.assertResult(bTestCaseResult, sPassMessage, sFailMessage); 
+                                             
   } //End try
-  
-  catch (exception) {
+        
+  catch(exception) {
     TestLog.Error(exception.description, Utility.formattedException(exception));
-    DataPool.Close();
-    return;
   } //End catch
     
-  while (!DataPool.EOF) {
+  finally {
+    Utility.closePOSProcess(); //Close the POS Application
+    Log.PopLogFolder();
+  } //End finally
     
-    try {
-
-      TestDataIdx++;       
-      TestLog.AddTestDataInfo(TestDataIdx, DataPool.Columns, DataPool.Item); // Printing given testdata info to Log
-      
-      objTestData = {
-                      EmployeeID : DataPool.Item("EmpID")                                         
-                    }; //TestData object to punch out an employee
-                    
-      TestLog.Message(objTestData.EmployeeID);
-      //Step-1: Launching the POS application and Initialize the home screen
-      //--------------------------------------------------------------------
-      Utility.launchApp();
-      home = MainDialog.New();
-      
-     //Step-2: Navigate into Employee info screen and submit invalid emp ID
-     //--------------------------------------------------------------------
-      home.NavigateToPunchOutScreen();
-      if (home.lastError.name !== undefined) throw home.lastError;
-      TestLog.Message("Step-1: Clicked Punch Out button.");
-      
-      //Initialize object of EmployeeInfoScreen 
-      employeeInfo = new EmployeeInfoForm.New();
-      
-      //Set data in Employee ID field and click Enter button from Navigation panel
-      actualErrorMessage = employeeInfo.InputAndSubmitFormWithErrors(objTestData.EmployeeID);
-      if (employeeInfo.lastError.name !== undefined) throw employeeInfo.lastError;
-      
-      TestLog.Message("Step-2: Navigated to Employee Info screen and submitted invalid emp id");
-      
-       //Verification : To verify if the expected error message is displayed
-      //-------------------------------------------------------------------
-      if (aqString.Find(actualErrorMessage,expectedErrorMessage)!=-1)
-        TestLog.Pass("TestCase Passed. Expected error message is displayed successfuly for already punched out employee ");    
-      else if (actualErrorMessage === "THE SYSTEM IS WAITING FOR YOUR SELECTION")  
-        TestLog.Fail("TestCase Failed. No error message is displayed for the already punched out employee");
-      else
-        TestLog.Fail("TestCase Failed. Unexpected error message is displayed for the already punched out employee");    
-                                             
-        } //End try
-        
-    catch(exception) {
-      TestLog.Error(exception.description, Utility.formattedException(exception));
-    } //End catch
-    
-    finally {
-      //Close the POS Application
-      Utility.closePOSProcess();  
-    
-      DataPool.NextItem(); //Moving to next given testdata
-      Log.PopLogFolder();
-    } //End finally
-    
-  } // while EOF
-  
   //Disposing objects 
-  home = null;
-  employeeInfo = null;
-  DataPool.Close(); 
-
+  objMainDialog = null;
+  objEmployeeInfoForm = null;
 }

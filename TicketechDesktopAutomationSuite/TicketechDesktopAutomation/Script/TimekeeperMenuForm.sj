@@ -1,4 +1,4 @@
-//USEUNIT Utility
+﻿//USEUNIT Utility
 //USEUNIT InformationScreen
 //USEUNIT NavigationPanel
 //USEUNIT TimekeeperOptionsPanel
@@ -123,6 +123,42 @@ timekeeperMenuForm.prototype.NavigateToEnrollmentForm = function () {
   } //End catch
       
 } //NavigateToEnrollmentForm
+
+timekeeperMenuForm.prototype.NavigateToPrintTimecardForm = function () {  
+
+/*--------------------------------------------------------------------------
+  Method      : NavigateToPrintTimecardForm()
+  
+  Description : This method Clicks Print Timecard button  
+  
+  Output      : Clicks Print Timecard button if TimekeeperMenu Form Exists
+--------------------------------------------------------------------------*/  
+  try {
+    var flag = false;
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at TimekeeperMenuForm.NavigateToPrintTimecardForm: The TimekeeperMenu Form does not Exist.",
+              message     : this.dlgTimekeeperMenu + " The TimekeeperMenu Form does not Exist." }   
+              
+      if(this.timekeeperOptionsPanel.IsBtnVisible("PRINT TIMECARD")) {
+        this.timekeeperOptionsPanel.ClickPrintTimecard();
+        flag = true;
+    }
+ 
+    return flag;
+    Delay(1000);          
+    
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+      
+} //NavigateToEnrollmentForm
+
 
 function New() {
 

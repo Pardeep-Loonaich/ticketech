@@ -2,36 +2,36 @@
 
 /******************************************************************************
             ---------- Class Definition ----------
-  Name:CustomerInfoScreen
+  Name:EmployeePrintTimecardScreen
   
   Description: 
   
-  This class has methods and properties to perform the CustomerInfoScreen objects. 
+  This class has methods and properties to perform the EmployeePrintTimecardScreen objects. 
   Instance of the class can be created by calling the constructor. 
   To call it from other units used New()method.  
 *****************************************************************************/
 
-function customerInfoScreen() { 
+function employeePrintTimecardScreen() { 
 
 /*------------------------------------------------------------------------------------ 
-  Method: customerInfoScreen() 
+  Method: employeePrintTimecardScreen() 
   
-  Description: This method will the Instantiate the CustomerInfoScreen Wrapper Helper
+  Description: This method will the Instantiate the EmployeePrintTimecardScreen Wrapper Helper
 ------------------------------------------------------------------------------------*/   
   this.lastError = {};
   
-  this.scrnCustomerInfo =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "ScreenCustomerInfo", 3);
+  this.scrnemployeePrintTimecard =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "ScreenEmployeePrintTimecard", 2);
   
   this.throwError = false; 
     
-} //customerInfoScreen
+} //employeePrintTimecardScreen
 
-customerInfoScreen.prototype.Exists = function () {  
+employeePrintTimecardScreen.prototype.Exists = function () {  
 
 /*---------------------------------------------------------------------
   Method      : Exists()
   
-  Description : This method checks the existance of the customerInfoScreen.  
+  Description : This method checks the existance of the employeePrintTimecardScreen.  
   
   Output: True if Screen Exists
           False if Screen does not Exists   
@@ -40,7 +40,7 @@ customerInfoScreen.prototype.Exists = function () {
   
     this.lastError = {};
 
-    return this.scrnCustomerInfo.Exists;  //Return whether customerInfoScreen exists or not
+    return this.scrnemployeePrintTimecard.Exists;  //Return whether employeePrintTimecardScreen exists or not
   
   } //End try
   
@@ -51,27 +51,27 @@ customerInfoScreen.prototype.Exists = function () {
       
 } //Exists
 
-customerInfoScreen.prototype.SetVehicleTag = function (sVehicleTag) {  
+employeePrintTimecardScreen.prototype.SetEmployeeID = function (empID) {  
 
 /*-------------------------------------------------------------------------------
-  Method      : SetsVehicleTag()
+  Method      : SetEmployeeID()
   
-  Description : This method enters the Code in the Customer Info screen
+  Description : This method enters the Emp ID in the Employee PrintTimecard screen
   
-  Output      : Enters the Code  in the Customer Info screen 
+  Output      : Enters the Emp ID in the Employee PrintTimecard screen 
 -------------------------------------------------------------------------------*/  
   try {
-    
+  
     this.lastError = {};
     
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
-              description : "Error at customerInfoScreen.SetVehicleTag: The Customer Info Exist.",
-              message     : this.scrnCustomerInfo + " Screen Exist." }             
+              description : "Error at employeePrintTimecardScreen.SetEmployeeID: The Employee PrintTimecard Screen does not Exist.",
+              message     : this.scrnemployeePrintTimecard + " Screen does not Exist." }             
     
-    if (sVehicleTag!== undefined && sVehicleTag !== null)
-       this.scrnCustomerInfo.FindChild("WinFormsControlName", "maskedTextBoxInfo", 3).Keys(sVehicleTag.toString());
-       Log.Message(sVehicleTag);
+    if (empID !== undefined && empID !== null)
+      this.scrnemployeePrintTimecard.FindChild("WinFormsControlName", "labelTextBox", 2).Keys(empID);
+    
   } //End try
   
   catch (exception) {
@@ -79,16 +79,16 @@ customerInfoScreen.prototype.SetVehicleTag = function (sVehicleTag) {
     if (this.throwError) throw exception
   } //End catch
       
-} //SetVehilceTag
+} //SetEmployeeID
 
-customerInfoScreen.prototype.GetErrorMessage = function () {  
+employeePrintTimecardScreen.prototype.GetErrorMessage = function () {  
 
 /*------------------------------------------------------------------------------------
   Method      : GetErrorMessage()
   
-  Description : This method returns the error message displayed in the customer info screen 
+  Description : This method returns the error message displayed in the EmployeePrintTimecard screen 
   
-  Output      : Returns the error message displayed in the customer info screen 
+  Output      : Returns the error message displayed in the EmployeePrintTimecard screen 
 -------------------------------------------------------------------------------------*/  
   try {
   
@@ -96,10 +96,10 @@ customerInfoScreen.prototype.GetErrorMessage = function () {
     
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
-              description : "Error at CustomerInfoScreen.GetErrorMessage: The Customer info screen  does not Exist.",
-              message     : this.scrnCustomerInfo + " Customer info screen  does not Exist." }             
+              description : "Error at employeePrintTimecardScreen.GetErrorMessage: The EmployeePrintTimecard screen does not Exist.",
+              message     : this.scrnemployeePrintTimecard + " EmployeePrintTimecard Screen does not Exist." }             
     
-    return this.scrnCustomerInfo.WinFormsObject("screenInformationFooter")
+    return this.scrnemployeePrintTimecard.WinFormsObject("screenInformationFooter")
               .WinFormsObject("labelInformation").WndCaption;
     
   } //End try
@@ -117,8 +117,8 @@ function New() {
   Method: New() 
   
   Description:
-  This method is for instantiating checkInCustomerInfoForm() class from other units of the project. 
+  This method is for instantiating employeeInfoForm() class from other units of the project. 
 ------------------------------------------------------------------------------------------*/
 
-  return new customerInfoScreen();  
+  return new employeePrintTimecardScreen();  
 }

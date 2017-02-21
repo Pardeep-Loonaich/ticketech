@@ -421,7 +421,8 @@ optionsPanel.prototype.Click = function (btnName) {
               description : "Error at optionsPanel.Click"+btnName+": The Options Panel does not Exist.",
               message     : this.pnloptions + " Panel does not Exist." }             
     
-    this.pnloptions.FindChild(["WndCaption","Visible"], [btnName, true], 2).ClickButton();
+    //this.pnloptions.FindChild(["WndCaption","Visible"], [btnName, true], 2).ClickButton();
+    Sys.Process("PosApplication").WinFormsObject("FormMain").WinFormsObject("PanelOptions").FindChild(["WndCaption","Visible"], [btnName, true], 2).ClickButton();
     
   } //End try
   

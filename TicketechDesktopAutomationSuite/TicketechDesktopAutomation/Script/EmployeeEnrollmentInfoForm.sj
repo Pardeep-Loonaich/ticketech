@@ -58,7 +58,7 @@ employeeEnrollmentInfoForm.prototype.Refresh = function () {
   } //End try
   
   catch (exception) {
-	TestLog.Message("Exception at EmployeeEnrollmentInfoForm.Refresh");
+	TestLog.Messgae("Exception at EmployeeEnrollmentInfoForm.Refresh");
     for (prop in exception) this.lastError[prop] = exception[prop];
     if (this.throwError) throw exception
   } //End catch
@@ -84,7 +84,7 @@ employeeEnrollmentInfoForm.prototype.Exists = function () {
   } //End try
   
   catch (exception) {
-	TestLog.Message("Exception at EmployeeEnrollmentInfoForm.Exists");
+	TestLog.Messgae("Exception at EmployeeEnrollmentInfoForm.Exists");
     for (prop in exception) this.lastError[prop] = exception[prop];
     if (this.throwError) throw exception
   } //End catch
@@ -110,54 +110,54 @@ employeeEnrollmentInfoForm.prototype.InputAndSubmitForm = function (objTestData)
               message     : this.dlgEmployeeEnrollmentInfo + " The EmployeeEnrollment Info Form does not Exist." };             
     
     this.objEmployeeEnrollmentInfoScreen.SetEmployeeData("EMPLOYEE ID", objTestData.sEmpId);
-    Delay(500);
+    Delay(1000);
     
     this.objNavigationPanel.ClickEnter();
-    Delay(500);
+    Delay(1000);
     
     this.Refresh();
     
     this.objEmployeeEnrollmentInfoScreen.SetEmployeeData("FIRST NAME", objTestData.sFirstName);
-    Delay(500);
+    Delay(1000);
     
     this.objNavigationPanel.ClickEnter();
-    Delay(500);
+    Delay(1000);
     
     this.Refresh();
     
     this.objEmployeeEnrollmentInfoScreen.SetEmployeeData("LAST NAME", objTestData.sLastName);
-    Delay(500);
+    Delay(1000);
     
     this.objNavigationPanel.ClickEnter();
-    Delay(500);
+    Delay(1000);
     
     this.Refresh();
     
     this.objEmployeeEnrollmentInfoScreen.SetEmployeeData("SOCIAL SECURITY NUMBER", objTestData.iSSNum);
-    Delay(500);
+    Delay(1000);
     
     this.objNavigationPanel.ClickEnter();
-    Delay(500);
+    Delay(1000);
     
     this.Refresh();
     
     this.objEmployeeEnrollmentInfoScreen.SetEmployeeData("BIRTHDAY", objTestData.sBirthDate);
-    Delay(500);
+    Delay(1000);
     
     this.objNavigationPanel.ClickEnter();
-    Delay(500);
+    Delay(1000);
     
   } //End try
   
   catch (exception) {
-	TestLog.Message("Exception at EmployeeEnrollmentInfoForm.InputAndSubmitForm");
+	TestLog.Messgae("Exception at EmployeeEnrollmentInfoForm.InputAndSubmitForm");
     for (prop in exception) this.lastError[prop] = exception[prop];
     if (this.throwError) throw exception
   } //End catch
       
 } //InputAndSubmitForm
 
-employeeEnrollmentInfoForm.prototype.InputAndSubmitFormWithErrors = function (enumEmployeeData) {  
+employeeEnrollmentInfoForm.prototype.InputAndSubmitFormWithErrors = function (objTestData) {  
 
 /*----------------------------------------------------------------------------------
   Method      : InputAndSubmitFormWithErrors()
@@ -167,14 +167,93 @@ employeeEnrollmentInfoForm.prototype.InputAndSubmitFormWithErrors = function (en
   Output      : Enters Employee Enrollment Data if EmployeeEnrollmentInfo Form Exists
 -----------------------------------------------------------------------------------*/  
   try {
+    objMessage = null;  //Initializing the Message Object
   
-    this.InputAndSubmitForm(enumEmployeeData);
-    Delay(500);
+    this.lastError = {};
     
-    this.Refresh();
-    Delay(500);
+    if (!this.Exists()) // Verifying if employeeEnrollmentInfoForm exists, if not throws below error message
+      throw { name        : "Wrapper Exception",
+              description : "Error at employeeEnrollmentInfoForm.InputAndSubmitForm: The EmployeeEnrollment Info Form does not Exist.",
+              message     : this.dlgEmployeeEnrollmentInfo + " The EmployeeEnrollment Info Form does not Exist." }; 
+              
+    //Entering Test Data in employeeEnrollmentInfoForm           
+    if(objMessage===null || objMessage==="THE SYSTEM IS WAITING FOR YOUR NEXT SELECTION.") {
     
-    return this.objEmployeeEnrollmentInfoScreen.GetMessage();
+      this.objEmployeeEnrollmentInfoScreen.SetEmployeeData("EMPLOYEE ID", objTestData.sEmpId);
+      Delay(1000);
+    
+      this.objNavigationPanel.ClickEnter();
+      Delay(1000);
+      
+      this.Refresh();
+      
+      objMessage = this.objEmployeeEnrollmentInfoScreen.GetMessage();
+    } else {
+      this.objNavigationPanel.ClickCancel(); Delay(1000);
+    }
+    
+    if(objMessage===null || objMessage==="THE SYSTEM IS WAITING FOR YOUR NEXT SELECTION.") { 
+
+      this.objEmployeeEnrollmentInfoScreen.SetEmployeeData("FIRST NAME", objTestData.sFirstName);
+      Delay(1000);
+    
+      this.objNavigationPanel.ClickEnter();
+      Delay(1000);
+      
+      this.Refresh();
+      
+      objMessage = this.objEmployeeEnrollmentInfoScreen.GetMessage();
+    } else {
+      this.objNavigationPanel.ClickCancel(); Delay(1000);
+    }
+      
+    if (objMessage === null || objMessage === "THE SYSTEM IS WAITING FOR YOUR NEXT SELECTION.") { 
+    
+      this.objEmployeeEnrollmentInfoScreen.SetEmployeeData("LAST NAME", objTestData.sLastName);
+      Delay(1000);
+    
+      this.objNavigationPanel.ClickEnter();
+      Delay(1000);
+        
+      this.Refresh();
+        
+      objMessage = this.objEmployeeEnrollmentInfoScreen.GetMessage();
+      
+    } else {
+      this.objNavigationPanel.ClickCancel(); Delay(1000);
+    }
+        
+    if(objMessage === null || objMessage === "THE SYSTEM IS WAITING FOR YOUR NEXT SELECTION.") { 
+          
+      this.objEmployeeEnrollmentInfoScreen.SetEmployeeData("SOCIAL SECURITY NUMBER", objTestData.iSSNum);
+      Delay(1000);
+          
+      this.objNavigationPanel.ClickEnter();
+      Delay(1000);
+          
+      this.Refresh();
+          
+      objMessage = this.objEmployeeEnrollmentInfoScreen.GetMessage();
+    } else {
+      this.objNavigationPanel.ClickCancel(); Delay(1000);
+    }
+          
+    if(objMessage === null || objMessage === "THE SYSTEM IS WAITING FOR YOUR NEXT SELECTION.") { 
+            
+      this.objEmployeeEnrollmentInfoScreen.SetEmployeeData("BIRTHDAY", objTestData.sBirthDate);
+      Delay(1000);
+    
+      this.objNavigationPanel.ClickEnter();
+      Delay(1000);
+            
+      this.Refresh();
+          
+      objMessage = this.objEmployeeEnrollmentInfoScreen.GetMessage();
+      if(objMessage !== null || objMessage !== "THE SYSTEM IS WAITING FOR YOUR NEXT SELECTION."){
+        this.objNavigationPanel.ClickCancel(); Delay(1000);
+      } 
+    }      
+    return objMessage;
     
   } //End try
   
@@ -206,34 +285,34 @@ employeeEnrollmentInfoForm.prototype.UpdateAndSubmitForm = function (objTestData
     
     
     this.objEmployeeEnrollmentInfoScreen.SetEmployeeData("FIRST NAME", objTestData.sFirstName);
-    Delay(500);
+    Delay(1000);
     
     this.objNavigationPanel.ClickEnter();
-    Delay(500);
+    Delay(1000);
     
     this.Refresh();
     
     this.objEmployeeEnrollmentInfoScreen.SetEmployeeData("LAST NAME", objTestData.sLastName);
-    Delay(500);
+    Delay(1000);
     
     this.objNavigationPanel.ClickEnter();
-    Delay(500);
+    Delay(1000);
     
     this.Refresh();
     
     this.objEmployeeEnrollmentInfoScreen.SetEmployeeData("SOCIAL SECURITY NUMBER", objTestData.iSSNum);
-    Delay(500);
+    Delay(1000);
     
     this.objNavigationPanel.ClickEnter();
-    Delay(500);
+    Delay(1000);
     
     this.Refresh();
     
     this.objEmployeeEnrollmentInfoScreen.SetEmployeeData("BIRTHDAY", objTestData.sBirthDate);
-    Delay(500);
+    Delay(1000);
     
     this.objNavigationPanel.ClickEnter();
-    Delay(500);
+    Delay(1000);
     
   } //End try
   
@@ -255,3 +334,63 @@ function New() {
 
   return new employeeEnrollmentInfoForm();  
 }
+
+employeeEnrollmentInfoForm.prototype.CancelForm = function () {  
+
+/*--------------------------------------------------------------------------  
+  Method      : CancelForm()
+  
+  Description : This method Clicks Cancel button  
+  
+  Output      : Clicks Cancel button if employeeEnrollmentInfoForm Exists
+--------------------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at EmployeeEnrollmentInfoForm.CancelForm: The Employee Enrollment Info Form does not Exist.",
+              message     : this.dlgEmpEnrolInfo + " The Employee Enrollment Info Form does not Exist." }              
+    
+    this.objNavigationPanel.ClickCancel();
+    Delay(1000);
+    
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+      
+} //CancelForm
+
+employeeEnrollmentInfoForm.prototype.MoveToFirstField = function () {  
+
+/*--------------------------------------------------------------------------  
+  Method      : MoveToFirstField()
+  
+  Description : This method Clicks back button to move to first field
+  
+  Output      : Clicks back button if employeeEnrollmentInfoForm Exists
+--------------------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at EmployeeEnrollmentInfoForm.MoveToFirstField: The Employee Enrollment Info Form does not Exist.",
+              message     : this.dlgEmpEnrolInfo + " The Employee Enrollment Info Form does not Exist." }              
+    
+    this.objBackPanel.ClickCancel();
+    Delay(1000);
+    
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+      
+} //CancelForm

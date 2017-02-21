@@ -26,7 +26,7 @@ function printerStatusForm() {
   
   this.throwError = false; 
     
-} //checkInVehicleDamageForm
+} //printerStatusForm
 
 
 printerStatusForm.prototype.Exists = function () {  
@@ -99,7 +99,7 @@ printerStatusForm.prototype.ClickCancel = function () {
     
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
-              description : "Error at printerStatusForm.ConfirmYes: The printerStatusForm does not Exist.",
+              description : "Error at printerStatusForm.ClickCancel: The printerStatusForm does not Exist.",
               message     : this.dlgPrinterStatusForm + " The printerStatusForm does not Exist." }             
     
     this.dlgPrinterStatusForm.WaitWinFormsObject("btnCancel", 3000).ClickButton();

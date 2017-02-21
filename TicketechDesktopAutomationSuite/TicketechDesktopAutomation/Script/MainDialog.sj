@@ -185,6 +185,7 @@ mainDialog.prototype.NavigateToTimeKeeperMenu = function () {
               message     : this.dlgMain + " The Main Dialog does not Exist." }
                  
     if(this.punchPanel.IsBtnVisible("TIMEKEEPER MENU")) {
+        Delay(500);
         this.punchPanel.ClickTimeKeeperMenu();
         flag = true;
     }
@@ -296,3 +297,64 @@ mainDialog.prototype.NavigateToMonthlyScreen = function () {
   } //End catch
       
 } //clickOnDailyButton
+
+mainDialog.prototype.NavigateToTechnicianMenu = function () {  
+
+/*--------------------------------------------------------------------------
+  Method      : NavigateToTechnicianMenu()
+  
+  Description : This method clicks Technician Menu button
+  
+  Output      : Clicks Technician Menu button
+--------------------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at mainDialog.NavigateToTechnicianMenu: The Technician Menu does not Exist.",
+              message     : this.dlgMain + " The Main Dialog does not Exist." }             
+    
+    this.optionsPanel.ClickTechnicianMenu();
+    Delay(1000);
+        
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+  
+} //NavigateToTechnicianMenu
+
+mainDialog.prototype.VerifyTicketNumber = function(iTicketNumber){
+
+/*------------------------------------------------------------------------------------ 
+  Method: VerifyTicketNumber() 
+  
+  Description:
+  This method is for verifying ticket number, manualy entered for vehicle checkin.
+  
+  OutPut: true/false 
+------------------------------------------------------------------------------------*/
+
+  try {
+   
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at mainDialog.VerifyTicketNumber: The Main Dialog does not Exist.",
+              message     : this.dlgMain + " The Main Dialog does not Exist." }
+     
+    return this.infoScreen.VerifyTicketExists(iTicketNumber);      
+      
+  }
+  
+  catch(exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  }
+
+}

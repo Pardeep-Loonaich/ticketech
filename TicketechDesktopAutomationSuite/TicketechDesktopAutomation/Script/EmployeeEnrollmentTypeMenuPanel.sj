@@ -106,32 +106,6 @@ employeeEnrollmentTypeMenuPanel.prototype.Click = function (btnName) {
       
 } //Click
 
-employeeEnrollmentTypeMenuPanel.prototype.ClickYes = function () {  
-
-/*-----------------------------------------------------------------
-  Method      : ClickYes()
-  
-  Description : This method Clicks the Yes button  
-  
-  Output      : Click on Yes button if EmployeeEnrollmentTypeMenu Panel Exists
------------------------------------------------------------------*/  
-  this.Click("YES");
-      
-} //ClickYes
-
-employeeEnrollmentTypeMenuPanel.prototype.ClickNo = function () {  
-
-/*-----------------------------------------------------------------
-  Method      : ClickNo()
-  
-  Description : This method Clicks the No button  
-  
-  Output      : Click on No button if EmployeeEnrollmentTypeMenu Panel Exists
------------------------------------------------------------------*/  
-  this.Click("NO");
-      
-} //ClickNo
-
 function New() {
 
 /*------------------------------------------------------------------------------------ 

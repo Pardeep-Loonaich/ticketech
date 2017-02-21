@@ -113,6 +113,21 @@ employeeCodeScreen.prototype.GetErrorMessage = function () {
       
 } //GetErrorMessage
 
+employeeCodeScreen.prototype.GetTitle = function () {  
+
+/*-------------------------------------------------------------------------------
+  Method      : GetTitle()
+  
+  Description : This method returns the current Title labelled in the EmployeeCode screen 
+  
+  Output      : Returns the current Title labelled in the EmployeeCode screen 
+-------------------------------------------------------------------------------*/ 
+  
+  return   this.GetText("labelTitle");
+  
+} //GetTitle 
+
+
 function New() {
 
 /*------------------------------------------------------------------------------------------ 

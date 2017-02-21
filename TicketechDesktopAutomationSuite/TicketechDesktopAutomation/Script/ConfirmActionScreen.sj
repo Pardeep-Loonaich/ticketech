@@ -62,15 +62,22 @@ confirmActionScreen.prototype.GetText = function (objControlName) {
   Output      : Returns the Text displayed in the given field of ConfirmAction screen 
 ------------------------------------------------------------------------------------------------*/  
   try {
-  
+    text = null;
+    
     this.lastError = {};
     
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
-              description : "Error at ConfirmActionScreen.GetText"+objControlName+": The confirmActionScreen does not Exist.",
-              message     : this.scrnConfirmAction + " confirmActionScreen does not Exist." }             
+              description : "Error at ConfirmActionScreen.Get"+objControlName+": The ConfirmActionScreen does not Exist.",
+              message     : this.scrnConfirmAction + "ConfirmActionScreen does not Exist." } 
+              
+                          
+    objText = this.scrnConfirmAction.FindChild("WinFormsControlName",objControlName,3);
+              
+    if (objText.Exists)          
+      text = objText.WndCaption;
     
-    return this.scrnConfirmAction.FindChild("WinFormsControlName",objControlName,3).WndCaption;
+    return text;
     
   } //End try
   
@@ -95,18 +102,20 @@ confirmActionScreen.prototype.GetTitle = function () {
   
 } //GetTitle 
 
+
 confirmActionScreen.prototype.GetScreenText = function () {  
 
-/*--------------------------------------------------------------------------------
-   Method      : GetScreenText()
+/*----------------------------------------------------------------------------------------
+  Method      : GetScreenText()
   
   Description : This method returns the Text displayed in the ConfirmAction screen 
   
   Output      : Returns the Text displayed in the ConfirmAction screen 
 --------------------------------------------------------------------------------*/  
   return   this.GetText("labelText");
-      
+  
 } //GetScreenText 
+
 
 confirmActionScreen.prototype.GetFooterMessage = function () {  
 
