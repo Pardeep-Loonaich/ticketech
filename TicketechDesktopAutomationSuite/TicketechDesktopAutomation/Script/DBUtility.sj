@@ -12,9 +12,7 @@ function DBConnection () {
   
   ADODriver = ADO.CreateADOQuery();
   ADODriver.ConnectionString = sConnectionString;
-  
-  TestLog.Message("DB Driver instance Created");
-    
+     
   this.getDriver = function() {    // returns driver object
     return ADODriver;
   }
@@ -40,7 +38,7 @@ DBConnection.prototype.ExecuteQuery = function(strQuery) {
     
   }
   catch (ex) {
-    TestLog.Warning("Error while peforming select command ('" + strQuery + "') : " + ex.description);
+    TestLog.Warning("Error while peforming select command ('" + strQuery + "') : \n" + ex.description);
   }
 }
 
@@ -58,7 +56,7 @@ DBConnection.prototype.ExecuteNonQuery = function(strQuery) {
     return currentDriver.ExecSQL();   
   }
   catch (ex) {
-    TestLog.Warning("Error while peforming non select command ('" + strQuery + "') : " + ex.description);
+    TestLog.Warning("Error while peforming non select command ('" + strQuery + "') : \n" + ex.description);
   }
 }
 

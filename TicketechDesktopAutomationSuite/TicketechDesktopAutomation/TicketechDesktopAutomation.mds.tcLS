@@ -32,6 +32,30 @@
 						</Node>
 						<Prp name="name" type="S" value="eventTime"/>
 					</Node>
+					<Node name="var1">
+						<Node name="value">
+							<Prp name="strvalue" type="H" value=" "/>
+						</Node>
+						<Prp name="name" type="S" value="DataBase"/>
+					</Node>
+					<Node name="var2">
+						<Node name="value">
+							<Prp name="strvalue" type="H" value=" "/>
+						</Node>
+						<Prp name="name" type="S" value="DBUserID"/>
+					</Node>
+					<Node name="var3">
+						<Node name="value">
+							<Prp name="strvalue" type="H" value=" "/>
+						</Node>
+						<Prp name="name" type="S" value="DBPassword"/>
+					</Node>
+					<Node name="var4">
+						<Node name="value">
+							<Prp name="strvalue" type="H" value=" "/>
+						</Node>
+						<Prp name="name" type="S" value="DBPort"/>
+					</Node>
 				</Node>
 				<Prp name="version" type="I" value="3"/>
 			</Node>

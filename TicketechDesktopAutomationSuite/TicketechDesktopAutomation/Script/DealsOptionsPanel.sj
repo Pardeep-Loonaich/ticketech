@@ -21,7 +21,7 @@ function dealsOptionsPanel() {
 --------------------------------------------------------------------------------------*/   
   this.lastError = {};
   
-  this.pnldealsOptions =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "PanelDealsOptions", 2);
+  this.pnldealsOptions =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "Panel*Options", 2);
   this.throwError = false; 
     
 } //dealsOptionsPanel

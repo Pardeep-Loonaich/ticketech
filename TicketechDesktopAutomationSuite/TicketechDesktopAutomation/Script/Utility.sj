@@ -524,6 +524,8 @@ function getRandomValue(type, length)  {
         sample = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     else if (type == "NUMERIC")
         sample = "0123456789";
+    else if (type == "HEXA")
+        sample = "ABCDEF0123456789";
     else
         sample = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
       
@@ -543,4 +545,16 @@ function getRandomValue(type, length)  {
 
 } //getRandomValue
 
+
+function randomIntFromInterval(min,max){
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Function   : randomIntFromInterval
+  Description: Returns a int value between given numbers
+  Input      : min - minimum value, max - maximum value
+  Output     : Random int value From Interval
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+    return Math.floor(Math.random()*(max-min+1)+min);
+    
+} //randomIntFromInterval
 

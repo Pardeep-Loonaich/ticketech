@@ -66,6 +66,109 @@ reservationMenuForm.prototype.ClickDailyReservation = function () {
       
 } //ClickDailyReservation
 
+reservationMenuForm.prototype.ClickReservationInquiry = function () {  
+
+/*-----------------------------------------------------------------
+  Method      : ClickReservationInquiry()
+  
+  Description : This method Clicks the Reservation Inquiry button  
+  
+  Output      : Click on Reservation Inquiry button if Reservation Menu Panel Exists
+-----------------------------------------------------------------*/  
+  this.objReservationMenuPanel.ClickReservationInquiry();
+      
+} //ClickReservationInquiry
+
+reservationMenuForm.prototype.ClickEventReservation = function () {  
+
+/*-----------------------------------------------------------------
+  Method      : ClickEventReservation()
+  
+  Description : This method Clicks the Event Reservation button  
+  
+  Output      : Click on Event Reservation button if Reservation Menu Panel Exists
+-----------------------------------------------------------------*/  
+  this.objReservationMenuPanel.ClickEventReservation();
+      
+} //ClickEventReservation
+
+reservationMenuForm.prototype.ClickNonValidReservation = function () {  
+
+/*-----------------------------------------------------------------
+  Method      : ClickNonValidReservation()
+  
+  Description : This method Clicks on Non-Valid Reservation button  
+  
+  Output      : Click on Non-Valid Reservation button if Reservation Menu Panel Exists
+-----------------------------------------------------------------*/  
+  this.objReservationMenuPanel.ClickNonValidReservation();
+      
+} //ClickNonValidReservation
+
+reservationMenuForm.prototype.ClickOpenReservation = function () {  
+
+/*-----------------------------------------------------------------
+  Method      : ClickOpenReservation()
+  
+  Description : This method Clicks on Open Reservation button  
+  
+  Output      : Click on Open Reservation button if Reservation Menu Panel Exists
+-----------------------------------------------------------------*/  
+  this.objReservationMenuPanel.ClickOpenReservation();
+      
+} //ClickOpenReservation
+
+reservationMenuForm.prototype.ClickOpenReservationByProvider = function () {  
+
+/*-----------------------------------------------------------------
+  Method      : ClickOpenReservationByProvider()
+  
+  Description : This method Clicks on Open Reservation By Provider button  
+  
+  Output      : Click on Open Reservation By Provider button if Reservation Menu Panel Exists
+-----------------------------------------------------------------*/  
+  this.objReservationMenuPanel.ClickOpenReservationByProvider();
+      
+} //ClickOpenReservationByProvider
+
+reservationMenuForm.prototype.ClickClosedReservation = function () {  
+
+/*-----------------------------------------------------------------
+  Method      : ClickClosedReservation()
+  
+  Description : This method Clicks on Closed Reservation button  
+  
+  Output      : Click on Closed Reservation button if Reservation Menu Panel Exists
+-----------------------------------------------------------------*/  
+  this.objReservationMenuPanel.ClickClosedReservation();
+      
+} //ClickClosedReservation
+
+reservationMenuForm.prototype.ClickCurrentReservation = function () {  
+
+/*-----------------------------------------------------------------
+  Method      : ClickCurrentReservation()
+  
+  Description : This method Clicks on Current Reservation button  
+  
+  Output      : Click on Current Reservation button if Reservation Menu Panel Exists
+-----------------------------------------------------------------*/  
+  this.objReservationMenuPanel.ClickCurrentReservation();
+      
+} //ClickCurrentReservation
+
+reservationMenuForm.prototype.ClickClosedReservationByProvider = function () {  
+
+/*-----------------------------------------------------------------
+  Method      : ClickClosedReservationByProvider()
+  
+  Description : This method Clicks on Closed Reservation By Provider button  
+  
+  Output      : Click on Closed Reservation By Provider button if Reservation Menu Panel Exists
+-----------------------------------------------------------------*/  
+  this.objReservationMenuPanel.ClickClosedReservationByProvider();
+      
+} //ClickClosedReservationByProvider
 
 function New() {
 

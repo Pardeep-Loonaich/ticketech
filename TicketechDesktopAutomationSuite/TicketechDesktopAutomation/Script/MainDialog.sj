@@ -26,18 +26,46 @@ function mainDialog() {
 ---------------------------------------------------------------------*/   
   this.lastError = {};
   
-  this.dlgMain =  Sys.Process("PosApplication").WaitWinFormsObject("FormMain", 3000); 
+  this.dlgMain =  Sys.Process("PosApplication").WaitWinFormsObject("FormMain", 5000); 
   
-  this.infoScreen = InformationScreen.New();
-  this.punchPanel = PunchPanel.New();
-  this.mainOptionsPanel = MainOptionsPanel.New();
-  this.optionsPanel = OptionsPanel.New();
-  this.mainScreen = MainScreen.New();
-  this.ticketingPanel = TicketingPanel.New();
+  this.objInformationScreen = InformationScreen.New();
+  this.objPunchPanel = PunchPanel.New();
+  this.objMainOptionsPanel = MainOptionsPanel.New();
+  this.objOptionsPanel = OptionsPanel.New();
+  this.objMainScreen = MainScreen.New();
+  this.objTicketingPanel = TicketingPanel.New();
   
   this.throwError = false; 
     
 } //mainDialog
+
+
+mainDialog.prototype.Refresh = function () {  
+
+/*-------------------------------------------------------------------------------
+  Method      : Refresh()
+  
+  Description : This method will the re-instantiate the MainDialog Wrapper   
+--------------------------------------------------------------------------------*/  
+  try {
+   
+    this.dlgMain =  Sys.Process("PosApplication").WaitWinFormsObject("FormMain", 10000); 
+  
+    this.objInformationScreen = InformationScreen.New();
+    this.objPunchPanel = PunchPanel.New();
+    this.objMainOptionsPanel = MainOptionsPanel.New();
+    this.objOptionsPanel = OptionsPanel.New();
+    this.objMainScreen = MainScreen.New();
+    this.objTicketingPanel = TicketingPanel.New();
+        
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+      
+} //Refresh
 
 mainDialog.prototype.Exists = function () {  
 
@@ -82,7 +110,7 @@ mainDialog.prototype.NavigateToPunchInScreen = function () {
               description : "Error at mainDialog.NavigateToPunchInScreen: The Main Dialog does not Exist.",
               message     : this.dlgMain + " The Main Dialog does not Exist." }             
     
-    this.punchPanel.ClickPunchIn();
+    this.objPunchPanel.ClickPunchIn();
     Delay(1000);
         
   } //End try
@@ -112,7 +140,7 @@ mainDialog.prototype.NavigateToPunchOutScreen = function () {
               description : "Error at mainDialog.NavigateToPunchOutScreen: The Main Dialog does not Exist.",
               message     : this.dlgMain + " The Main Dialog does not Exist." }             
     
-    this.punchPanel.ClickPunchOut();
+    this.objPunchPanel.ClickPunchOut();
     Delay(1000);
         
   } //End try
@@ -154,7 +182,7 @@ mainDialog.prototype.NavigateToUserInfoScreen = function () {
               description : "Error at mainDialog.NavigateToUserInfoScreen: The Main Dialog does not Exist.",
               message     : this.dlgMain + " The Main Dialog does not Exist." }             
     
-    this.mainOptionsPanel.ClickLogin();
+    this.objMainOptionsPanel.ClickLogin();
     Delay(1000);
         
   } //End try
@@ -184,14 +212,13 @@ mainDialog.prototype.NavigateToTimeKeeperMenu = function () {
               description : "Error at mainDialog.NavigateToTimeKeeperMenu: The Main Dialog does not Exist.",
               message     : this.dlgMain + " The Main Dialog does not Exist." }
                  
-    if(this.punchPanel.IsBtnVisible("TIMEKEEPER MENU")) {
-        Delay(500);
-        this.punchPanel.ClickTimeKeeperMenu();
+    if(this.objPunchPanel.IsBtnVisible("TIMEKEEPER MENU")) {
+        this.objPunchPanel.ClickTimeKeeperMenu();
         flag = true;
+        Delay(1000);
     }
  
     return flag;
-    Delay(1000);
         
   } //End try
   
@@ -220,10 +247,10 @@ mainDialog.prototype.GetFormInfo = function(){
               description : "Error at mainDialog.getFormInfo: The Main Dialog does not Exist.",
               message     : this.dlgMain + " The Main Dialog does not Exist." }
      
-    frmInfo = {  Title    : this.mainScreen.GetTitle(),
-                 Date     : this.mainScreen.GetDate(),
-                 Time     : this.mainScreen.GetTime(),
-                 Message  : this.mainScreen.GetFooterMessage()
+    frmInfo = {  Title    : this.objMainScreen.GetTitle(),
+                 Date     : this.objMainScreen.GetDate(),
+                 Time     : this.objMainScreen.GetTime(),
+                 Message  : this.objMainScreen.GetFooterMessage()
               };
       
     return frmInfo;
@@ -255,7 +282,7 @@ mainDialog.prototype.NavigateToMonthlyScreen = function () {
               description : "Error at mainDialog.NavigateToMonthlyScreen: The Main Dialog does not Exist.",
               message     : this.dlgMain + " The Main Dialog does not Exist." }             
     
-    this.ticketingPanel.ClickMonthly();
+    this.objTicketingPanel.ClickMonthly();
     Delay(1000);
         
   } //End try
@@ -267,7 +294,36 @@ mainDialog.prototype.NavigateToMonthlyScreen = function () {
   
 } //NavigateToMonthlyScreen
 
-  mainDialog.prototype.clickOnDailyButton = function () {  
+mainDialog.prototype.NavigateToReplaceScreen = function () {  
+
+/*--------------------------------------------------------------------------
+  Method      : NavigateToReplaceScreen()
+  
+  Description : This method clicks Replace button
+  
+  Output      : Clicks Replace button
+--------------------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at mainDialog.NavigateToReplaceScreen: The Main Dialog does not Exist.",
+              message     : this.dlgMain + " The Main Dialog does not Exist." }             
+    
+    return this.objTicketingPanel.ClickReplace();
+        
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+  
+} //NavigateToReplaceScreen
+
+mainDialog.prototype.clickOnDailyButton = function () {  
 
 /*--------------------------------------------------------------------------
   Method      : clickOnDailyButton()
@@ -285,7 +341,7 @@ mainDialog.prototype.NavigateToMonthlyScreen = function () {
               description : "Error at mainDialog.clickOnDailyButton: The Main Dialog does not Exist.",
               message     : this.dlgMain + " The Main Dialog does not Exist." }             
     
-    this.ticketingPanel.ClickDaily();
+    this.objTicketingPanel.ClickDaily();
     Delay(1000);
         
   } //End try
@@ -316,7 +372,7 @@ mainDialog.prototype.NavigateToTechnicianMenu = function () {
               description : "Error at mainDialog.NavigateToTechnicianMenu: The Technician Menu does not Exist.",
               message     : this.dlgMain + " The Main Dialog does not Exist." }             
     
-    this.optionsPanel.ClickTechnicianMenu();
+    this.objOptionsPanel.ClickTechnicianMenu();
     Delay(1000);
         
   } //End try
@@ -327,6 +383,37 @@ mainDialog.prototype.NavigateToTechnicianMenu = function () {
   } //End catch
   
 } //NavigateToTechnicianMenu
+
+mainDialog.prototype.NavigateToLostClaim = function () {  
+
+/*--------------------------------------------------------------------------
+  Method      : NavigateToLostClaim()
+  
+  Description : This method clicks Lost Claim button
+  
+  Output      : Clicks Lost Claim button
+--------------------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at mainDialog.NavigateToLostClaim: The Lost Claim does not Exist.",
+              message     : this.dlgMain + " The Main Dialog does not Exist." }             
+    
+    this.objOptionsPanel.ClickLostClaim();
+    Delay(1000);
+        
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+  
+} //NavigateToLostClaim
+
 
 mainDialog.prototype.VerifyTicketNumber = function(iTicketNumber){
 
@@ -348,7 +435,7 @@ mainDialog.prototype.VerifyTicketNumber = function(iTicketNumber){
               description : "Error at mainDialog.VerifyTicketNumber: The Main Dialog does not Exist.",
               message     : this.dlgMain + " The Main Dialog does not Exist." }
      
-    return this.infoScreen.VerifyTicketExists(iTicketNumber);      
+    return this.objInformationScreen.VerifyTicketExists(iTicketNumber);      
       
   }
   
@@ -358,3 +445,473 @@ mainDialog.prototype.VerifyTicketNumber = function(iTicketNumber){
   }
 
 }
+
+mainDialog.prototype.NavigateToOtherPaymentScreen = function () {  
+
+/*--------------------------------------------------------------------------
+  Method      : NavigateToOtherPaymentScreen()
+  
+  Description : This method clicks Other Payments button
+  
+  Output      : Clicks Other Payments button
+--------------------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at mainDialog.NavigateToOtherPaymentScreen: The Main Dialog does not Exist.",
+              message     : this.dlgMain + " The Main Dialog does not Exist." }             
+    
+    this.objOptionsPanel.ClickOtherPayment();
+    Delay(1000);
+        
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+  
+} //NavigateToOtherPaymentScreen
+
+mainDialog.prototype.NavigateToMonthlyPaymentScreen = function () {  
+
+/*--------------------------------------------------------------------------
+  Method      : NavigateToMonthlyPaymentScreen()
+  
+  Description : This method clicks Monthly Payment button
+  
+  Output      : Clicks Monthly Payment button
+--------------------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at mainDialog.NavigateToMonthlyPaymentScreen: The Main Dialog does not Exist.",
+              message     : this.dlgMain + " The Main Dialog does not Exist." }             
+    
+    this.objOptionsPanel.ClickMonthlyPayment();
+    Delay(1000);
+        
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+  
+} //NavigateToMonthlyPaymentScreen
+
+mainDialog.prototype.NavigateToReservationMenu = function () {  
+
+/*--------------------------------------------------------------------------
+  Method      : NavigateToReservationMenu()
+  
+  Description : This method clicks Reservation Menu button
+  
+  Output      : Clicks Reservation Menu button
+--------------------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at mainDialog.NavigateToReservationMenu: The Reservation Menu does not Exist.",
+              message     : this.dlgMain + " The Main Dialog does not Exist." }             
+    
+    this.objOptionsPanel.ClickReservationMenu();
+    Delay(1000);
+        
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+  
+} //NavigateToReservationMenu
+
+mainDialog.prototype.NavigateToReceiptsScreen = function () {  
+
+/*--------------------------------------------------------------------------
+  Method      : NavigateToReceiptsScreen()
+  
+  Description : This method clicks Receipts button
+  
+  Output      : Clicks Receipts button
+--------------------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at mainDialog.NavigateToReceiptsScreen: The Main Dialog does not Exist.",
+              message     : this.dlgMain + " The Main Dialog does not Exist." }             
+    
+    this.objOptionsPanel.ClickReceipts();
+    Delay(1000);
+        
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+  
+} //NavigateToReceiptsScreen
+
+mainDialog.prototype.NavigateToBankDropScreen = function () {  
+
+/*--------------------------------------------------------------------------
+  Method      : NavigateToBankDropScreen()
+  
+  Description : This method clicks Bank Drop button
+  
+  Output      : Clicks Bank Drop button
+--------------------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at mainDialog.NavigateToBankDropScreen: The Main Dialog does not Exist.",
+              message     : this.dlgMain + " The Main Dialog does not Exist." }             
+    
+    this.objOptionsPanel.ClickBankDrop();
+    Delay(1000);
+        
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+  
+} //NavigateToMonthlyPaymentScreen
+
+mainDialog.prototype.NavigateToExpensesScreen = function () {  
+
+/*--------------------------------------------------------------------------
+  Method      : NavigateToExpensesScreen()
+  
+  Description : This method clicks Expenses button
+  
+  Output      : Clicks Expenses button
+--------------------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at mainDialog.NavigateToExpensesScreen: The Main Dialog does not Exist.",
+              message     : this.dlgMain + " The Main Dialog does not Exist." }             
+    
+    this.objOptionsPanel.ClickExpenses();
+    Delay(1000);
+        
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+  
+} //NavigateToExpensesScreen
+
+mainDialog.prototype.NavigateToRushSelectionScreen = function () {  
+
+/*--------------------------------------------------------------------------
+  Method      : NavigateToRushSelectionScreen()
+  
+  Description : This method clicks Rush Selection button
+  
+  Output      : Clicks Rush Selection button
+--------------------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at mainDialog.NavigateToRushSelectionScreen: The Main Dialog does not Exist.",
+              message     : this.dlgMain + " The Main Dialog does not Exist." }             
+    
+    this.objOptionsPanel.ClickRushSelection();
+    Delay(1000);
+        
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+  
+} //NavigateToRushSelectionScreen
+
+mainDialog.prototype.IsRushModeAvailable = function () {  
+
+/*-------------------------------------------------------------------------------
+  Method      : Refresh()
+  
+  Description : This method will the re-instantiate the Main Dilaog Wrapper   
+--------------------------------------------------------------------------------*/  
+  try {
+  
+    bRushHour = false;
+     
+     this.lastError = {};
+    
+     if (!this.Exists())
+       throw { name        : "Wrapper Exception",
+              description : "Error at mainDialog.IsRushModeAvailable: The mainDialog Form does not Exist.",
+              message     : this.dlgMain + " The mainDialog Form does not Exist." } 
+    
+    objRushHour = Sys.Process("PosApplication").FindChild("WinFormsControlName","labelRushHour",2);
+                        
+    if(objRushHour.Exists){
+      if(objRushHour.Visible)
+        bRushHour = true;
+    }
+    return bRushHour;
+        
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+      
+} //IsRushModeAvailable
+
+mainDialog.prototype.EnableRushMode = function () {  
+
+/*--------------------------------------------------------------------------
+  Method      : EnableRushMode()
+  
+  Description : This method Enables Rush mode
+  
+  Output      : Clicks EnableRushMode button
+--------------------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at mainDialog.EnableRushMode: The Main Dialog does not Exist.",
+              message     : this.dlgMain + " The Main Dialog does not Exist." }             
+    
+    if(!this.IsRushModeAvailable()){
+      this.objOptionsPanel.ClickEnableRushMode(); 
+      Delay(1000);
+      return true;
+    }
+       
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+  
+} //EnableRushMode
+
+mainDialog.prototype.DisableRushMode = function () {  
+
+/*--------------------------------------------------------------------------
+  Method      : DisableRushMode()
+  
+  Description : This method Disables Rush mode
+  
+  Output      : Clicks DisableRushMode button
+--------------------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at mainDialog.DisableRushMode: The Main Dialog does not Exist.",
+              message     : this.dlgMain + " The Main Dialog does not Exist." }             
+    
+    if(this.IsRushModeAvailable()){
+      this.objOptionsPanel.ClickDisableRushMode();
+      Delay(1000);
+      return true;
+    }
+       
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+  
+} //EnableRushMode
+
+mainDialog.prototype.NavigateToCorrectPaymentScreen = function () {  
+
+/*--------------------------------------------------------------------------
+  Method      : NavigateToCorrectPaymentScreen()
+  
+  Description : This method clicks Correct Payment button
+  
+  Output      : Clicks Correct Payment button
+--------------------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at mainDialog.NavigateToCorrectPaymentScreen: The Main Dialog does not Exist.",
+              message     : this.dlgMain + " The Main Dialog does not Exist." }             
+    
+    this.objOptionsPanel.ClickCorrectPayment();
+    Delay(1000);
+        
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+  
+} //NavigateToCorrectPaymentScreen
+
+mainDialog.prototype.NavigateToPrepayScreen = function () {  
+
+/*--------------------------------------------------------------------------
+  Method      : NavigateToPrepayScreen()
+  
+  Description : This method clicks Prepay button
+  
+  Output      : Clicks Prepay button
+--------------------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at mainDialog.NavigateToPrepayScreen: The Main Dialog does not Exist.",
+              message     : this.dlgMain + " The Main Dialog does not Exist." }             
+    
+    this.objOptionsPanel.ClickPrepay();
+    Delay(1000);
+        
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+      
+} //NavigateToPrepayScreen
+
+mainDialog.prototype.IsHotelAvailable = function () {  
+
+/*--------------------------------------------------------------------------
+  Method      : IsHotelAvailable()
+  
+  Description : This method Checks if any Hotel Button is Present in Main
+  
+  Output      : Checks and returns true if Hotel button is available, else false
+--------------------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at mainDialog.IsHotelAvailable: The Main Dialog does not Exist.",
+              message     : this.dlgMain + " The Main Dialog does not Exist." }             
+    
+    Delay(1000);
+    return this.dlgMain.FindChild(["WndCaption","Visible"], ["*HOTEL*", true], 2).Exists;
+       
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+  
+} //IsHotelAvailable
+
+mainDialog.prototype.NavigateToTicketInquiryScreen = function () {  
+
+/*--------------------------------------------------------------------------
+  Method      : NavigateToTicketInquiryScreen()
+  
+  Description : This method clicks TicketInquiry button
+  
+  Output      : Clicks TicketInquiry button
+--------------------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at mainDialog.NavigateToTicketInquiryScreen: The Main Dialog does not Exist.",
+              message     : this.dlgMain + " The Main Dialog does not Exist." }             
+    
+    this.objOptionsPanel.ClickTicketInquiry();
+    Delay(1000);
+        
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+      
+} //NavigateToTicketInquiryScreen
+
+mainDialog.prototype.ClickCreditCardOfflineButton = function () {  
+
+/*--------------------------------------------------------------------------
+  Method      : ClickCreditCardOfflineButton()
+  
+  Description : This method clicks CreditCardOffline button
+  
+  Output      : Clicks CreditCardOffline button
+--------------------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at mainDialog.ClickCreditCardOfflineButton: The Main Dialog does not Exist.",
+              message     : this.dlgMain + " The Main Dialog does not Exist." }             
+    
+    Delay(1000);
+    return this.objOptionsPanel.ClickCreditCardOffline();
+ 
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+      
+} //ClickCreditCardOfflineButton
+
+
+
+
+
+
+
+
+

@@ -59,7 +59,7 @@ ticketingPanel.prototype.ClickMonthly = function () {
   
   Output      : Click on Monthly button if Ticketing Panel Exists
 -----------------------------------------------------------------*/  
-  this.Click("MONTHLY");  
+  return this.Click("MONTHLY");  
       
 } //ClickMonthly
 
@@ -72,7 +72,7 @@ ticketingPanel.prototype.ClickDaily = function () {
   
   Output      : Click on Daily button if Ticketing Panel Exists
 -----------------------------------------------------------------*/  
-  this.Click("DAILY");  
+  return this.Click("DAILY");  
       
 } //ClickDaily
 
@@ -85,22 +85,39 @@ ticketingPanel.prototype.ClickReplace = function () {
   
   Output      : Click on Replace button if Ticketing Panel Exists
 -----------------------------------------------------------------*/                
-    this.Click("REPLACE");  
+  return  this.Click("REPLACE");  
    
 } //ClickReplace
 
 ticketingPanel.prototype.Click = function(btnName){
-try {
+
+/*-----------------------------------------------------------------
+  Method      : Click()
   
+  Description : This method Clicks the button given in the parameter
+  
+  Output      : Click on button if Ticketing Panel Exists
+------------------------------------------------------------------*/   
+try {
+
+    bButtonExists = false;
     this.lastError = {};
     
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
               description : "Error at ticketingPanel.Click"+btnName+": The ticketing Panel does not Exist.",
-              message     : this.pnlTicketing + " Panel does not Exist." }             
+              message     : this.pnlTicketing + " Panel does not Exist." }  
+              
+    objTicketingPanelButton = this.pnlTicketing.WaitWinFormsObject("ScreenButton", btnName, 2000);                     
     
-    this.pnlTicketing.WaitWinFormsObject("ScreenButton", btnName, 1000).ClickButton();
+    if (objTicketingPanelButton.Exists){
+      objTicketingPanelButton.SetFocus();
+      objTicketingPanelButton.ClickButton();
+      bButtonExists = true;
+      Delay(1000);
+    }
     
+   return bButtonExists;    
   } //End try
   
   catch (exception) {

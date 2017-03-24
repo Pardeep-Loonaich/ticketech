@@ -13,9 +13,6 @@
 		<child name="MainDriver" key="{CC34F278-B098-401C-B68B-D45BCDDA2DA2}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
 			<data path="MainDriver.sj" />
 		</child>
-		<child name="EndToEndTest" key="{10C371CB-248E-4F9A-A5FA-08657276C70E}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
-			<data path="EndToEndTest.sj" />
-		</child>
 		<child name="PunchInTest" key="{250C68BE-523E-45BF-B762-A76F546EF2F6}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
 			<data path="PunchInTest.sj" />
 		</child>
@@ -58,6 +55,9 @@
 		<child name="UserIdentificationScreen" key="{A9221999-0EF4-4B3C-BE45-D7A7A90BCC2D}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
 			<data path="UserIdentificationScreen.sj" />
 		</child>
+		<child name="TimeKeeperMenuTest" key="{A1E72068-8D11-4E59-A77C-4258C2A945D3}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="TimeKeeperMenuTest.sj" />
+		</child>
 		<child name="BackPanel" key="{9B3F96D0-5403-4870-B19A-AA2FFACA2594}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
 			<data path="BackPanel.sj" />
 		</child>
@@ -88,35 +88,446 @@
 		<child name="TimekeeperOptionsPanel" key="{156E3085-167D-4539-B514-225AA77938E8}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
 			<data path="TimekeeperOptionsPanel.sj" />
 		</child>
-		<child name="VehicleInfoScreen" key="{B921D7BC-024F-43C4-A351-DFE762051775}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
-			<data path="VehicleInfoScreen.sj" />
+		<child name="EmployeeEnrollmentMenuForm" key="{9DBE376C-C304-418F-AF7D-7BD8205222D8}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="EmployeeEnrollmentMenuForm.sj" />
 		</child>
-		<child name="ColorPanel" key="{9C52EFE7-B11D-42A6-B755-59E6D79ED0E8}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
-			<data path="ColorPanel.sj" />
+		<child name="EmployeeEnrollmentMenuScreen" key="{4B406720-2012-4500-A11A-30C0ADF2D25C}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="EmployeeEnrollmentMenuScreen.sj" />
 		</child>
-		<child name="DailyTest" key="{F1188429-1402-4C1F-A6D6-6F3C40623C19}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+		<child name="CursorsPanel" key="{989D775B-65C6-455B-BFDF-2B3C0374E0DD}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="CursorsPanel.sj" />
+		</child>
+		<child name="EmployeeEnrollmentMenuPanel" key="{5ADBAF4F-FE4F-4702-81FB-A8951E88E78E}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="EmployeeEnrollmentMenuPanel.sj" />
+		</child>
+		<child name="EmployeeEnrollmentInfoForm" key="{069CE4A7-BF3F-4560-8C97-88992D5D35EB}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="EmployeeEnrollmentInfoForm.sj" />
+		</child>
+		<child name="EmployeeEnrollmentInfoScreen" key="{CBAD90E4-6208-43D6-848F-1C975757FD3B}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="EmployeeEnrollmentInfoScreen.sj" />
+		</child>
+		<child name="EmployeeEnrollmentTypeForm" key="{498AF5F5-CF3B-4EB3-8F23-27009153EB3C}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="EmployeeEnrollmentTypeForm.sj" />
+		</child>
+		<child name="EmployeeEnrollmentTypeMenuPanel" key="{DB0B99E9-4133-4A2F-993F-A3116F1C943B}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="EmployeeEnrollmentTypeMenuPanel.sj" />
+		</child>
+		<child name="EmployeeEnrollmentTypeScreen" key="{54ED929E-FD0C-4F71-98B0-57D0FC0DEB04}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="EmployeeEnrollmentTypeScreen.sj" />
+		</child>
+		<child name="CheckInCustomerInfoForm" key="{977FA6F4-4ECA-48C5-B555-32C056FFA829}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="CheckInCustomerInfoForm.sj" />
+		</child>
+		<child name="CustomerInfoScreen" key="{C9BE3664-C440-42AE-89D9-0C4120140864}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="CustomerInfoScreen.sj" />
+		</child>
+		<child name="MonthlyTest" key="{972DBF36-4767-4C34-811E-AF72D3196F01}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="MonthlyTest.sj" />
+		</child>
+		<child name="DailyTest" key="{05E20A08-7EA2-429A-AEC5-A115159C05BF}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
 			<data path="DailyTest.sj" />
 		</child>
-		<child name="VehicleInfoForm" key="{25F34FF6-3EA2-4D4A-812C-DCB79510D772}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
-			<data path="VehicleInfoForm.sj" />
-		</child>
-		<child name="MakesPanel" key="{DAE18F57-8550-4308-BCFE-74F9BC5BDD55}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
-			<data path="MakesPanel.sj" />
-		</child>
-		<child name="CheckInVehicleDamageForm" key="{2E4A36F7-B88C-4140-B559-99BD99A5B351}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+		<child name="CheckInVehicleDamageForm" key="{DA4CE1B5-8940-4BFC-B6C3-D660736FEE62}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
 			<data path="CheckInVehicleDamageForm.sj" />
 		</child>
-		<child name="PrinterStatusForm" key="{EB317A24-C80F-41E9-9926-964FF45FC679}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+		<child name="PrinterStatusForm" key="{E3E666C0-BF0E-4DD6-BD67-0BB39BA5B963}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
 			<data path="PrinterStatusForm.sj" />
+		</child>
+		<child name="VehicleInfoForm" key="{F028F145-D957-4FA1-B3AB-1F9B88400C83}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="VehicleInfoForm.sj" />
+		</child>
+		<child name="FingerPrintForm" key="{1787EBDE-B3C5-4584-818C-372E63695D6E}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="FingerPrintForm.sj" />
+		</child>
+		<child name="ColorPanel" key="{2752FB4D-AFA2-461B-B9A1-2A4A0E809E6E}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="ColorPanel.sj" />
+		</child>
+		<child name="FingerPrintScreen" key="{B5357CE3-4139-445B-A89E-C4BD22A146DB}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="FingerPrintScreen.sj" />
+		</child>
+		<child name="TimekeeperMenuScreen" key="{FACAD037-8411-4B3E-AEFC-AE76ABF0CFB5}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="TimekeeperMenuScreen.sj" />
+		</child>
+		<child name="VehicleInfoScreen" key="{F338F8D8-A161-4F52-B172-5F03CCD3C8D7}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="VehicleInfoScreen.sj" />
+		</child>
+		<child name="NavigationPanelForm" key="{5D516C97-A684-4246-B3B8-1AF100A3BE13}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="NavigationPanelForm.sj" />
+		</child>
+		<child name="ReservationMenuForm" key="{06418C30-A934-46F1-AD8C-44D903E1D963}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="ReservationMenuForm.sj" />
+		</child>
+		<child name="ReservationMenuPanel" key="{39E9F91C-187A-44D4-8F9D-3F9036DBBF03}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="ReservationMenuPanel.sj" />
+		</child>
+		<child name="ReservationsMenuScreen" key="{028D603D-D5E8-4E48-96E7-AA09B5734769}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="ReservationsMenuScreen.sj" />
+		</child>
+		<child name="MakesPanel" key="{2B41DF10-98AD-4BA2-AB48-6A12939F394C}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="MakesPanel.sj" />
+		</child>
+		<child name="DealsOptionsPanel" key="{6B36C55E-9E42-4C11-B5CD-A184A5D6AC65}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="DealsOptionsPanel.sj" />
+		</child>
+		<child name="GetInputScreen" key="{3362EBBC-854F-416E-808E-3FEB15945454}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="GetInputScreen.sj" />
+		</child>
+		<child name="ReservationInfoForm" key="{7C283778-8712-4E24-B41C-C1AC409B2FCE}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="ReservationInfoForm.sj" />
+		</child>
+		<child name="EmployeePrintTimecardForm" key="{61694CFD-A36F-4A05-9A70-ACC8075E8442}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="EmployeePrintTimecardForm.sj" />
+		</child>
+		<child name="PrintTimecardOptionsPanel" key="{104201A0-1A6C-4FE7-9767-36EDACF36FEB}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="PrintTimecardOptionsPanel.sj" />
+		</child>
+		<child name="EmployeePrintTimecardScreen" key="{840380CB-E0BE-4D2B-9C13-B07FCDA8F7FE}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="EmployeePrintTimecardScreen.sj" />
+		</child>
+		<child name="EmployeePrintTimecardPreviewForm" key="{10CE5C85-5BF5-41DE-916B-09B243D90B15}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="EmployeePrintTimecardPreviewForm.sj" />
+		</child>
+		<child name="SQLQueries" key="{2C4F7711-D818-4A86-98F1-136E455B1E69}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="SQLQueries.sj" />
+		</child>
+		<child name="DateTimeScreen" key="{2574F978-CDA5-4EE9-8E6F-590AA5CB183B}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="DateTimeScreen.sj" />
+		</child>
+		<child name="TechnicianOptionsPanel" key="{69A209D3-E077-4BE5-80C3-EB763A6C80B1}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="TechnicianOptionsPanel.sj" />
+		</child>
+		<child name="TicketNumberScreen" key="{8C2916AC-EA5D-4700-BCFE-FA2008DA8696}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="TicketNumberScreen.sj" />
+		</child>
+		<child name="CheckInTicketNumberForm" key="{81CCF2CC-FB1A-4092-B945-9E2D10B07A62}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="CheckInTicketNumberForm.sj" />
+		</child>
+		<child name="ManualDateInformationDateForm" key="{4794EA9C-0133-48FE-8216-2B07DDD72BFA}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="ManualDateInformationDateForm.sj" />
+		</child>
+		<child name="TechnicianMenuForm" key="{248D6FED-A1BF-4B16-8FEA-971E3FC47647}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="TechnicianMenuForm.sj" />
+		</child>
+		<child name="MenuScreen" key="{55B72B7C-4FE8-4AA1-9CB2-2C68E16E63CD}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="MenuScreen.sj" />
+		</child>
+		<child name="H6000IIPrinterForm" key="{C38C4BF1-46C2-4D55-A9DE-89E2EF178AAD}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="H6000IIPrinterForm.sj" />
+		</child>
+		<child name="EmployeePrintTimecardPreviewScreen" key="{86961F2E-FD9D-4715-B259-84443A5C633D}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="EmployeePrintTimecardPreviewScreen.sj" />
+		</child>
+		<child name="MonthlyPaymentsScreen" key="{F0BCD2AE-0559-46A0-9B1D-A8F327EC09C4}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="MonthlyPaymentsScreen.sj" />
+		</child>
+		<child name="MonthlyPaymentsInfoAccountNumberForm" key="{BBDC92DF-175B-47CD-A213-AFD0EB1567C9}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="MonthlyPaymentsInfoAccountNumberForm.sj" />
+		</child>
+		<child name="MonthlyPaymentsPaymentTypeScreen" key="{812D9182-5EC8-44C7-8828-47B705D22D4C}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="MonthlyPaymentsPaymentTypeScreen.sj" />
+		</child>
+		<child name="TaxTypeOptionsPanel" key="{4763F316-57F0-4C96-BAC9-8CF35FE65D8B}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="TaxTypeOptionsPanel.sj" />
+		</child>
+		<child name="MonthlyPaymentsSelectPaymentPanel" key="{9E2C3307-9DD0-4C56-8922-768C8F0F5B73}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="MonthlyPaymentsSelectPaymentPanel.sj" />
+		</child>
+		<child name="MonthlyPaymentsInfoForm" key="{0E21BBAE-3ACC-48F3-90E4-DB07662F980F}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="MonthlyPaymentsInfoForm.sj" />
+		</child>
+		<child name="PaymentStatusScreen" key="{6FEA4F66-5F07-4DD2-B362-45EE2A057D2E}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="PaymentStatusScreen.sj" />
+		</child>
+		<child name="CheckInCustomerPaymentStatusForm" key="{6B52E61D-7153-4411-B7DC-CF917546AC09}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="CheckInCustomerPaymentStatusForm.sj" />
+		</child>
+		<child name="PaymentPanel" key="{986E7214-4CFE-4890-A9A4-A8BD20C49049}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="PaymentPanel.sj" />
+		</child>
+		<child name="PaymentCashScreen" key="{BB1BD197-4C9C-4604-AC9B-EF90364957AA}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="PaymentCashScreen.sj" />
+		</child>
+		<child name="CheckOutPaymentCashForm" key="{117BFB0F-FC13-496B-9B6F-1994FF393482}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="CheckOutPaymentCashForm.sj" />
+		</child>
+		<child name="MoneyPanel" key="{D989B265-BF61-4637-9E81-23DDA8B488D1}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="MoneyPanel.sj" />
+		</child>
+		<child name="XMLReader" key="{1D89393C-E79F-472A-A527-8A26236B1F90}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="XMLReader.sj" />
+		</child>
+		<child name="CheckOutPaymentCreditCardOfflineForm" key="{FE83E984-EB93-48D8-AB1C-12321220F0FE}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="CheckOutPaymentCreditCardOfflineForm.sj" />
+		</child>
+		<child name="CreditCardsPanel" key="{48AE4689-29E4-4559-8758-2C5305CB1582}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="CreditCardsPanel.sj" />
+		</child>
+		<child name="PaymentCreditCardOfflineScreen" key="{9673AC48-0FD2-44B6-9D00-B8B1E025C19B}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="PaymentCreditCardOfflineScreen.sj" />
+		</child>
+		<child name="MonthlyPaymentTest" key="{61FC6AC3-9F16-4DFC-AAA2-D7901721764E}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="MonthlyPaymentTest.sj" />
+		</child>
+		<child name="PaymentCheckScreen" key="{6F790531-2999-4C82-BE7A-DE9D6AB448AA}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="PaymentCheckScreen.sj" />
+		</child>
+		<child name="MonthlyPaymentsCheckForm" key="{8DFD6216-D95A-4602-9F08-90A41D9F4CE0}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="MonthlyPaymentsCheckForm.sj" />
+		</child>
+		<child name="TicketNumberForm" key="{B6C08FF1-C91F-4D0A-A5C2-F5A57E8DB079}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="TicketNumberForm.sj" />
+		</child>
+		<child name="TicketNumberVehicleTagPanel" key="{4498F992-B282-4ACB-8EEC-AFF8D8556557}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="TicketNumberVehicleTagPanel.sj" />
+		</child>
+		<child name="OtherPaymentTest" key="{96EA1F4E-5EB5-4F18-90F1-BC1C07117CD3}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="OtherPaymentTest.sj" />
+		</child>
+		<child name="ReplaceTest" key="{9131A510-801D-4A17-89B6-2278197CC90A}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="ReplaceTest.sj" />
+		</child>
+		<child name="CheckInCustomerVehicleForm" key="{773B3555-D225-48BA-BEFD-529F31E39B2A}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="CheckInCustomerVehicleForm.sj" />
+		</child>
+		<child name="CheckInVehicleInfoColorForm" key="{6AB156FC-0D40-4FB9-BE7B-57CC7FD9FF3C}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="CheckInVehicleInfoColorForm.sj" />
+		</child>
+		<child name="CheckInVehicleInfoMakeForm" key="{5F33196A-4A30-4205-A13C-9836F8C74BAE}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="CheckInVehicleInfoMakeForm.sj" />
+		</child>
+		<child name="OtherIncomeInfoAmountForm" key="{FC746F9C-8B61-4FD1-BABB-091D9875000C}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="OtherIncomeInfoAmountForm.sj" />
+		</child>
+		<child name="OtherIncomeInfoCodeForm" key="{BA54F831-AED0-4A75-ABC9-183B56AC6B13}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="OtherIncomeInfoCodeForm.sj" />
+		</child>
+		<child name="OtherIncomePaymentChargeForm" key="{C39FA470-788D-4197-9F1E-8168C1B515B9}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="OtherIncomePaymentChargeForm.sj" />
+		</child>
+		<child name="CustomerVehicleScreen" key="{1696DE35-3E66-4B02-B90D-1247756B65DD}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="CustomerVehicleScreen.sj" />
+		</child>
+		<child name="OtherIncomeCodesPanel" key="{F6B97B63-DA67-4241-BA4F-2744EE22C541}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="OtherIncomeCodesPanel.sj" />
+		</child>
+		<child name="OtherIncomePaymentChargeScreen" key="{B6FE93CB-0DBC-4376-BE2B-D05CA36C79D5}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="OtherIncomePaymentChargeScreen.sj" />
+		</child>
+		<child name="OtherIncomePaymentTypeScreen" key="{2D2FF351-9E3A-4442-BEAF-06B27116BF4C}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="OtherIncomePaymentTypeScreen.sj" />
+		</child>
+		<child name="OtherIncomeScreen" key="{06BEBFDF-1628-41B5-8986-645CDA7EB6E5}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="OtherIncomeScreen.sj" />
+		</child>
+		<child name="OtherIncomeSelectPaymentPanel" key="{25EF32D4-88DE-444D-B7DC-489DD118779C}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="OtherIncomeSelectPaymentPanel.sj" />
+		</child>
+		<child name="ExpensesInfoForm" key="{C04E6D3C-9BAD-42B8-A2AC-C3B5BAE97F10}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="ExpensesInfoForm.sj" />
+		</child>
+		<child name="ExpensesScreen" key="{7B066BB7-5290-4B14-AF53-51BA618E7790}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="ExpensesScreen.sj" />
+		</child>
+		<child name="ExpensesCodesPanel" key="{5B1AC9C3-03D1-4FB1-A9C8-0D3FC9B2725C}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="ExpensesCodesPanel.sj" />
+		</child>
+		<child name="ExpensesTest" key="{A1AD7B00-4718-4784-BFCD-84259D484055}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="ExpensesTest.sj" />
+		</child>
+		<child name="ReceiptsTest" key="{B5FA65AC-3848-47C9-AE68-A9377280A079}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="ReceiptsTest.sj" />
+		</child>
+		<child name="ReprintReceiptsOtherIncomesMonthliesForm" key="{7CB2A2C8-6F22-4710-A621-2EFFBFF5772E}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="ReprintReceiptsOtherIncomesMonthliesForm.sj" />
+		</child>
+		<child name="ReprintReceiptsTicketNumberForm" key="{A288B499-3482-4030-96C1-7C80CFBF490B}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="ReprintReceiptsTicketNumberForm.sj" />
+		</child>
+		<child name="ReprintReceiptsOptionsPanel" key="{2CC5A152-EDD5-4352-B7C0-395F5A985B86}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="ReprintReceiptsOptionsPanel.sj" />
+		</child>
+		<child name="ReprintReceiptsOtherIncomesMonthliesScreen" key="{51B5E850-C4F3-41ED-A36C-43F645344958}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="ReprintReceiptsOtherIncomesMonthliesScreen.sj" />
+		</child>
+		<child name="BankDropTest" key="{73AD50BC-2A65-4C8C-8BCD-70C9DD74463B}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="BankDropTest.sj" />
+		</child>
+		<child name="BankDropInfoForm" key="{3B86ABAA-9B58-472F-902A-292A24025F7E}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="BankDropInfoForm.sj" />
+		</child>
+		<child name="BankDropScreen" key="{8E1EB622-BBDC-4CF5-92C7-9A3DA43B7F3B}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="BankDropScreen.sj" />
+		</child>
+		<child name="LostClaimTest" key="{DDEF8A95-9F94-450E-8A66-F0B62B4A29BA}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="LostClaimTest.sj" />
+		</child>
+		<child name="ReservationTest" key="{77FBD8AD-3829-4DCF-9266-022F56AEA654}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="ReservationTest.sj" />
+		</child>
+		<child name="RushSelectionTest" key="{4817DD2D-9EF8-47DF-8B41-795DB9A916FB}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="RushSelectionTest.sj" />
+		</child>
+		<child name="ReservationsInquiryReportParametersForm" key="{CF73C9BE-C1BC-421C-A3B1-0A0C4DCEDBF7}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="ReservationsInquiryReportParametersForm.sj" />
+		</child>
+		<child name="NoPunchHoursForm" key="{4A195639-4876-4382-A92F-A3C560B55AC1}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="NoPunchHoursForm.sj" />
+		</child>
+		<child name="FormNoPunchHoursTypePanel" key="{A92917F1-B1F5-4AA5-B852-7DDD4803951F}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="FormNoPunchHoursTypePanel.sj" />
+		</child>
+		<child name="NoPunchHoursScreen" key="{C1839207-025A-4777-8708-C290403F4915}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="NoPunchHoursScreen.sj" />
+		</child>
+		<child name="FormNoPunchHoursDayPanel" key="{B094F22D-A6E8-434D-AA30-C8CCA79E80F5}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="FormNoPunchHoursDayPanel.sj" />
+		</child>
+		<child name="PrepaymentsTableTimeSegmentForm" key="{AC26524E-B357-40D7-9FCA-5E19CCDB9A57}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="PrepaymentsTableTimeSegmentForm.sj" />
+		</child>
+		<child name="ReservationInquiryInfoScreen" key="{4187D19B-A20C-4DB6-876F-885B5D0DF560}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="ReservationInquiryInfoScreen.sj" />
+		</child>
+		<child name="RushDataScreen" key="{CB35B8D9-8598-4FFF-918E-A74F82855327}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="RushDataScreen.sj" />
+		</child>
+		<child name="RushSelectionInfoForm" key="{2B45510C-3B70-4093-991D-781A93F6BD0D}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="RushSelectionInfoForm.sj" />
+		</child>
+		<child name="GetTimeSegmentScreen" key="{CB0C2425-712F-479B-AEB4-49CC8AB0322F}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="GetTimeSegmentScreen.sj" />
+		</child>
+		<child name="StayPriceScreen" key="{F067B6CA-F5F2-4096-BC50-C3810D94429D}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="StayPriceScreen.sj" />
+		</child>
+		<child name="OptionsPricePanel" key="{67BF3691-0137-43C7-BF33-F788EF3C35DE}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="OptionsPricePanel.sj" />
+		</child>
+		<child name="ChangeRatePanel" key="{4609638F-2C0E-4D69-A601-CFA425DAEE6B}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="ChangeRatePanel.sj" />
+		</child>
+		<child name="CheckOutShowPriceForm" key="{E3237CDC-87E9-4EE6-AD77-1FEC82918E6D}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="CheckOutShowPriceForm.sj" />
+		</child>
+		<child name="CheckOutChangeRateForm" key="{1CBE9F8A-1CE4-4932-88A9-A54E3262B3E5}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="CheckOutChangeRateForm.sj" />
+		</child>
+		<child name="NonPaymentReasonsPanel" key="{4867C416-5DBB-4C61-8824-3C5F0AC339A9}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="NonPaymentReasonsPanel.sj" />
+		</child>
+		<child name="PaymentNoChargeScreen" key="{75706C92-0488-4A6E-B8DE-92E438818C27}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="PaymentNoChargeScreen.sj" />
+		</child>
+		<child name="CheckOutPaymentNoChargeNoPaymentReasonsForm" key="{5969EC9C-C64D-468A-BFA0-F4B6FFAA25A9}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="CheckOutPaymentNoChargeNoPaymentReasonsForm.sj" />
+		</child>
+		<child name="testOptionsPanel" key="{A9FF9BC8-1F80-4991-83FF-374D5C4FBD7A}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="testOptionsPanel.sj" />
+		</child>
+		<child name="PaymentChargeScreen" key="{790B6EE2-B4B5-4DA9-818A-4A698EF1762C}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="PaymentChargeScreen.sj" />
+		</child>
+		<child name="CheckOutPaymentChargeForm" key="{6C70C165-445E-49D2-A203-CF17D58237D5}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="CheckOutPaymentChargeForm.sj" />
+		</child>
+		<child name="ConfigUtility" key="{AADE371C-241A-4E43-AAA3-9FD18EB09493}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="ConfigUtility.sj" />
+		</child>
+		<child name="OptionsListPanel" key="{0201069F-9A2B-45AE-822F-7B7D98236616}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="OptionsListPanel.sj" />
+		</child>
+		<child name="SelectOptionForm" key="{D3F1BA92-D786-42E4-93B9-E890877AA9C8}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="SelectOptionForm.sj" />
+		</child>
+		<child name="EndToEndTest" key="{27E77D1F-CA76-459E-9CEB-E8D0DC15BF4B}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="EndToEndTest.sj" />
+		</child>
+		<child name="BusinessWrapper" key="{5561A058-21E8-486C-AA6E-4B50F4CD37B0}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="BusinessWrapper.sj" />
+		</child>
+		<child name="EmployeeTransferLocationForm" key="{F8008166-D421-42BA-8F15-5B64804537AC}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="EmployeeTransferLocationForm.sj" />
+		</child>
+		<child name="EmployeeTransferScreen" key="{41D36A10-7AB5-498A-B0EF-10F771910975}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="EmployeeTransferScreen.sj" />
+		</child>
+		<child name="WeekdayForm" key="{56614D9B-5541-49E3-AA38-93382C197DB5}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="WeekdayForm.sj" />
+		</child>
+		<child name="WeekdayPanel" key="{6597391C-E42A-40A5-9D66-97BF1015183B}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="WeekdayPanel.sj" />
+		</child>
+		<child name="EmployeeScheduleInfoForm" key="{95EB3243-BD6B-45CB-9AAA-2A617F69D823}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="EmployeeScheduleInfoForm.sj" />
+		</child>
+		<child name="PunchSchedulePanel" key="{8E01CF07-6832-46BA-8A9F-F42795336F69}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="PunchSchedulePanel.sj" />
+		</child>
+		<child name="TimeAMPMPanel" key="{31CD2CD1-3456-448E-8E8C-D82BAF4AA498}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="TimeAMPMPanel.sj" />
+		</child>
+		<child name="EmployeeScheduleScreen" key="{B746C9DD-A12B-4C18-943D-A5D9A51AE5B9}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="EmployeeScheduleScreen.sj" />
+		</child>
+		<child name="PrepaymentSelectPaymentPanel" key="{D313CF74-CD21-46E0-9124-5FF1C3A8E0A7}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="PrepaymentSelectPaymentPanel.sj" />
+		</child>
+		<child name="CheckInPrepaymentForm" key="{A3FD4BB2-B620-4632-9F43-B1165A4A57F4}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="CheckInPrepaymentForm.sj" />
+		</child>
+		<child name="CheckOutSelectPaymentTypeForm" key="{B888B9F2-CF49-4AFF-81AB-12DCCABB38A2}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="CheckOutSelectPaymentTypeForm.sj" />
+		</child>
+		<child name="PrepaymentScreen" key="{59624F88-0B09-4421-9C53-A7E67405A27C}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="PrepaymentScreen.sj" />
+		</child>
+		<child name="PrepaymentAmountForm" key="{58BCA520-31F4-4E99-A4E6-62F7FD900F84}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="PrepaymentAmountForm.sj" />
+		</child>
+		<child name="HotelTest" key="{9A566883-C8CA-4E2C-871E-E28C8BB58351}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="HotelTest.sj" />
+		</child>
+		<child name="TicketInquiryOptionsPanel" key="{E194D757-797A-49FA-B6F6-40113894F518}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="TicketInquiryOptionsPanel.sj" />
+		</child>
+		<child name="TicketInquiryForm" key="{99FE36A0-F28F-498C-BEB3-8CF5ED40ED44}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="TicketInquiryForm.sj" />
+		</child>
+		<child name="TicketInquiryScreen" key="{384B6157-41C0-4E64-88F1-26DE2F31FE95}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="TicketInquiryScreen.sj" />
+		</child>
+		<child name="TicketInquiryVehicleUpdateForm" key="{A21072AA-60C0-4B4A-A7D0-775ADB8CF48E}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="TicketInquiryVehicleUpdateForm.sj" />
+		</child>
+		<child name="TicketInquiryUpdateScreen" key="{C3A2E846-6C52-461A-94C8-30D6C0012B11}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="TicketInquiryUpdateScreen.sj" />
+		</child>
+		<child name="TicketInquiryResultsScreen" key="{2BBBA791-3ED9-4108-A09D-EEED8B3754DE}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="TicketInquiryResultsScreen.sj" />
+		</child>
+		<child name="TicketInquiryResultsForm" key="{C9460BA3-E564-4D63-95A1-87F99CC218DA}" type="Script Unit" typeId="{291CAE9C-4D20-4F33-8B5F-D48B587F3D65}" pluginName="Script">
+			<data path="TicketInquiryResultsForm.sj" />
 		</child>
 	</children>
 	<folders>
 		<folder caption="Tests" description="A logical folder that is used to organize project items and elements." moniker="">
 			<references>
 				<ref key="{C14968EE-A84F-47C0-85E6-9E40BCC2C4F9}" />
-				<ref key="{10C371CB-248E-4F9A-A5FA-08657276C70E}" />
 				<ref key="{250C68BE-523E-45BF-B762-A76F546EF2F6}" />
-				<ref key="{F1188429-1402-4C1F-A6D6-6F3C40623C19}" />
+				<ref key="{A1E72068-8D11-4E59-A77C-4258C2A945D3}" />
+				<ref key="{972DBF36-4767-4C34-811E-AF72D3196F01}" />
+				<ref key="{05E20A08-7EA2-429A-AEC5-A115159C05BF}" />
+				<ref key="{61FC6AC3-9F16-4DFC-AAA2-D7901721764E}" />
+				<ref key="{96EA1F4E-5EB5-4F18-90F1-BC1C07117CD3}" />
+				<ref key="{9131A510-801D-4A17-89B6-2278197CC90A}" />
+				<ref key="{A1AD7B00-4718-4784-BFCD-84259D484055}" />
+				<ref key="{B5FA65AC-3848-47C9-AE68-A9377280A079}" />
+				<ref key="{73AD50BC-2A65-4C8C-8BCD-70C9DD74463B}" />
+				<ref key="{DDEF8A95-9F94-450E-8A66-F0B62B4A29BA}" />
+				<ref key="{77FBD8AD-3829-4DCF-9266-022F56AEA654}" />
+				<ref key="{4817DD2D-9EF8-47DF-8B41-795DB9A916FB}" />
+				<ref key="{27E77D1F-CA76-459E-9CEB-E8D0DC15BF4B}" />
+				<ref key="{9A566883-C8CA-4E2C-871E-E28C8BB58351}" />
 			</references>
 		</folder>
 		<folder caption="Wrappers" description="A logical folder that is used to organize project items and elements." moniker="">
@@ -138,9 +549,77 @@
 						<ref key="{EA73A69B-C9F4-4AF4-A13A-A178F9657ECE}" />
 						<ref key="{5D210D45-B567-4E30-9D57-A56FF1B2749B}" />
 						<ref key="{156E3085-167D-4539-B514-225AA77938E8}" />
-						<ref key="{B921D7BC-024F-43C4-A351-DFE762051775}" />
-						<ref key="{9C52EFE7-B11D-42A6-B755-59E6D79ED0E8}" />
-						<ref key="{DAE18F57-8550-4308-BCFE-74F9BC5BDD55}" />
+						<ref key="{4B406720-2012-4500-A11A-30C0ADF2D25C}" />
+						<ref key="{989D775B-65C6-455B-BFDF-2B3C0374E0DD}" />
+						<ref key="{5ADBAF4F-FE4F-4702-81FB-A8951E88E78E}" />
+						<ref key="{CBAD90E4-6208-43D6-848F-1C975757FD3B}" />
+						<ref key="{DB0B99E9-4133-4A2F-993F-A3116F1C943B}" />
+						<ref key="{54ED929E-FD0C-4F71-98B0-57D0FC0DEB04}" />
+						<ref key="{C9BE3664-C440-42AE-89D9-0C4120140864}" />
+						<ref key="{2752FB4D-AFA2-461B-B9A1-2A4A0E809E6E}" />
+						<ref key="{B5357CE3-4139-445B-A89E-C4BD22A146DB}" />
+						<ref key="{FACAD037-8411-4B3E-AEFC-AE76ABF0CFB5}" />
+						<ref key="{F338F8D8-A161-4F52-B172-5F03CCD3C8D7}" />
+						<ref key="{39E9F91C-187A-44D4-8F9D-3F9036DBBF03}" />
+						<ref key="{028D603D-D5E8-4E48-96E7-AA09B5734769}" />
+						<ref key="{2B41DF10-98AD-4BA2-AB48-6A12939F394C}" />
+						<ref key="{6B36C55E-9E42-4C11-B5CD-A184A5D6AC65}" />
+						<ref key="{3362EBBC-854F-416E-808E-3FEB15945454}" />
+						<ref key="{104201A0-1A6C-4FE7-9767-36EDACF36FEB}" />
+						<ref key="{840380CB-E0BE-4D2B-9C13-B07FCDA8F7FE}" />
+						<ref key="{2574F978-CDA5-4EE9-8E6F-590AA5CB183B}" />
+						<ref key="{69A209D3-E077-4BE5-80C3-EB763A6C80B1}" />
+						<ref key="{8C2916AC-EA5D-4700-BCFE-FA2008DA8696}" />
+						<ref key="{55B72B7C-4FE8-4AA1-9CB2-2C68E16E63CD}" />
+						<ref key="{86961F2E-FD9D-4715-B259-84443A5C633D}" />
+						<ref key="{F0BCD2AE-0559-46A0-9B1D-A8F327EC09C4}" />
+						<ref key="{812D9182-5EC8-44C7-8828-47B705D22D4C}" />
+						<ref key="{4763F316-57F0-4C96-BAC9-8CF35FE65D8B}" />
+						<ref key="{9E2C3307-9DD0-4C56-8922-768C8F0F5B73}" />
+						<ref key="{6FEA4F66-5F07-4DD2-B362-45EE2A057D2E}" />
+						<ref key="{986E7214-4CFE-4890-A9A4-A8BD20C49049}" />
+						<ref key="{BB1BD197-4C9C-4604-AC9B-EF90364957AA}" />
+						<ref key="{D989B265-BF61-4637-9E81-23DDA8B488D1}" />
+						<ref key="{48AE4689-29E4-4559-8758-2C5305CB1582}" />
+						<ref key="{9673AC48-0FD2-44B6-9D00-B8B1E025C19B}" />
+						<ref key="{6F790531-2999-4C82-BE7A-DE9D6AB448AA}" />
+						<ref key="{4498F992-B282-4ACB-8EEC-AFF8D8556557}" />
+						<ref key="{1696DE35-3E66-4B02-B90D-1247756B65DD}" />
+						<ref key="{F6B97B63-DA67-4241-BA4F-2744EE22C541}" />
+						<ref key="{B6FE93CB-0DBC-4376-BE2B-D05CA36C79D5}" />
+						<ref key="{2D2FF351-9E3A-4442-BEAF-06B27116BF4C}" />
+						<ref key="{06BEBFDF-1628-41B5-8986-645CDA7EB6E5}" />
+						<ref key="{25EF32D4-88DE-444D-B7DC-489DD118779C}" />
+						<ref key="{7B066BB7-5290-4B14-AF53-51BA618E7790}" />
+						<ref key="{5B1AC9C3-03D1-4FB1-A9C8-0D3FC9B2725C}" />
+						<ref key="{2CC5A152-EDD5-4352-B7C0-395F5A985B86}" />
+						<ref key="{51B5E850-C4F3-41ED-A36C-43F645344958}" />
+						<ref key="{8E1EB622-BBDC-4CF5-92C7-9A3DA43B7F3B}" />
+						<ref key="{A92917F1-B1F5-4AA5-B852-7DDD4803951F}" />
+						<ref key="{C1839207-025A-4777-8708-C290403F4915}" />
+						<ref key="{B094F22D-A6E8-434D-AA30-C8CCA79E80F5}" />
+						<ref key="{4187D19B-A20C-4DB6-876F-885B5D0DF560}" />
+						<ref key="{CB35B8D9-8598-4FFF-918E-A74F82855327}" />
+						<ref key="{CB0C2425-712F-479B-AEB4-49CC8AB0322F}" />
+						<ref key="{F067B6CA-F5F2-4096-BC50-C3810D94429D}" />
+						<ref key="{67BF3691-0137-43C7-BF33-F788EF3C35DE}" />
+						<ref key="{4609638F-2C0E-4D69-A601-CFA425DAEE6B}" />
+						<ref key="{4867C416-5DBB-4C61-8824-3C5F0AC339A9}" />
+						<ref key="{75706C92-0488-4A6E-B8DE-92E438818C27}" />
+						<ref key="{A9FF9BC8-1F80-4991-83FF-374D5C4FBD7A}" />
+						<ref key="{790B6EE2-B4B5-4DA9-818A-4A698EF1762C}" />
+						<ref key="{0201069F-9A2B-45AE-822F-7B7D98236616}" />
+						<ref key="{41D36A10-7AB5-498A-B0EF-10F771910975}" />
+						<ref key="{6597391C-E42A-40A5-9D66-97BF1015183B}" />
+						<ref key="{8E01CF07-6832-46BA-8A9F-F42795336F69}" />
+						<ref key="{31CD2CD1-3456-448E-8E8C-D82BAF4AA498}" />
+						<ref key="{B746C9DD-A12B-4C18-943D-A5D9A51AE5B9}" />
+						<ref key="{D313CF74-CD21-46E0-9124-5FF1C3A8E0A7}" />
+						<ref key="{59624F88-0B09-4421-9C53-A7E67405A27C}" />
+						<ref key="{E194D757-797A-49FA-B6F6-40113894F518}" />
+						<ref key="{384B6157-41C0-4E64-88F1-26DE2F31FE95}" />
+						<ref key="{C3A2E846-6C52-461A-94C8-30D6C0012B11}" />
+						<ref key="{2BBBA791-3ED9-4108-A09D-EEED8B3754DE}" />
 					</references>
 				</folder>
 			</folders>
@@ -152,15 +631,68 @@
 				<ref key="{C19A750F-0B89-4A19-A22F-5F1591C84F24}" />
 				<ref key="{564847FF-E9E7-4835-8546-4DB2129D4154}" />
 				<ref key="{04AD064F-B687-402E-B3BC-F77265E8B819}" />
-				<ref key="{25F34FF6-3EA2-4D4A-812C-DCB79510D772}" />
-				<ref key="{2E4A36F7-B88C-4140-B559-99BD99A5B351}" />
-				<ref key="{EB317A24-C80F-41E9-9926-964FF45FC679}" />
+				<ref key="{9DBE376C-C304-418F-AF7D-7BD8205222D8}" />
+				<ref key="{069CE4A7-BF3F-4560-8C97-88992D5D35EB}" />
+				<ref key="{498AF5F5-CF3B-4EB3-8F23-27009153EB3C}" />
+				<ref key="{977FA6F4-4ECA-48C5-B555-32C056FFA829}" />
+				<ref key="{DA4CE1B5-8940-4BFC-B6C3-D660736FEE62}" />
+				<ref key="{E3E666C0-BF0E-4DD6-BD67-0BB39BA5B963}" />
+				<ref key="{F028F145-D957-4FA1-B3AB-1F9B88400C83}" />
+				<ref key="{1787EBDE-B3C5-4584-818C-372E63695D6E}" />
+				<ref key="{5D516C97-A684-4246-B3B8-1AF100A3BE13}" />
+				<ref key="{06418C30-A934-46F1-AD8C-44D903E1D963}" />
+				<ref key="{7C283778-8712-4E24-B41C-C1AC409B2FCE}" />
+				<ref key="{61694CFD-A36F-4A05-9A70-ACC8075E8442}" />
+				<ref key="{10CE5C85-5BF5-41DE-916B-09B243D90B15}" />
+				<ref key="{81CCF2CC-FB1A-4092-B945-9E2D10B07A62}" />
+				<ref key="{4794EA9C-0133-48FE-8216-2B07DDD72BFA}" />
+				<ref key="{248D6FED-A1BF-4B16-8FEA-971E3FC47647}" />
+				<ref key="{C38C4BF1-46C2-4D55-A9DE-89E2EF178AAD}" />
+				<ref key="{BBDC92DF-175B-47CD-A213-AFD0EB1567C9}" />
+				<ref key="{0E21BBAE-3ACC-48F3-90E4-DB07662F980F}" />
+				<ref key="{6B52E61D-7153-4411-B7DC-CF917546AC09}" />
+				<ref key="{117BFB0F-FC13-496B-9B6F-1994FF393482}" />
+				<ref key="{FE83E984-EB93-48D8-AB1C-12321220F0FE}" />
+				<ref key="{8DFD6216-D95A-4602-9F08-90A41D9F4CE0}" />
+				<ref key="{B6C08FF1-C91F-4D0A-A5C2-F5A57E8DB079}" />
+				<ref key="{773B3555-D225-48BA-BEFD-529F31E39B2A}" />
+				<ref key="{6AB156FC-0D40-4FB9-BE7B-57CC7FD9FF3C}" />
+				<ref key="{5F33196A-4A30-4205-A13C-9836F8C74BAE}" />
+				<ref key="{FC746F9C-8B61-4FD1-BABB-091D9875000C}" />
+				<ref key="{BA54F831-AED0-4A75-ABC9-183B56AC6B13}" />
+				<ref key="{C39FA470-788D-4197-9F1E-8168C1B515B9}" />
+				<ref key="{C04E6D3C-9BAD-42B8-A2AC-C3B5BAE97F10}" />
+				<ref key="{7CB2A2C8-6F22-4710-A621-2EFFBFF5772E}" />
+				<ref key="{A288B499-3482-4030-96C1-7C80CFBF490B}" />
+				<ref key="{3B86ABAA-9B58-472F-902A-292A24025F7E}" />
+				<ref key="{CF73C9BE-C1BC-421C-A3B1-0A0C4DCEDBF7}" />
+				<ref key="{4A195639-4876-4382-A92F-A3C560B55AC1}" />
+				<ref key="{AC26524E-B357-40D7-9FCA-5E19CCDB9A57}" />
+				<ref key="{2B45510C-3B70-4093-991D-781A93F6BD0D}" />
+				<ref key="{E3237CDC-87E9-4EE6-AD77-1FEC82918E6D}" />
+				<ref key="{1CBE9F8A-1CE4-4932-88A9-A54E3262B3E5}" />
+				<ref key="{5969EC9C-C64D-468A-BFA0-F4B6FFAA25A9}" />
+				<ref key="{6C70C165-445E-49D2-A203-CF17D58237D5}" />
+				<ref key="{D3F1BA92-D786-42E4-93B9-E890877AA9C8}" />
+				<ref key="{5561A058-21E8-486C-AA6E-4B50F4CD37B0}" />
+				<ref key="{F8008166-D421-42BA-8F15-5B64804537AC}" />
+				<ref key="{56614D9B-5541-49E3-AA38-93382C197DB5}" />
+				<ref key="{95EB3243-BD6B-45CB-9AAA-2A617F69D823}" />
+				<ref key="{A3FD4BB2-B620-4632-9F43-B1165A4A57F4}" />
+				<ref key="{B888B9F2-CF49-4AFF-81AB-12DCCABB38A2}" />
+				<ref key="{58BCA520-31F4-4E99-A4E6-62F7FD900F84}" />
+				<ref key="{99FE36A0-F28F-498C-BEB3-8CF5ED40ED44}" />
+				<ref key="{A21072AA-60C0-4B4A-A7D0-775ADB8CF48E}" />
+				<ref key="{C9460BA3-E564-4D63-95A1-87F99CC218DA}" />
 			</references>
 		</folder>
 		<folder caption="GenericUtils" description="A logical folder that is used to organize project items and elements." moniker="">
 			<references>
 				<ref key="{294D48B4-5E11-40F3-88D6-0E0D069BE2A0}" />
 				<ref key="{5AD2F840-44DA-4AEB-A3D9-FC9A2B0AB4D0}" />
+				<ref key="{2C4F7711-D818-4A86-98F1-136E455B1E69}" />
+				<ref key="{1D89393C-E79F-472A-A527-8A26236B1F90}" />
+				<ref key="{AADE371C-241A-4E43-AAA3-9FD18EB09493}" />
 			</references>
 		</folder>
 		<folder caption="Driver" description="A logical folder that is used to organize project items and elements." moniker="">

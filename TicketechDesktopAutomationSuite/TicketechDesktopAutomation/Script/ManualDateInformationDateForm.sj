@@ -130,7 +130,7 @@ manualDateInformationDateForm.prototype.EnterCheckInTime = function (iTime) {
               description : "Error at ManualDateInformationDateForm.EnterCheckInTime: The ManualDateInformationDateForm Form does not Exist.",
               message     : this.frmManualDateInformationDate + " The ManualDateInformationDateForm Form does not Exist." }   
               
-      if(iTime !== null) {
+      if(iTime !== null & iTime !== undefined) {
         this.dateTimeScreen.EnterTime(iTime);
         this.navigationPanel.ClickEnter();
         Log.Message("CheckIn Time entered manually")

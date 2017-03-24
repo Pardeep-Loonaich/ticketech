@@ -22,9 +22,30 @@ function optionsPanel() {
   this.lastError = {};
   
   this.pnlOptions =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "PanelOptions", 2);
+  
   this.throwError = false; 
     
 } //optionsPanel
+
+optionsPanel.prototype.Refresh = function () {  
+
+/*-------------------------------------------------------------------------------
+  Method      : Refresh()
+  
+  Description : This method will the re-instantiate the optionsPanel Wrapper   
+--------------------------------------------------------------------------------*/  
+  try {
+   
+    this.pnlOptions =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "PanelOptions", 2);
+        
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+      
+} //Refresh
 
 optionsPanel.prototype.Exists = function () {  
 
@@ -61,7 +82,7 @@ optionsPanel.prototype.ClickNext = function () {
   
   Output      : Click on Next button if Options Panel Exists
 -----------------------------------------------------------------*/  
-  this.Click("NEXT >>");
+  this.pnlOptions.FindChild(["WndCaption","Visible"], ["NEXT >>", true], 2).ClickButton(); 
       
 } //ClickNext
 
@@ -100,9 +121,22 @@ optionsPanel.prototype.ClickEnableRushMode = function () {
   
   Output      : Click on EnableRushMode button if Options Panel Exists
 ------------------------------------------------------------------------*/  
-  this.Click("ENABLE\nRUSH\nMODE");
+  this.Click("ENABLE\r\nRUSH\r\nMODE");
       
 } //ClickEnableRushMode
+
+optionsPanel.prototype.ClickDisableRushMode = function () {  
+
+/*------------------------------------------------------------------------
+  Method      : ClickDisableRushMode()
+  
+  Description : This method Clicks the DisableRushMode button  
+  
+  Output      : Click on DisableRushMode button if Options Panel Exists
+------------------------------------------------------------------------*/  
+  this.Click("DISABLE\r\nRUSH\r\nMODE");
+      
+} //ClickDisableRushMode
 
 optionsPanel.prototype.ClickOpenTicketsReport = function () {  
 
@@ -195,18 +229,18 @@ optionsPanel.prototype.ClickLostClaim = function () {
       
 } //ClickLostClaim
 
-optionsPanel.prototype.ClickPrePay = function () {  
+optionsPanel.prototype.ClickPrepay = function () {  
 
 /*------------------------------------------------------------------------
-  Method      : ClickPrePay()
+  Method      : ClickPrepay()
   
-  Description : This method Clicks the PrePay button  
+  Description : This method Clicks the Prepay button  
   
-  Output      : Click on PrePay button if Options Panel Exists
+  Output      : Click on Prepay button if Options Panel Exists
 ------------------------------------------------------------------------*/  
   this.Click("PREPAY");
       
-} //ClickPrePay
+} //ClickPrepay
 
 optionsPanel.prototype.ClickNewMonthly = function () {  
 
@@ -273,14 +307,14 @@ optionsPanel.prototype.ClickBackupTickets = function () {
       
 } //ClickBackupTickets
 
-optionsPanel.prototype.ClickCorrectPayments = function () {  
+optionsPanel.prototype.ClickCorrectPayment = function () {  
 
 /*------------------------------------------------------------------------
-  Method      : ClickCorrectPayments()
+  Method      : ClickCorrectPayment()
   
-  Description : This method Clicks the CorrectPayments button  
+  Description : This method Clicks the CorrectPayment button  
   
-  Output      : Click on CorrectPayments button if Options Panel Exists
+  Output      : Click on CorrectPayment button if Options Panel Exists
 ------------------------------------------------------------------------*/  
   this.Click("CORRECT PAYMENT");
       
@@ -414,16 +448,36 @@ optionsPanel.prototype.Click = function (btnName) {
 ------------------------------------------------------------------------*/  
   try {
   
+    bButtonExists = false;
+    
     this.lastError = {};
     
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
               description : "Error at optionsPanel.Click"+btnName+": The Options Panel does not Exist.",
-              message     : this.pnloptions + " Panel does not Exist." }             
-    
-    //this.pnloptions.FindChild(["WndCaption","Visible"], [btnName, true], 2).ClickButton();
-    Sys.Process("PosApplication").WinFormsObject("FormMain").WinFormsObject("PanelOptions").FindChild(["WndCaption","Visible"], [btnName, true], 2).ClickButton();
-    
+              message     : this.pnlOptions + " Panel does not Exist." }   
+                        
+    Delay(1000);
+    objOptionsPanelButton = this.pnlOptions.FindChild(["WndCaption","Visible"], [btnName, true], 2);                    
+    if(objOptionsPanelButton.Exists){
+      objOptionsPanelButton.SetFocus();
+      objOptionsPanelButton.Keys("[Enter]");
+	    bButtonExists = true;
+      Delay(1000);
+		
+    }
+    else{
+      this.ClickNext();Delay(1000);
+      this.Refresh();Delay(1000);
+      objOptionsPanelButton = this.pnlOptions.FindChild(["WndCaption","Visible"], [btnName, true], 2);
+      if(objOptionsPanelButton.Exists){
+        objOptionsPanelButton.SetFocus();
+        objOptionsPanelButton.Keys("[Enter]");
+		    bButtonExists = true;
+        Delay(1000);
+      } 
+    }
+    return bButtonExists; 
   } //End try
   
   catch (exception) {

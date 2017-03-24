@@ -99,8 +99,7 @@ employeeInfoScreen.prototype.GetErrorMessage = function () {
               description : "Error at employeeInfoScreen.GetErrorMessage: The EmployeeInfo screen does not Exist.",
               message     : this.scrnEmployeeInfo + " EmployeeInfo Screen does not Exist." }             
     
-    return this.scrnEmployeeInfo.WinFormsObject("screenInformationFooter")
-              .WinFormsObject("labelInformation").WndCaption;
+    return this.scrnEmployeeInfo.FindChild("WinFormsControlName","labelInformation",3).WndCaption;
     
   } //End try
   

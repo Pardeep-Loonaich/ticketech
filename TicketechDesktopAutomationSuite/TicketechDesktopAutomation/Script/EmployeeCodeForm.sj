@@ -132,8 +132,10 @@ employeeCodeForm.prototype.InputAndSubmitFormWithErrors = function (code) {
     this.InputAndSubmitForm(code);
     Delay(1000);
     
-    this.Refresh();
-    Delay(1000);
+    if(code == null || code == undefined || code == ""){
+      this.employeeCodeScreen.SetEmployeeCode("1");
+      Delay(1000);
+    }
     
     return this.employeeCodeScreen.GetErrorMessage();
     

@@ -70,7 +70,7 @@ ticketNumberScreen.prototype.EnterTicketNumber = function (sTicketNumber) {
               message     : this.scrnTicketNumber + " Screen Exist." }             
     
     if (sTicketNumber !== undefined && sTicketNumber !== null)      
-      Sys.Process("PosApplication").WinFormsObject("FormCheckInTicketNumber").WinFormsObject("ScreenTicketNumber").WinFormsObject("selectableTextBoxTicket").WinFormsObject("labelTextBox").Keys(sTicketNumber);
+      this.scrnTicketNumber.WinFormsObject("selectableTextBoxTicket").WinFormsObject("maskedTextBoxInfo").Keys(sTicketNumber);
       Delay(1000);
   } //End try
   
@@ -81,6 +81,65 @@ ticketNumberScreen.prototype.EnterTicketNumber = function (sTicketNumber) {
       
 } //EnterTicketNumber
 
+
+ticketNumberScreen.prototype.GetErrorMessage = function () {  
+
+/*------------------------------------------------------------------------------------
+  Method      : GetErrorMessage()
+  
+  Description : This method returns the error message displayed in the TicketNumber screen 
+  
+  Output      : Returns the error message displayed in the TicketNumber screen 
+-------------------------------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at ticketNumberScreen.GetErrorMessage: The TicketNumber screen does not Exist.",
+              message     : this.scrnTicketNumber + " TicketNumber Screen does not Exist." }             
+    
+    return this.scrnTicketNumber.WinFormsObject("screenInformationFooter")
+              .WinFormsObject("labelInformation").WndCaption;
+    
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+      
+} //GetErrorMessage
+
+ticketNumberScreen.prototype.GetTicketNumberInTextBox = function () {  
+
+/*-----------------------------------------------------------------------------
+  Method      : GetTicketNumberInTextBox()
+  
+  Description : This method returns the TicketNumber in the TicketNumber screen 
+  
+  Output      : Returns the TicketNumber displayed in the TicketNumber screen 
+-----------------------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at TicketNumberScreen.GetTicketNumberInTextBox: The TicketNumber screen does not Exist.",
+              message     : this.scrnTicketNumber + " TicketNumber Screen does not Exist." }             
+    
+    return this.scrnTicketNumber.FindChild("WinFormsControlName",("maskedTextBoxInfo"),5).wText;
+    
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+      
+} //GetTicketNumberInTextBox
 
 function New() {
 

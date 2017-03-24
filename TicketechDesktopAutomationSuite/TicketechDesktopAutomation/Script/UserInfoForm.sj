@@ -45,9 +45,7 @@ userInfoForm.prototype.Refresh = function () {
   Description : This method will the re-instantiate the userInfoForm Wrapper   
 --------------------------------------------------------------------------------*/  
   try {
-//    Sys.Refresh();
-//    Delay(1000);
-//    
+   
     this.dlgUserInfo =  Sys.Process("PosApplication").WaitWinFormsObject("FormUserInfo*", 3000); 
   
     this.infoScreen = InformationScreen.New();
@@ -90,7 +88,7 @@ userInfoForm.prototype.Exists = function () {
       
 } //Exists
 
-userInfoForm.prototype.InputAndSubmitForm = function (username,password) {  
+userInfoForm.prototype.InputAndSubmitForm = function (objTestData) {  
 
 /*--------------------------------------------------------------------------
   Method      : InputAndSubmitForm()
@@ -108,16 +106,17 @@ userInfoForm.prototype.InputAndSubmitForm = function (username,password) {
               description : "Error at userInfoForm.InputAndSubmitForm: The User Info Form does not Exist.",
               message     : this.dlgUserInfo + " The User Info Form does not Exist." }             
     
-    this.userInfoScreen.SetUsername(username);
+    this.userInfoScreen.SetUsername(objTestData.username);
     Delay(1000);
     
     this.navigationPanel.ClickEnter();
     Delay(1000);
     
     this.Refresh();
-    
-    this.userInfoScreen.SetPassword(password);
     Delay(1000);
+    
+    this.userInfoScreen.SetPassword(objTestData.password);
+    //Delay(1000);
     
     this.navigationPanel.ClickEnter();
     Delay(1000);
@@ -132,7 +131,7 @@ userInfoForm.prototype.InputAndSubmitForm = function (username,password) {
       
 } //InputAndSubmitForm
 
-userInfoForm.prototype.InputAndSubmitFormWithErrors = function (username,password) {  
+userInfoForm.prototype.InputAndSubmitFormWithErrors = function (objTestData) {  
 
 /*--------------------------------------------------------------------------
   Method      : InputAndSubmitFormWithErrors()
@@ -143,8 +142,7 @@ userInfoForm.prototype.InputAndSubmitFormWithErrors = function (username,passwor
 --------------------------------------------------------------------------*/  
   try {
   
-    this.InputAndSubmitForm(username,password);
-    Delay(1000);
+    this.InputAndSubmitForm(objTestData);
     
     this.Refresh();
     Delay(1000);

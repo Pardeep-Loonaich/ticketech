@@ -16,6 +16,18 @@
 			<testData />
 			<data />
 		</child>
+		<child key="{E3052D9A-D216-4072-8ED6-85BFAC9A8656}" type="Tested Application" typeId="{FD30A383-63C2-4C25-948C-2595C0F81320}">
+			<config nodeName="TkPosXmlConfig" autorunOnRecording="False" enabled="True" count="1" useFeaturedRuntimeObject="True" userChangeName="False">
+				<runModeParams activeRunMode="Simple">
+					<param name="RunAs" parameters="" workFolder="" userName="" password="" domain="" />
+					<param name="Profile" parameters="" workFolder="" />
+					<param name="Debug" parameters="" workFolder="" />
+					<param name="Simple" fileName="TkPosXmlConfig.exe" filePath="C:\setup\" parameters="" workFolder="" />
+				</runModeParams>
+			</config>
+			<testData />
+			<data />
+		</child>
 	</children>
 	<folders />
 </Root>

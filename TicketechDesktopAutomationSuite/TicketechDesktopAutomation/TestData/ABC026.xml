@@ -1,0 +1,1240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LocationPolicies xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <CustomerTypes>
+      <AcceptTransient>
+         <Value>true</Value>
+      </AcceptTransient>
+      <AcceptMonthly>
+         <Value>true</Value>
+      </AcceptMonthly>
+      <AcceptNewMonthly>
+         <Value>true</Value>
+      </AcceptNewMonthly>
+      <AcceptHotel>
+         <Value>false</Value>
+      </AcceptHotel>
+   </CustomerTypes>
+   <VehicleIdentification>
+      <Make>
+         <Required>
+            <Value>true</Value>
+         </Required>
+      </Make>
+      <Color>
+         <Required>
+            <Value>true</Value>
+         </Required>
+      </Color>
+      <Plate>
+         <AskForThePlateFirst>
+            <Value>true</Value>
+         </AskForThePlateFirst>
+         <Required>
+            <Value>true</Value>
+         </Required>
+         <StateRequired>
+            <Value>false</Value>
+         </StateRequired>
+         <Format>
+            <ValidationExpresion>
+               <Value />
+            </ValidationExpresion>
+            <MaxSize>
+               <Value>7</Value>
+            </MaxSize>
+         </Format>
+      </Plate>
+      <SizeRequired>
+         <Value>false</Value>
+      </SizeRequired>
+   </VehicleIdentification>
+   <OtherVehicleData>
+      <Oversize>
+         <Allowed>
+            <Value>true</Value>
+         </Allowed>
+         <AsMake>
+            <Value>1cbb9a13-eb3c-4a49-9d18-b613cd9b0193</Value>
+         </AsMake>
+      </Oversize>
+      <Supersize>
+         <Allowed>
+            <Value>true</Value>
+         </Allowed>
+         <AsMake>
+            <Value>0a328dba-310c-4d8a-8ff4-040c15205cdb</Value>
+         </AsMake>
+      </Supersize>
+      <VehicleDatabase>
+         <Keep>
+            <Value>true</Value>
+         </Keep>
+      </VehicleDatabase>
+      <PrintInBlackWhenOversize>
+         <Value>true</Value>
+      </PrintInBlackWhenOversize>
+   </OtherVehicleData>
+   <VehicleDamage>
+      <Enabled>
+         <Value>true</Value>
+      </Enabled>
+      <DamageData>
+         <DamageDetail>
+            <Value>OnlyMarkIfThereIsDamage</Value>
+         </DamageDetail>
+         <DamageComments>
+            <Value>false</Value>
+         </DamageComments>
+         <DamageZone>
+            <Value>false</Value>
+         </DamageZone>
+      </DamageData>
+   </VehicleDamage>
+   <Transients>
+      <AskForThePlateFirst>
+         <Value>true</Value>
+      </AskForThePlateFirst>
+      <Sequence>
+         <Value>b9513f43-a39b-4052-a726-c003c232c0b3</Value>
+      </Sequence>
+      <BackupsSequence>
+         <Value>e36b5fda-c267-490a-ba0f-33f578584e2b</Value>
+      </BackupsSequence>
+      <CheckoutTime>
+         <Required>
+            <Value>false</Value>
+         </Required>
+         <Format>
+            <Value>StayTime</Value>
+         </Format>
+      </CheckoutTime>
+      <RateSelection>
+         <Required>
+            <Value>false</Value>
+         </Required>
+      </RateSelection>
+   </Transients>
+   <Monthlies>
+      <Sequence>
+         <Value>6811869e-9878-443e-902a-785cd5cdb458</Value>
+      </Sequence>
+      <BackupSequence>
+         <Value>42ee26d1-d60a-4752-9f9e-44d134df58d6</Value>
+      </BackupSequence>
+      <NumberFormat>
+         <Value>00000000-0000-0000-0000-000000000000</Value>
+      </NumberFormat>
+      <Overrides>
+         <NonExistentId>
+            <Value>true</Value>
+         </NonExistentId>
+         <HoldCar>
+            <Value>true</Value>
+         </HoldCar>
+         <DeliquentAccount>
+            <Value>true</Value>
+         </DeliquentAccount>
+      </Overrides>
+      <CheckoutTime>
+         <Required>
+            <Value>false</Value>
+         </Required>
+         <Format>
+            <Value>StayTime</Value>
+         </Format>
+      </CheckoutTime>
+      <PrintTickets>
+         <Value>true</Value>
+      </PrintTickets>
+      <AllowedInputDevices>
+         <Value>false</Value>
+      </AllowedInputDevices>
+      <CheckStatusAtCheckIn>
+         <Value>true</Value>
+      </CheckStatusAtCheckIn>
+      <CheckStatusAtCheckout>
+         <Value>true</Value>
+      </CheckStatusAtCheckout>
+      <Replacements>
+         <Enabled>
+            <Value>true</Value>
+         </Enabled>
+         <Sequence>
+            <Value>634112f7-d8a9-4a18-bcc7-375992098ddc</Value>
+         </Sequence>
+         <BackupsSequence>
+            <Value>42ee26d1-d60a-4752-9f9e-44d134df58d6</Value>
+         </BackupsSequence>
+         <AcceptNonRegisteredVehicles>
+            <Value>true</Value>
+         </AcceptNonRegisteredVehicles>
+         <AlternativeSequence>
+            <Value>b9513f43-a39b-4052-a726-c003c232c0b3</Value>
+         </AlternativeSequence>
+         <RateName>
+            <Value>Monthly Replacement</Value>
+         </RateName>
+         <UsesRate>
+            <Value>false</Value>
+         </UsesRate>
+         <AcceptNonLocalReplacements>
+            <Value>false</Value>
+         </AcceptNonLocalReplacements>
+      </Replacements>
+      <Tag>
+         <Format>
+            <ValidationExpresion>
+               <Value />
+            </ValidationExpresion>
+            <MaxSize>
+               <Value>10</Value>
+            </MaxSize>
+         </Format>
+         <LocalTagDatabase>
+            <Value>false</Value>
+         </LocalTagDatabase>
+         <IncludeLocationCode>
+            <Value>false</Value>
+         </IncludeLocationCode>
+         <ImportFromAccess>
+            <Value>true</Value>
+         </ImportFromAccess>
+         <UpdateAlternateTagsEnabled>
+            <Value>false</Value>
+         </UpdateAlternateTagsEnabled>
+      </Tag>
+      <UsesRate>
+         <Value>false</Value>
+      </UsesRate>
+      <RateNames>
+         <Relations xsi:type="RateTypeDescription" Id="00000000-0000-0000-0000-000000000000">
+            <Ordinal>0</Ordinal>
+         </Relations>
+         <Relations xsi:type="RateTypeDescription" Id="00000000-0000-0000-0000-000000000000">
+            <Ordinal>1</Ordinal>
+            <Key>Monthly Night</Key>
+         </Relations>
+         <Relations xsi:type="RateTypeDescription" Id="00000000-0000-0000-0000-000000000000">
+            <Ordinal>2</Ordinal>
+            <Key>Monthly Day</Key>
+         </Relations>
+         <Relations xsi:type="RateTypeDescription" Id="00000000-0000-0000-0000-000000000000">
+            <Ordinal>3</Ordinal>
+            <Key>Monthly Charge</Key>
+         </Relations>
+         <Relations xsi:type="RateTypeDescription" Id="00000000-0000-0000-0000-000000000000">
+            <Ordinal>4</Ordinal>
+         </Relations>
+         <Relations xsi:type="RateTypeDescription" Id="00000000-0000-0000-0000-000000000000">
+            <Ordinal>5</Ordinal>
+         </Relations>
+      </RateNames>
+      <ChargeWeekendExitFee>
+         <Value>true</Value>
+      </ChargeWeekendExitFee>
+      <MonthliesDBMode>
+         <Value>CustomersTree</Value>
+      </MonthliesDBMode>
+      <MPSTransmission>
+         <Enabled>
+            <Value>false</Value>
+         </Enabled>
+         <ServiceUrl>
+            <Value>http://api.ticketech.com</Value>
+         </ServiceUrl>
+         <ServicePath>
+            <Value>/api/v2/Mps/company</Value>
+         </ServicePath>
+         <ApplicationName>
+            <Value>TKPOS</Value>
+         </ApplicationName>
+         <ServiceKey>
+            <Value>05ba4053-74fe-4128-8b8b-456dcd9cdd8f</Value>
+         </ServiceKey>
+      </MPSTransmission>
+      <RFID>
+         <ExcludeSearchTagNumber>
+            <Value>false</Value>
+         </ExcludeSearchTagNumber>
+      </RFID>
+   </Monthlies>
+   <Payments>
+      <SplitPayment>
+         <Value>true</Value>
+      </SplitPayment>
+      <ShowChange>
+         <Value>false</Value>
+      </ShowChange>
+      <MaxPayment>
+         <Value />
+      </MaxPayment>
+      <AcceptValidations>
+         <Value>true</Value>
+      </AcceptValidations>
+      <AcceptMobileCoupons>
+         <Value>true</Value>
+      </AcceptMobileCoupons>
+   </Payments>
+   <CreditCard>
+      <Provider>
+         <Value>TicketechCreditCard</Value>
+      </Provider>
+      <Enabled>
+         <Value>true</Value>
+      </Enabled>
+      <PrintReceipt>
+         <Value>true</Value>
+      </PrintReceipt>
+      <OnlineProcessingEnabled>
+         <Value>false</Value>
+      </OnlineProcessingEnabled>
+      <Processors>
+         <Ticketech>
+            <MinimumAmountToRequireSignature>
+               <Value>0</Value>
+            </MinimumAmountToRequireSignature>
+            <MinimumSignatures />
+         </Ticketech>
+      </Processors>
+      <ModemPhoneNumber>
+         <Value />
+      </ModemPhoneNumber>
+      <Password>
+         <Value />
+      </Password>
+      <Username>
+         <Value />
+      </Username>
+      <TerminalId>
+         <Value />
+      </TerminalId>
+      <ClientNumber>
+         <Value />
+      </ClientNumber>
+      <MerchantId>
+         <Value />
+      </MerchantId>
+      <SystemIndicator>
+         <Value />
+      </SystemIndicator>
+      <AllowManualEntry>
+         <Value>true</Value>
+      </AllowManualEntry>
+      <ManualOnlyOverAmount>
+         <Value>0</Value>
+      </ManualOnlyOverAmount>
+      <CreditCardUseExternalDevice>
+         <Value>false</Value>
+      </CreditCardUseExternalDevice>
+      <AutoBatchClose>
+         <Value>false</Value>
+      </AutoBatchClose>
+      <AllowSwitchingCreditCardMode>
+         <Value>true</Value>
+      </AllowSwitchingCreditCardMode>
+   </CreditCard>
+   <Charge>
+      <ExistentDealRequired>
+         <Value>false</Value>
+      </ExistentDealRequired>
+      <ValidateAccountNumber>
+         <Value>false</Value>
+      </ValidateAccountNumber>
+      <AuthorizationRequired>
+         <Value>true</Value>
+      </AuthorizationRequired>
+      <DoubleBarcode>
+         <Value>false</Value>
+      </DoubleBarcode>
+      <MaxSizeAccountNumber>
+         <Value>0</Value>
+      </MaxSizeAccountNumber>
+      <AllowZeroCharge>
+         <Value>false</Value>
+      </AllowZeroCharge>
+      <PrintReceipt>
+         <Value>false</Value>
+      </PrintReceipt>
+      <IncludeTaxesInReceipt>
+         <Value>true</Value>
+      </IncludeTaxesInReceipt>
+   </Charge>
+   <Coupon>
+      <Enabled>
+         <Value>true</Value>
+      </Enabled>
+      <AllowedInputDevices>
+         <Value>true</Value>
+      </AllowedInputDevices>
+      <NumberFormat>
+         <Value>00000000-0000-0000-0000-000000000000</Value>
+      </NumberFormat>
+      <MaxSize>
+         <Value>0</Value>
+      </MaxSize>
+      <MaxNumber>
+         <Value>3</Value>
+      </MaxNumber>
+      <VerifyAgainstActiveOnes>
+         <Value>true</Value>
+      </VerifyAgainstActiveOnes>
+      <AuthorizationRequired>
+         <Value>true</Value>
+      </AuthorizationRequired>
+   </Coupon>
+   <MobileCoupon>
+      <Enabled>
+         <Value>true</Value>
+      </Enabled>
+      <MaxNumber>
+         <Value>3</Value>
+      </MaxNumber>
+      <AuthorizationRequired>
+         <Value>false</Value>
+      </AuthorizationRequired>
+      <AcceptsExpiredCoupons>
+         <Value>false</Value>
+      </AcceptsExpiredCoupons>
+   </MobileCoupon>
+   <Stamps>
+      <Enabled>
+         <Value>true</Value>
+      </Enabled>
+      <AuthorizationRequired>
+         <Value>true</Value>
+      </AuthorizationRequired>
+      <MaxCount>
+         <Value>3</Value>
+      </MaxCount>
+      <AllDayEnabled>
+         <Value>true</Value>
+      </AllDayEnabled>
+   </Stamps>
+   <NoCharge>
+      <Enabled>
+         <Value>true</Value>
+      </Enabled>
+      <DescriptionRequired>
+         <Value>true</Value>
+      </DescriptionRequired>
+      <AuthorizationRequired>
+         <Value>false</Value>
+      </AuthorizationRequired>
+   </NoCharge>
+   <Void>
+      <Enabled>
+         <Value>true</Value>
+      </Enabled>
+      <DescriptionRequired>
+         <Value>true</Value>
+      </DescriptionRequired>
+      <MaximumTimeAllowed>
+         <Value>5</Value>
+      </MaximumTimeAllowed>
+      <AuthorizationRequired>
+         <Value>true</Value>
+      </AuthorizationRequired>
+   </Void>
+   <Prepay>
+      <Enabled>
+         <Value>true</Value>
+      </Enabled>
+      <AutoCloseAtEOD>
+         <Value>false</Value>
+      </AutoCloseAtEOD>
+      <RateSelection>
+         <Value>Allowed</Value>
+      </RateSelection>
+      <PrepaymentType>
+         <Value>Value</Value>
+      </PrepaymentType>
+   </Prepay>
+   <CheckOut>
+      <Correction>
+         <PaymentMethod>
+            <Value>true</Value>
+         </PaymentMethod>
+         <PriceCorrectionEnabled>
+            <Value>true</Value>
+         </PriceCorrectionEnabled>
+      </Correction>
+      <ExitStub>
+         <Print>
+            <Value>true</Value>
+         </Print>
+      </ExitStub>
+      <Receipt>
+         <Print>
+            <Value>true</Value>
+         </Print>
+      </Receipt>
+      <SelectedExit>
+         <Enabled>
+            <Value>false</Value>
+         </Enabled>
+      </SelectedExit>
+      <ChangeRate>
+         <Allowed>
+            <Value>true</Value>
+         </Allowed>
+         <MakeRateAssociation>
+            <Value>true</Value>
+         </MakeRateAssociation>
+         <SortingOrder />
+      </ChangeRate>
+      <Ticket>
+         <Length>
+            <Value>0</Value>
+         </Length>
+         <AuthorizationCardRequired>
+            <Value>false</Value>
+         </AuthorizationCardRequired>
+         <OnlyAllowMonthlyCheckoutInWorkstations>
+            <Value>false</Value>
+         </OnlyAllowMonthlyCheckoutInWorkstations>
+      </Ticket>
+   </CheckOut>
+   <RushHour>
+      <VehicleIdentification>
+         <Make>
+            <Required>
+               <Value>true</Value>
+            </Required>
+         </Make>
+         <Color>
+            <Required>
+               <Value>true</Value>
+            </Required>
+         </Color>
+         <Plate>
+            <AskForThePlateFirst>
+               <Value>false</Value>
+            </AskForThePlateFirst>
+            <Required>
+               <Value>true</Value>
+            </Required>
+            <StateRequired>
+               <Value>false</Value>
+            </StateRequired>
+            <Format>
+               <ValidationExpresion>
+                  <Value />
+               </ValidationExpresion>
+               <MaxSize>
+                  <Value>0</Value>
+               </MaxSize>
+            </Format>
+         </Plate>
+         <SizeRequired>
+            <Value>false</Value>
+         </SizeRequired>
+      </VehicleIdentification>
+      <VehicleDamage>
+         <Enabled>
+            <Value>true</Value>
+         </Enabled>
+         <DamageData>
+            <DamageDetail>
+               <Value>OnlyMarkIfThereIsDamage</Value>
+            </DamageDetail>
+            <DamageComments>
+               <Value>true</Value>
+            </DamageComments>
+            <DamageZone>
+               <Value>true</Value>
+            </DamageZone>
+         </DamageData>
+      </VehicleDamage>
+   </RushHour>
+   <Taxes>
+      <ParkingTax>
+         <Value>18.375</Value>
+      </ParkingTax>
+      <ParkingTaxExemption>
+         <Value>10.375</Value>
+      </ParkingTaxExemption>
+      <TaxArea>
+         <Value>79dff071-3426-4219-9456-40c6fcba1360</Value>
+      </TaxArea>
+   </Taxes>
+   <OtherIncomes>
+      <ChargeCreditCardFeeExcludedRates />
+      <ChargeAllowed>
+         <Value>true</Value>
+      </ChargeAllowed>
+      <DescriptionRequired>
+         <Value>true</Value>
+      </DescriptionRequired>
+      <ChargeCreditCardFee>
+         <Value>false</Value>
+      </ChargeCreditCardFee>
+      <ChargeCreditCardFeeTickets>
+         <Value>true</Value>
+      </ChargeCreditCardFeeTickets>
+      <ChargeCreditCardFeeEarlyBirds>
+         <Value>false</Value>
+      </ChargeCreditCardFeeEarlyBirds>
+      <ChargeCreditCardFeeMonthlyPayments>
+         <Value>false</Value>
+      </ChargeCreditCardFeeMonthlyPayments>
+   </OtherIncomes>
+   <BankDrops>
+      <ControlBankDrops>
+         <Value>false</Value>
+      </ControlBankDrops>
+      <GenerateBagNumber>
+         <Value>false</Value>
+      </GenerateBagNumber>
+      <Enabled>
+         <Value>true</Value>
+      </Enabled>
+      <DuplicateAllowed>
+         <Value>false</Value>
+      </DuplicateAllowed>
+      <NumericOnly>
+         <Value>true</Value>
+      </NumericOnly>
+      <ShowHistory>
+         <Value>true</Value>
+      </ShowHistory>
+      <AuthorizationRequired>
+         <Value>false</Value>
+      </AuthorizationRequired>
+   </BankDrops>
+   <BackupsIssued>
+      <Max>
+         <Value>100</Value>
+      </Max>
+      <DefaultValue>
+         <Value>0</Value>
+      </DefaultValue>
+   </BackupsIssued>
+   <Deals>
+      <Enabled>
+         <Value>false</Value>
+      </Enabled>
+   </Deals>
+   <VehicleLocation>
+      <AskAtCheckIn>
+         <Value>false</Value>
+      </AskAtCheckIn>
+      <ForMonthlies>
+         <Value>false</Value>
+      </ForMonthlies>
+      <Receipt>
+         <Value>true</Value>
+      </Receipt>
+   </VehicleLocation>
+   <EventMode>
+      <Enabled>
+         <Value>false</Value>
+      </Enabled>
+   </EventMode>
+   <OtherData>
+      <PrintTransientsCheckedIn>
+         <Value>false</Value>
+      </PrintTransientsCheckedIn>
+      <WorkdayAdjustingHours>
+         <Value>4</Value>
+      </WorkdayAdjustingHours>
+      <PrintWorkstationSummary>
+         <Value>false</Value>
+      </PrintWorkstationSummary>
+      <PrintTicketReconciliation>
+         <Value>false</Value>
+      </PrintTicketReconciliation>
+      <EODStart>
+         <Value>2010-10-15T10:42:58.714</Value>
+      </EODStart>
+      <EODEnd>
+         <Value>2010-10-15T10:42:58.681</Value>
+      </EODEnd>
+      <ClosedTicketsAtEOS>
+         <Value>false</Value>
+      </ClosedTicketsAtEOS>
+      <OpenTicketsReportsAtEOD>
+         <Value>false</Value>
+      </OpenTicketsReportsAtEOD>
+      <AllowedExpensesDescription>
+         <Value>true</Value>
+      </AllowedExpensesDescription>
+      <AcceptEOSEODTogether>
+         <Value>false</Value>
+      </AcceptEOSEODTogether>
+      <PrintRPUData>
+         <Value>false</Value>
+      </PrintRPUData>
+      <ReportsType>
+         <Value>Default</Value>
+      </ReportsType>
+      <EODAutomatic>
+         <Value>false</Value>
+      </EODAutomatic>
+   </OtherData>
+   <Ticket>
+      <TicketLayout>
+         <Value>Standard</Value>
+      </TicketLayout>
+      <AcceptTwelveIn>
+         <Value>false</Value>
+      </AcceptTwelveIn>
+      <PrintTicket>
+         <Value>true</Value>
+      </PrintTicket>
+      <PrintClaimCheck>
+         <Value>true</Value>
+      </PrintClaimCheck>
+      <PrintWindShield>
+         <Value>true</Value>
+      </PrintWindShield>
+      <TransientTicketClaimMessage1>
+         <Value />
+      </TransientTicketClaimMessage1>
+      <TransientTicketClaimMessage2>
+         <Value />
+      </TransientTicketClaimMessage2>
+      <MonthlyTicketClaimMessage1>
+         <Value>NON-CASH TICKET If you are</Value>
+      </MonthlyTicketClaimMessage1>
+      <MonthlyTicketClaimMessage2>
+         <Value>charged call 212-736-7171x17</Value>
+      </MonthlyTicketClaimMessage2>
+      <PrintNoValue>
+         <Value>true</Value>
+      </PrintNoValue>
+   </Ticket>
+   <Gate>
+      <IsGateSystem>
+         <Value>false</Value>
+      </IsGateSystem>
+      <AutoVoid>
+         <Value>0</Value>
+      </AutoVoid>
+      <CheckoutExitGrace>
+         <Value>0</Value>
+      </CheckoutExitGrace>
+      <VoidExitGrace>
+         <Value>0</Value>
+      </VoidExitGrace>
+      <NoChargeExitGrace>
+         <Value>0</Value>
+      </NoChargeExitGrace>
+   </Gate>
+   <UltraAPI>
+      <Enabled>
+         <Value>false</Value>
+      </Enabled>
+      <MobileCharge>
+         <Enabled>
+            <Value>false</Value>
+         </Enabled>
+      </MobileCharge>
+   </UltraAPI>
+   <APIServices>
+      <Enabled>
+         <Value>false</Value>
+      </Enabled>
+      <ServiceURI>
+         <Value>http://ultracloud.azurewebsites.net/api/v1/UltraPos</Value>
+      </ServiceURI>
+      <ApplicationName>
+         <Value>TKPOS</Value>
+      </ApplicationName>
+      <ServiceKey>
+         <Value>05ba4053-74fe-4128-8b8b-456dcd9cdd8f</Value>
+      </ServiceKey>
+   </APIServices>
+   <MessagingTransmission>
+      <Enabled>
+         <Value>false</Value>
+      </Enabled>
+      <ServiceURI>
+         <Value>http://api.ticketech.com/api/v2/Others</Value>
+      </ServiceURI>
+      <ApplicationName>
+         <Value>TKPOS</Value>
+      </ApplicationName>
+      <ServiceKey>
+         <Value>05ba4053-74fe-4128-8b8b-456dcd9cdd8f</Value>
+      </ServiceKey>
+   </MessagingTransmission>
+   <MonthlyPayments>
+      <SupressTaxInReceipts>
+         <Value>false</Value>
+      </SupressTaxInReceipts>
+   </MonthlyPayments>
+   <Timekeeper>
+      <TimekeeperActive>
+         <Value>true</Value>
+      </TimekeeperActive>
+      <TimekeeperTypePolicyValue>
+         <Value>Central</Value>
+      </TimekeeperTypePolicyValue>
+      <EmployeeNumberLength>
+         <Value>9</Value>
+      </EmployeeNumberLength>
+      <PayweekStart>
+         <Value>SAT0000</Value>
+      </PayweekStart>
+      <PunchRoundingFactor>
+         <Value>NoRounding</Value>
+      </PunchRoundingFactor>
+      <SecurityPINActive>
+         <Value>true</Value>
+      </SecurityPINActive>
+      <SecurityPIN>
+         <Value>n0n6</Value>
+      </SecurityPIN>
+      <PunchEditing>
+         <Value>false</Value>
+      </PunchEditing>
+      <MissingPunchOutTimeout>
+         <Value>18</Value>
+      </MissingPunchOutTimeout>
+      <TimekeeperStandard>
+         <TransmitReports>
+            <Value>true</Value>
+         </TransmitReports>
+         <WeeklyLimitInHours>
+            <Value>80</Value>
+         </WeeklyLimitInHours>
+      </TimekeeperStandard>
+      <TimekeeperCentral>
+         <NoPunchHoursTypes />
+         <PayweekCutoffTime>
+            <Value>SAT1000</Value>
+         </PayweekCutoffTime>
+         <UnmatchedTemplateAllowed>
+            <Value>false</Value>
+         </UnmatchedTemplateAllowed>
+         <VerificationTries>
+            <Value>2</Value>
+         </VerificationTries>
+         <TransactionTimeout>
+            <Value>0</Value>
+         </TransactionTimeout>
+         <OpenPunchinsReport>
+            <Value>false</Value>
+         </OpenPunchinsReport>
+         <PunchTimeout>
+            <Value>60</Value>
+         </PunchTimeout>
+      </TimekeeperCentral>
+      <PrintFullWeeklyReports>
+         <Value>false</Value>
+      </PrintFullWeeklyReports>
+      <GenerateCrossOverPunches>
+         <Value>true</Value>
+      </GenerateCrossOverPunches>
+      <ReportsTips>
+         <Value>false</Value>
+      </ReportsTips>
+      <ScheduleTimeout>
+         <Value>0</Value>
+      </ScheduleTimeout>
+   </Timekeeper>
+   <Communication>
+      <ExportTMFilesSQLFormat>
+         <Value>false</Value>
+      </ExportTMFilesSQLFormat>
+      <UseModemOnTransmission>
+         <Value>true</Value>
+      </UseModemOnTransmission>
+      <ModemTransmissionStartingTime>
+         <Value>2011-12-21T00:36:00</Value>
+      </ModemTransmissionStartingTime>
+      <ModemTransmissionEndingTime>
+         <Value>2011-12-21T01:00:00</Value>
+      </ModemTransmissionEndingTime>
+      <DialupConnectionName>
+         <Value>Earthlink</Value>
+      </DialupConnectionName>
+      <DialupPrimaryPhoneNumber>
+         <Value>16467363922</Value>
+      </DialupPrimaryPhoneNumber>
+      <DialupAlternatePhoneNumber>
+         <Value>12125615098</Value>
+      </DialupAlternatePhoneNumber>
+      <DialupUserName>
+         <Value>ELN/tkabc1</Value>
+      </DialupUserName>
+      <DialupPassword>
+         <Value>aicomplt</Value>
+      </DialupPassword>
+      <IdleTimeout>
+         <Value>10</Value>
+      </IdleTimeout>
+      <CheckFilesEveryXMinutes>
+         <Value>0</Value>
+      </CheckFilesEveryXMinutes>
+      <ExportTMFilesFtpUser>
+         <Value>abc</Value>
+      </ExportTMFilesFtpUser>
+      <ExportTMFilesFtpPassword>
+         <Value>ftpbcd</Value>
+      </ExportTMFilesFtpPassword>
+      <ExportTMFilesFtpAndFolder>
+         <Value>ftp://ftp.ticketech.com/upload/abc026/</Value>
+      </ExportTMFilesFtpAndFolder>
+      <ImportTMFilesFtpAndFolder>
+         <Value>ftp://ftp.ticketech.com/download/abc026/</Value>
+      </ImportTMFilesFtpAndFolder>
+   </Communication>
+   <Miscellaneous>
+      <Mails>
+         <MailsActive>
+            <Value>false</Value>
+         </MailsActive>
+         <ServiceUrl>
+            <Value>http://services.ticketech.com/Messaging/Messaging.asmx</Value>
+         </ServiceUrl>
+      </Mails>
+      <OvernightCheckEnabled>
+         <Value>false</Value>
+      </OvernightCheckEnabled>
+      <OvernightCheckFromTime>
+         <Value>2017-01-30T00:00:00</Value>
+      </OvernightCheckFromTime>
+      <OvernightCheckToTime>
+         <Value>2017-01-30T00:00:00</Value>
+      </OvernightCheckToTime>
+   </Miscellaneous>
+   <Reservation>
+      <Enabled>
+         <Value>true</Value>
+      </Enabled>
+      <AcceptRefund>
+         <Value>false</Value>
+      </AcceptRefund>
+      <GraceBefore>
+         <Value>30</Value>
+      </GraceBefore>
+      <GraceAfter>
+         <Value>30</Value>
+      </GraceAfter>
+      <CheckForPlate>
+         <Value>false</Value>
+      </CheckForPlate>
+      <CollectOversize>
+         <Value>true</Value>
+      </CollectOversize>
+      <CollectLostClaim>
+         <Value>true</Value>
+      </CollectLostClaim>
+      <GiveCreditUntilDays>
+         <Value>0</Value>
+      </GiveCreditUntilDays>
+      <ReservationsTransmission>
+         <ServiceURI>
+            <Value>https://reservations.ticketech.com/ReservationsLocationsService.svc</Value>
+         </ServiceURI>
+         <ApplicationName>
+            <Value>TKPOS</Value>
+         </ApplicationName>
+         <ServiceKey>
+            <Value>67tasdfg2378sdfw4</Value>
+         </ServiceKey>
+      </ReservationsTransmission>
+   </Reservation>
+   <SafetyDatabase>
+      <Enabled>
+         <Value>false</Value>
+      </Enabled>
+   </SafetyDatabase>
+   <PaymentProviders>
+      <Enabled>
+         <Value>false</Value>
+      </Enabled>
+   </PaymentProviders>
+   <HotelContractTicketsReport>
+      <Contracts />
+      <Enabled>
+         <Value>false</Value>
+      </Enabled>
+      <ServiceURL>
+         <Value />
+      </ServiceURL>
+      <SystemId>
+         <Value />
+      </SystemId>
+      <ServicePassword>
+         <Value>c5e4e104-8865-4b5a-be11-32cc3b84dbe2</Value>
+      </ServicePassword>
+   </HotelContractTicketsReport>
+   <ClassVersion>
+      <CurrentVersion>1.1.1.1</CurrentVersion>
+   </ClassVersion>
+   <Data>
+      <ShortName>130 East 18th Garage Corp.</ShortName>
+      <Address1>130 East 18th Street</Address1>
+      <Address2 />
+      <City>New York</City>
+      <StateGUID>f0b5bf1f-f1fe-418d-8a81-ad8a161862c1</StateGUID>
+      <Zip>10003</Zip>
+      <ExtendedZip />
+      <Phone1>(212) 475-8091</Phone1>
+      <Phone2>(   )    -</Phone2>
+      <Fax>(   )    -</Fax>
+      <Cellular>(   )    -</Cellular>
+      <Notes />
+      <License>1010041</License>
+   </Data>
+   <VehicleLocationStruct>
+      <VehicleLocationSections />
+      <VehicleLocationExits />
+   </VehicleLocationStruct>
+   <Hotels>
+      <HasRepricing>
+         <Value>false</Value>
+      </HasRepricing>
+      <RepricingTime>
+         <Value>2010-11-03T00:00:00</Value>
+      </RepricingTime>
+      <HotelList />
+      <PrintDetailedReports>
+         <Value>false</Value>
+      </PrintDetailedReports>
+   </Hotels>
+   <Colors>
+      <Relations xsi:type="ColorsLocations" Id="79366deb-db00-4498-b5e1-77346665bfb7">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="ColorsLocations" Id="cf52951f-a2bf-4c19-ae06-06f6582a0dff">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="ColorsLocations" Id="34dc7bf1-2d01-4df5-aadd-2902bc887b6a">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="ColorsLocations" Id="842230df-6cd5-4def-a214-7787dd454e84">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="ColorsLocations" Id="d6fce970-ffb2-4997-847d-909e735239ea">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="ColorsLocations" Id="45f44325-e597-479a-822c-a4997cbc6c76">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="ColorsLocations" Id="c26caa49-1cc6-4606-9d2e-5d9dbbbaaf54">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="ColorsLocations" Id="7d64ae76-80f8-40a1-af74-654dd89dea11">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="ColorsLocations" Id="cf0b4b21-c217-4386-b465-dab0078a8324">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="ColorsLocations" Id="db8161ed-f2e9-4b00-92bb-ded4599e57ff">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="ColorsLocations" Id="36ce688e-5387-4ef2-a42c-df12ba979ab3">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="ColorsLocations" Id="6a7da144-0811-db11-ba00-001125a4047d">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="ColorsLocations" Id="608461d0-6dd4-46d0-923f-e2b4b74e4204">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="ColorsLocations" Id="dbdb11cf-5aef-4cc5-b38a-049296f45cdd">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="ColorsLocations" Id="c0bf863a-bee1-4a39-8729-32960d8b7bfa">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="ColorsLocations" Id="058307cb-71fb-492b-bd7a-3b51bcf914c5">
+         <Ordinal>0</Ordinal>
+      </Relations>
+   </Colors>
+   <Makes>
+      <Relations xsi:type="MakesLocations" Id="29bec970-3081-4277-9ff7-01a8b2f04ec8">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="970893e3-99c9-416d-8de8-14f9ed902b6d">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="0ff8c27b-7ae5-4884-8194-243f2f0289b9">
+         <Ordinal>1</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="f35959a9-b411-4b67-b416-18604a5c47aa">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="b3d21b89-e5bf-442a-a10c-48f4e80fc4e5">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="cd5de347-19a9-4e16-bbf4-1e2f04689d85">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="723c75a0-73de-4e73-9234-215b44c5bec7">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="e456edf7-c51f-4888-aac4-26ede81903d3">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="3d128005-c50b-4557-880d-2a96a2b0030f">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="09918534-4dbb-4328-8b3e-31053763dce0">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="7f8a9a38-6d25-4b5b-9899-3498f4a11879">
+         <Ordinal>1</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="0aad0a15-e18f-400e-a7cb-3f67801fadd7">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="fee146cb-06bc-4c82-8ba4-0276dc629489">
+         <Ordinal>1</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="29bec970-3081-4277-9ff7-01a8b2f04ec1">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="0641ddec-7400-47e6-94d1-4c7a36b2a65c">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="a94cf34a-2363-4daf-a454-555ecb96339c">
+         <Ordinal>1</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="cde3022c-e6b0-4421-8c9a-5865fbe30110">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="476bfcba-cf51-492c-b963-8cc52a546264">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="84fb4f3a-538a-437f-9c92-76fdd14f1a6c">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="3971950b-3b00-492c-a2ba-844dce250787">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="85fe353c-7214-4255-947c-8859d8e5ba37">
+         <Ordinal>1</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="60b98ae9-f456-4e53-b535-8b52dc0b598c">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="affe0ee6-d4ae-491a-86b3-945390337699">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="2d63453c-02ea-489f-b3d3-45eca40617e6">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="f635aac4-7406-4ec3-974c-94803e98c876">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="49df8fa3-036d-42f7-9d60-9c104e647581">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="bf6e6cd4-28c0-4a54-9cc6-a22b70815a6a">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="f2bcbc72-9e8b-43e4-898e-a3bcf3cd202f">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="fa908e7b-00cf-4a79-b391-7a1a46b1f51a">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="fcd4b478-d8e6-4331-b444-a4de538fd275">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="094f1ba9-3368-4016-ba9e-ad3e25b9ee39">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="01412fcd-d154-45aa-8307-af07802f1b1b">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="4d7fe05c-f600-467e-b868-3db281a7935e">
+         <Ordinal>1</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="1cbb9a13-eb3c-4a49-9d18-b613cd9b0193">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="e8b6fe2a-64e7-40c3-92db-b86608db4b4d">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="fff55d42-b650-47ea-a920-c3144834d13e">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="eac4a393-abc7-4910-9344-c321127b8b42">
+         <Ordinal>1</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="51b3844f-bd31-444a-a35b-14384d1fd75a">
+         <Ordinal>1</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="dd9cb425-0210-4b57-9e9e-d9c742ef356c">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="ddbbcd3a-0ad3-45bd-9e9e-dcacc6ecd5fc">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="3d3c23ce-fba8-461f-afab-e2a541269e4b">
+         <Ordinal>1</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="c4123e75-f16f-48c8-90e1-d38db8472ce2">
+         <Ordinal>1</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="2cd6af8d-610b-4293-9b31-7cc140e9c811">
+         <Ordinal>1</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="7c9551fa-bb46-4ae1-bf71-e739adce7423">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="0a328dba-310c-4d8a-8ff4-040c15205cdb">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="f9900076-b7fe-45fc-afed-7673e5c91555">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="1cd2cb19-3164-4052-97e4-ac8022d0cb36">
+         <Ordinal>1</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="7f980ed5-3def-42bf-93e8-70e173211e6c">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="MakesLocations" Id="9fed2161-64ac-4ea9-9e8b-513472858232">
+         <Ordinal>0</Ordinal>
+      </Relations>
+   </Makes>
+   <Reasons>
+      <Relations xsi:type="ReasonsLocations" Id="3638907b-c22f-4b87-b7d4-c99001c81652">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="ReasonsLocations" Id="a7c41cf8-4230-44e2-8c43-958b46e018d8">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="ReasonsLocations" Id="b81a4363-8d6e-491a-9b96-d714b2921046">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="ReasonsLocations" Id="00000000-0000-0000-0000-000000000003">
+         <Ordinal>0</Ordinal>
+      </Relations>
+      <Relations xsi:type="ReasonsLocations" Id="00000000-0000-0000-0000-000000000001">
+         <Ordinal>0</Ordinal>
+      </Relations>
+   </Reasons>
+   <OtherIncomeCodes>
+      <Relations xsi:type="IncomeCodesLocations" Id="00000000-0000-0000-0000-000000000011">
+         <Ordinal>0</Ordinal>
+         <Price>0</Price>
+      </Relations>
+      <Relations xsi:type="IncomeCodesLocations" Id="d7bceb9d-3eb0-47cf-a3f5-fba64979b08e">
+         <Ordinal>0</Ordinal>
+         <Price>0</Price>
+      </Relations>
+   </OtherIncomeCodes>
+   <ExpensesCodes />
+   <Reports>
+      <OpenTicketsChooseTicketType>true</OpenTicketsChooseTicketType>
+      <PagingAllowed>false</PagingAllowed>
+      <ClosedTicketsChooseTicketType>true</ClosedTicketsChooseTicketType>
+      <ClosedTicketsSortOrder>Default</ClosedTicketsSortOrder>
+      <ClosedTicketsSortOrderEnum>Default</ClosedTicketsSortOrderEnum>
+   </Reports>
+   <ClientData>
+      <RegionCode>
+         <Value />
+      </RegionCode>
+      <LocationCode>
+         <Value />
+      </LocationCode>
+   </ClientData>
+</LocationPolicies>

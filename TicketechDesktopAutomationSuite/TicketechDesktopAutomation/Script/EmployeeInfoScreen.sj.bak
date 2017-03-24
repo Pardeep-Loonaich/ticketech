@@ -24,7 +24,7 @@ function employeeInfoScreen() {
   
   this.throwError = false; 
     
-} //mainScreen
+} //employeeInfoScreen
 
 employeeInfoScreen.prototype.Exists = function () {  
 
@@ -66,11 +66,11 @@ employeeInfoScreen.prototype.SetEmployeeID = function (empID) {
     
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
-              description : "Error at employeeInfoScreen.SetEmployeeID: The Employee Info does not Exist.",
+              description : "Error at employeeInfoScreen.SetEmployeeID: The Employee Info Screen does not Exist.",
               message     : this.scrnEmployeeInfo + " Screen does not Exist." }             
     
     if (empID !== undefined && empID !== null)
-      this.scrnEmployeeInfo.FindChild("WinFormsControlName", "labelTextBox", 1000).Keys(empID);
+      this.scrnEmployeeInfo.FindChild("WinFormsControlName", "labelTextBox", 2).Keys(empID);
     
   } //End try
   
@@ -86,9 +86,9 @@ employeeInfoScreen.prototype.GetErrorMessage = function () {
 /*------------------------------------------------------------------------------------
   Method      : GetErrorMessage()
   
-  Description : This method returns the error message displayed in the info screen 
+  Description : This method returns the error message displayed in the EmployeeInfo screen 
   
-  Output      : Returns the error message displayed in the emp info screen 
+  Output      : Returns the error message displayed in the EmployeeInfo screen 
 -------------------------------------------------------------------------------------*/  
   try {
   
@@ -96,11 +96,10 @@ employeeInfoScreen.prototype.GetErrorMessage = function () {
     
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
-              description : "Error at EmployeeInfoScreen.GetErrorMessage: The Info screen does not Exist.",
-              message     : this.scrnInfo + " Info does not Exist." }             
+              description : "Error at employeeInfoScreen.GetErrorMessage: The EmployeeInfo screen does not Exist.",
+              message     : this.scrnEmployeeInfo + " EmployeeInfo Screen does not Exist." }             
     
-    return this.scrnEmployeeInfo.WinFormsObject("screenInformationFooter")
-              .WinFormsObject("labelInformation").WndCaption;
+    return this.scrnEmployeeInfo.FindChild("WinFormsControlName","labelInformation",5).WndCaption;
     
   } //End try
   

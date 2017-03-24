@@ -66,9 +66,15 @@ yesNoConfirmActionPanel.prototype.Click = function (btnName) {
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
               description : "Error at yesNoConfirmActionPanel.Click"+btnName+": The YesNoConfirmAction Panel does not Exist.",
-              message     : this.pnlYesNo + " Panel does not Exist." }             
+              message     : this.pnlYesNo + " Panel does not Exist." }         
+                  
+    objYesNoButton = this.pnlYesNo.WaitWinFormsObject("ScreenButton", btnName, 1000);
     
-    this.pnlYesNo.WaitWinFormsObject("ScreenButton", btnName, 1000).ClickButton();
+    objYesNoButton.SetFocus();
+    
+    if(objYesNoButton.Focus()){
+      objYesNoButton.ClickButton();
+    }
     
   } //End try
   

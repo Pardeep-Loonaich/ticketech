@@ -21,7 +21,7 @@ function vehicleInfoScreen() {
 ------------------------------------------------------------------------------------*/   
   this.lastError = {};
   
-  this.scrnVehiInfo =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "FormCheckInVehiclePlate", 2).FindChild("WinFormsControlName", "ScreenVehicleInfo", 2);
+  this.scrnVehiInfo =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "ScreenVehicleInfo", 3);
   
   this.throwError = false; 
     
@@ -60,9 +60,6 @@ vehicleInfoScreen.prototype.Refresh = function () {
   Description : This method re-instantiate the vehicleInfoScreen.    
 ----------------------------------------------------------------------*/  
   try {
-  
-   Sys.Refresh();
-    Delay(1000);
 
     this.scrnVehiInfo =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "ScreenVehicleInfo");
      
@@ -143,6 +140,36 @@ vehicleInfoScreen.prototype.verifyFocus_On_PlateTextField = function () {
 } //verifyFocus_On_PlateTextField
 
 
+vehicleInfoScreen.prototype.IsFieldAvailable = function (sCaption) {  
+
+/*-------------------------------------------------------------------------------
+  Method      : IsFieldAvailable()
+  
+  Description : This method returns true if the field is Visible, else false
+  
+  Output      : Returns true if the field is Visible, else returns false 
+-------------------------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at vehicleInfoScreen.IsFieldAvailable: The Vehicle Plate textfield does not Exist.",
+              message     : this.scrnVehiInfo + " Screen does not Exist." }             
+    
+    objVehicleInfoField = this.scrnVehiInfo.FindChild(["WinFormsControlName","Caption"],["SelectableTextBox",sCaption],3);           
+              
+    return objVehicleInfoField.Visible;
+    
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+      
+} //IsFieldAvailable
 
 
 function New() {

@@ -268,12 +268,23 @@ function TC_POUT_EMP_004() {
   
   var bTestCaseResult;//Boolean variable to store TestCase result
   var sExpectedErrorMessage = "TEMPLATE ENTERED NOT MATCH."; //Stores the expected error message    
-  var sActualErrorMessage; //Stores the error message to be dispalyed    
+  var sActualErrorMessage; //Stores the error message to be dispalyed  
   
-  var objTestData = {
-                      EmployeeID   :  SQLQueries.getValidEmployeeID(),
-                      EmployeeCode :  Utility.getRandomValue("ALPHANUMERIC",4)                                          
-                    }; //TestData object to punch out an employee
+  //Getting Employee whose punch Details are available in Punches Table
+  var eEmpLastPunchDetails = SQLQueries.getPunchInOutEmployee();
+ 
+  //Declaring and initializing Test Data object 
+  var objTestData = { EmployeeID : eEmpLastPunchDetails.sEmployeeID
+                     ,EmployeeCode : Utility.getRandomValue("ALPHANUMERIC",4)
+                    }; 
+
+  //setting EmployeeID as EmployeeCode after updating via SQL in DB
+  SQLQueries.updateEmployeeCode(objTestData.EmployeeID);
+
+  //Update Last punch Details of the Employee
+  if(eEmpLastPunchDetails.bPunchInOutStatus == 0)
+    SQLQueries.updateEmployeePunchDetails(eEmpLastPunchDetails.sEmployeeGUID,1,eEmpLastPunchDetails.sLastPunchDateTime);
+    
   
   try {          
      
@@ -579,12 +590,12 @@ function TC_POUT_EMP_007() {
       
     //Step-3: Navigate to confirm Action screen and click yes button
     //-----------------------------------------------------------------
-    confirmAction = ConfirmActionForm.New();
+    objConfirmActionForm = ConfirmActionForm.New();
     TestLog.Message("Step-3 : Navigated to ConfirmAction Form");
       
     //Click Yes button from YesNoConfirmAction panel
-    confirmAction.ConfirmYes();
-    if (confirmAction.lastError.name !== undefined) throw confirmAction.lastError;
+    objConfirmActionForm.ConfirmYes();
+    if (objConfirmActionForm.lastError.name !== undefined) throw objConfirmActionForm.lastError;
     
     TestLog.Message("Step-4 :Clicked Yes Button in confirm action form");
      
@@ -671,17 +682,17 @@ function TC_POUT_EMP_008() {
   eEmpLastPunchDetails = SQLQueries.getPunchInOutEmployee(objTestData.EmployeeID);
   
   var eEmpCurrentPunchDetails;//stores the latest punch Out Details of the Employee after Test case execution
-  
+ 
   try {
-  
+     
     //Step-1: Launching the POS application and Initialize the MainDialog
     //--------------------------------------------------------------------
     Utility.launchApp();
     objMainDialog = MainDialog.New();
       
     //Step-2: Navigate into Employee info screen and submit valid emp ID
-    //------------------------------------------------------------------
-    objMainDialog.NavigateToPunchInScreen();
+    //--------------------------------------------------------------------
+    objMainDialog.NavigateToPunchOutScreen();
     if (objMainDialog.lastError.name !== undefined) throw objMainDialog.lastError;
       
     TestLog.Message("Step-1: Clicked Punch Out button.");

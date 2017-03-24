@@ -16,11 +16,11 @@
 
 function checkInTicketNumberForm() { 
 
-/*--------------------------------------------------------------------- 
+/*--------------------------------------------------------------------------------- 
   Method: checkInTicketNumberForm() 
   
   Description: This method will the Instantiate the checkInTicketNumberForm Wrapper
----------------------------------------------------------------------*/   
+---------------------------------------------------------------------------------*/   
   this.lastError = {};
   
   this.frmCheckInTicketNumber =  Sys.Process("PosApplication").WaitWinFormsObject("FormCheckInTicketNumber", 3000);   

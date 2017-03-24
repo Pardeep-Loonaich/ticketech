@@ -98,16 +98,24 @@ makesPanel.prototype.SelectVehicleMake = function (sVehicleMake) {
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
               description : "Error at makesPanel.Click"+sVehicleMake+": The Makes Panel does not Exist.",
-              message     : this.pnlMakes + " Panel does not Exist." }             
-    if(this.pnlMakes.FindChild(["Value","Visible"], [sVehicleMake, true], 2).Exists)
-    {
-    this.pnlMakes.FindChild(["Value","Visible"], [sVehicleMake, true], 2).ClickButton();
+              message     : this.pnlMakes + " Panel does not Exist." }
+                
+    objMakesPanelButton = this.pnlMakes.FindChild(["Value","Visible"], [sVehicleMake, true], 2);                    
+    if(objMakesPanelButton.Exists){
+      objMakesPanelButton.SetFocus();
+      objMakesPanelButton.Keys("[Enter]");
     }
-    else
-    {
-    MakesPanel.New().ClickNext();
-    this.Refresh();
-    this.pnlMakes.FindChild(["Value","Visible"], [sVehicleMake, true], 2).ClickButton();
+    else{
+      this.ClickNext();Delay(2000);
+      this.Refresh();Delay(3000);
+      objMakesPanelButton = this.pnlMakes.FindChild(["Value","Visible"], [sVehicleMake, true], 2);
+      if(objMakesPanelButton.Exists){
+        objMakesPanelButton.SetFocus();
+        objMakesPanelButton.Keys("[Enter]");
+      } 
+      else {
+        TestLog.Error("Vehicle Make not found, Please check test data");
+      }
     }
   } //End try
   

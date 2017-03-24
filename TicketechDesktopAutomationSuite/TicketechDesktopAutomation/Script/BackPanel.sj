@@ -20,7 +20,7 @@ function backPanel() {
 ---------------------------------------------------------------------------*/   
   this.lastError = {};
   
-  this.pnlBack =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "PanelBack", 2000);
+  this.pnlBack =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "PanelBack", 2);
   this.throwError = false; 
     
 } //backPanel

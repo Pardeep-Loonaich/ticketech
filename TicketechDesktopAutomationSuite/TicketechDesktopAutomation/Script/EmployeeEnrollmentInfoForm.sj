@@ -58,7 +58,6 @@ employeeEnrollmentInfoForm.prototype.Refresh = function () {
   } //End try
   
   catch (exception) {
-	TestLog.Messgae("Exception at EmployeeEnrollmentInfoForm.Refresh");
     for (prop in exception) this.lastError[prop] = exception[prop];
     if (this.throwError) throw exception
   } //End catch
@@ -150,7 +149,6 @@ employeeEnrollmentInfoForm.prototype.InputAndSubmitForm = function (objTestData)
   } //End try
   
   catch (exception) {
-	TestLog.Messgae("Exception at EmployeeEnrollmentInfoForm.InputAndSubmitForm");
     for (prop in exception) this.lastError[prop] = exception[prop];
     if (this.throwError) throw exception
   } //End catch
@@ -173,7 +171,7 @@ employeeEnrollmentInfoForm.prototype.InputAndSubmitFormWithErrors = function (ob
     
     if (!this.Exists()) // Verifying if employeeEnrollmentInfoForm exists, if not throws below error message
       throw { name        : "Wrapper Exception",
-              description : "Error at employeeEnrollmentInfoForm.InputAndSubmitForm: The EmployeeEnrollment Info Form does not Exist.",
+              description : "Error at employeeEnrollmentInfoForm.InputAndSubmitFormWithErrors: The EmployeeEnrollment Info Form does not Exist.",
               message     : this.dlgEmployeeEnrollmentInfo + " The EmployeeEnrollment Info Form does not Exist." }; 
               
     //Entering Test Data in employeeEnrollmentInfoForm           
@@ -258,7 +256,6 @@ employeeEnrollmentInfoForm.prototype.InputAndSubmitFormWithErrors = function (ob
   } //End try
   
   catch (exception) {
-	TestLog.Message("Exception at EmployeeEnrollmentInfoForm.InputAndSubmitFormWithErrors");
     for (prop in exception) this.lastError[prop] = exception[prop];
     if (this.throwError) throw exception
   } //End catch

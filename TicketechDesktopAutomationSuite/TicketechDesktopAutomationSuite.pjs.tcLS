@@ -26,6 +26,9 @@
 			<Node name="{24b6fa0b-0143-461a-9758-aeb9e9a9428b}">
 				<Prp name="default project" type="S" value="{08D32CAE-B015-417D-B086-9B181AC74D32}"/>
 			</Node>
+			<Node name="{52243d7e-6cd9-4cc7-8bc5-6575677804a4}">
+				<Prp name="relpath" type="S" value="..\..\Learn\TestProject1\TestProject1.mds.tcLS"/>
+			</Node>
 			<Node name="logs">
 				<Prp name="key" type="S" value="{3FE90A9A-1EC4-415F-AA47-C1E90600F8D5}"/>
 				<Prp name="relpath" type="S" value="Log"/>

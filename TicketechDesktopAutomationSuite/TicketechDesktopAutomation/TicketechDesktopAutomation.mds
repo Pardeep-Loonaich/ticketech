@@ -39,7 +39,7 @@
 						</testParameters>
 						<children />
 					</testItem>
-					<testItem name="End to End Tests" key="{59068170-3A11-40AA-8816-F1A81E2F2676}" group="False" enabled="False" testMoniker="{CC34F278-B098-401C-B68B-D45BCDDA2DA2}MainDriver" count="1" timeout="0" stopOnError="2" stopOnException="2" description="">
+					<testItem name="End to End Tests" key="{59068170-3A11-40AA-8816-F1A81E2F2676}" group="False" enabled="True" testMoniker="{CC34F278-B098-401C-B68B-D45BCDDA2DA2}MainDriver" count="1" timeout="0" stopOnError="2" stopOnException="2" description="">
 						<testParameters>
 							<param0 name="smokeRun" type="3" localVarName="" varType="11" value="False" />
 							<param1 name="endToEnd" type="3" localVarName="" varType="11" value="True" />
@@ -55,6 +55,18 @@
 			<Items>
 				<Variable Name="eventTime" Type="{123F0C0F-44B4-4BAF-B0E6-F3F89FD873B5}" Local="True">
 					<DefValue />
+				</Variable>
+				<Variable Name="DataBase" Type="{123F0C0F-44B4-4BAF-B0E6-F3F89FD873B5}" Local="True">
+					<DefValue StrValue="470061007200610067006500410042004300300032003600" />
+				</Variable>
+				<Variable Name="DBUserID" Type="{123F0C0F-44B4-4BAF-B0E6-F3F89FD873B5}" Local="True">
+					<DefValue StrValue="73006100" />
+				</Variable>
+				<Variable Name="DBPassword" Type="{123F0C0F-44B4-4BAF-B0E6-F3F89FD873B5}" Local="True">
+					<DefValue StrValue="700072006F006A0065006300740075007900" />
+				</Variable>
+				<Variable Name="DBPort" Type="{123F0C0F-44B4-4BAF-B0E6-F3F89FD873B5}" Local="True">
+					<DefValue StrValue="3200340031003100" />
 				</Variable>
 			</Items>
 		</data>
@@ -79,7 +91,7 @@
 			</data>
 		</setting>
 		<setting name="{42651A7C-4287-4C91-AE26-98CBD2EA9355}" type="1" value="False" />
-		<setting name="{A2568CC8-7E8E-42C5-A87D-B69684A1E616}" type="1" value="True" />
+		<setting name="{A2568CC8-7E8E-42C5-A87D-B69684A1E616}" type="1" value="False" />
 		<setting name="{3EADAFE2-0CD4-4B1E-A2A9-B184E94FDCC7}" type="6" rowIndex="1" colIndex="0">
 			<columns>
 				<column type="5" enabled="True" />
@@ -109,7 +121,7 @@
 		<setting name="{0CC2421A-8395-402E-B303-80AE4D4658A4}" type="1" value="True" />
 		<setting name="{7E9D3E8B-DFF5-4737-A877-E94B6B932BCD}" type="1" value="True" />
 		<setting name="{6BA39D6A-88C9-49B1-A310-A31F46136DFB}" type="1" value="False" />
-		<setting name="{2FCB2EB2-336E-4FD4-96A3-8710A73ADDD8}" type="1" value="False" />
+		<setting name="{2FCB2EB2-336E-4FD4-96A3-8710A73ADDD8}" type="1" value="True" />
 		<setting name="{FE195F25-7DC0-457F-9336-71ED39243753}" type="5" value="126_0_0_0_97_113_115_111_1_0_0_0_4_0_0_0_114_0_111_0_111_0_116_0_1_0_0_0_9_0_0_0_102_0_111_0_114_0_109_0_97_0_116_0_107_0_101_0_121_0_1_0_0_0_38_0_0_0_123_0_66_0_65_0_55_0_52_0_53_0_49_0_54_0_57_0_45_0_70_0_51_0_52_0_68_0_45_0_52_0_55_0_49_0_48_0_45_0_66_0_51_0_55_0_70_0_45_0_68_0_53_0_69_0_70_0_69_0_56_0_65_0_53_0_49_0_51_0_51_0_57_0_125_0_1_0_0_0_16_0_0_0_112_0_110_0_103_0_99_0_111_0_110_0_102_0_105_0_103_0_117_0_114_0_97_0_116_0_105_0_111_0_110_0_2_0_0_0_16_0_0_0_99_0_111_0_109_0_112_0_114_0_101_0_115_0_115_0_105_0_111_0_110_0_108_0_101_0_118_0_101_0_108_0_0_0_0_0_4_0_0_0_10_0_0_0_105_0_110_0_116_0_101_0_114_0_108_0_97_0_99_0_101_0_100_0_5_0_0_0_0_0_0_0_0_0_" />
 		<setting name="{C32B04F8-59F6-4F95-8E50-12818E0DECC7}" type="6" rowIndex="3" colIndex="0">
 			<columns>
@@ -158,7 +170,7 @@
 		<setting name="Recording_TestedAppsOnly" type="1" value="False" />
 		<setting name="{FB1CAF99-7FA6-447C-B963-D862CA8BFF89}" type="2" value="3000" />
 		<setting name="{3B76535B-58AD-456C-837E-091A5C480F6C}" type="1" value="True" />
-		<setting name="{3AE91BBD-F37D-40E6-B49D-D2F1EF68E285}" type="1" value="True" />
+		<setting name="{3AE91BBD-F37D-40E6-B49D-D2F1EF68E285}" type="1" value="False" />
 		<setting name="{90FD1116-F071-44C8-AB72-F1916C2B3A1B}" type="1" value="False" />
 		<setting name="JavaFXOpenApp_ExposedCustomNodes" type="6" rowIndex="-1" colIndex="2">
 			<columns>
@@ -377,7 +389,7 @@
 				<row val0="Ignore selected processes" />
 			</data>
 		</setting>
-		<setting name="{E5242A20-9B70-4540-AEFD-7012791D3284}" type="1" value="True" />
+		<setting name="{E5242A20-9B70-4540-AEFD-7012791D3284}" type="1" value="False" />
 		<setting name="JavaBridge_Classes" type="6" rowIndex="-1" colIndex="0">
 			<columns>
 				<column type="5" enabled="True" />

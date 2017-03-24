@@ -103,9 +103,15 @@ punchPanel.prototype.Click = function (btnName) {
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
               description : "Error at PunchPanel.Click"+btnName+": The Punch Panel does not Exist.",
-              message     : this.pnlPunch + " Panel does not Exist." }             
-    
-    this.pnlPunch.FindChild(["WndCaption","Visible"], [btnName,true],2).ClickButton();
+              message     : this.pnlPunch + " Panel does not Exist." }  
+                         
+    Delay(1000);
+    objPunchPanelButton = this.pnlPunch.FindChild(["WndCaption","Visible"], [btnName,true],2);
+    if(objPunchPanelButton.Exists){
+      objPunchPanelButton.SetFocus();
+      objPunchPanelButton.Keys("[Enter]");
+      Delay(1000);
+    }
     
   } //End try
   

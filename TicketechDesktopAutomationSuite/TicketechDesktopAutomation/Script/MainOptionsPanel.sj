@@ -22,6 +22,7 @@ function mainOptionsPanel() {
   this.lastError = {};
   
   this.pnlMainOptions =  Sys.Process("PosApplication").FindChild("WinFormsControlName", "PanelMainOptions", 3);
+  
   this.throwError = false; 
     
 } //mainOptionsPanel
@@ -110,7 +111,8 @@ mainOptionsPanel.prototype.Click = function (btnName) {
               message     : this.pnlMainOptions + " MainOptions Panel does not Exist." }             
     
     this.pnlMainOptions.FindChild("Value", btnName, 3).ClickButton();
-    Delay(500);
+    
+    aqUtils.Delay(1000);
   } //End try
   
   catch (exception) {

@@ -11,10 +11,10 @@
   To call it from other units used New()method.  
 *******************************************************************************************/
 
-function EmployeeEnrollmentInfoScreen() { 
+function employeeEnrollmentInfoScreen() { 
 
 /*--------------------------------------------------------------------------------------------- 
-  Method: EmployeeEnrollmentInfoScreen() 
+  Method: employeeEnrollmentInfoScreen() 
   
   Description: This method will Instantiate the EmployeeEnrollmentInfoScreen Wrapper Helper
 ----------------------------------------------------------------------------------------------*/   
@@ -24,9 +24,9 @@ function EmployeeEnrollmentInfoScreen() {
   
   this.throwError = false; 
     
-} //EmployeeEnrollmentInfoScreen
+} //employeeEnrollmentInfoScreen
 
-EmployeeEnrollmentInfoScreen.prototype.Exists = function () {  
+employeeEnrollmentInfoScreen.prototype.Exists = function () {  
 
 /*----------------------------------------------------------------------------------
   Method      : Exists()
@@ -51,7 +51,7 @@ EmployeeEnrollmentInfoScreen.prototype.Exists = function () {
       
 } //Exists
 
-EmployeeEnrollmentInfoScreen.prototype.SetEmployeeData = function (sCaption,sEmpData) {  
+employeeEnrollmentInfoScreen.prototype.SetEmployeeData = function (sCaption,sEmpData) {  
 
 /*-------------------------------------------------------------------------------------------------------
   Method      : SetEmployeeData()
@@ -84,7 +84,7 @@ EmployeeEnrollmentInfoScreen.prototype.SetEmployeeData = function (sCaption,sEmp
 } //SetEmployeeData
 
 
-EmployeeEnrollmentInfoScreen.prototype.GetMessage = function () {  
+employeeEnrollmentInfoScreen.prototype.GetMessage = function () {  
 
 /*-----------------------------------------------------------------------------------------
   Method      : GetMessage()
@@ -128,5 +128,5 @@ function New() {
   This method is for instantiating EmployeeEnrollmentInfoScreen() class from other units of the project. 
 ------------------------------------------------------------------------------------------------------*/
 
-  return new EmployeeEnrollmentInfoScreen();  
+  return new employeeEnrollmentInfoScreen();  
 }

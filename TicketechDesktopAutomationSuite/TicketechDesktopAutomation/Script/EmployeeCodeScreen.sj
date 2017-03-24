@@ -92,26 +92,10 @@ employeeCodeScreen.prototype.GetErrorMessage = function () {
   
   Output      : Returns the error message displayed in the emp code screen 
 -------------------------------------------------------------------------------------*/  
-  try {
   
-    this.lastError = {};
-    
-    if (!this.Exists())
-      throw { name        : "Wrapper Exception",
-              description : "Error at EmployeeCodeScreen.GetErrorMessage: The Code screen does not Exist.",
-              message     : this.scrnEmployeeCode + " Code screen does not Exist." }             
-    
-    return this.scrnEmployeeCode.WinFormsObject("screenInformationFooter")
-              .WinFormsObject("labelInformation").WndCaption;
-    
-  } //End try
-  
-  catch (exception) {
-    for (prop in exception) this.lastError[prop] = exception[prop];
-    if (this.throwError) throw exception
-  } //End catch
-      
-} //GetErrorMessage
+  return this.GetText("labelInformation"); 
+
+}
 
 employeeCodeScreen.prototype.GetTitle = function () {  
 
@@ -126,6 +110,37 @@ employeeCodeScreen.prototype.GetTitle = function () {
   return   this.GetText("labelTitle");
   
 } //GetTitle 
+
+
+employeeCodeScreen.prototype.GetText = function (objControlName) {  
+
+/*-------------------------------------------------------------------------------
+  Method      : GetText(objControlName)
+  
+  Description : This method returns the text labelled in the EmployeeCode screen 
+  
+  Output      : Returns the Text labelled in the EmployeeCode screen 
+-------------------------------------------------------------------------------*/ 
+
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at EmployeeCodeScreen.GetText: The Code screen does not Exist.",
+              message     : this.scrnEmployeeCode + " Code screen does not Exist." }             
+    
+    return this.scrnEmployeeCode.FindChild("WinFormsControlName", objControlName, 3).WndCaption;
+    
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+      
+} //GetText
 
 
 function New() {

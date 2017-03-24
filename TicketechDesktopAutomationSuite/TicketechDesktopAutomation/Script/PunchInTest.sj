@@ -21,7 +21,7 @@ function TC_PIN_EMP_001() {
   var objEmployeeInfoForm; //Stores the instance of Employee Info Form
   var objEmployeeCodeForm; //Stores the instance of Employee Code Form
   var objEmployeePunchForm; //Stores the instance of Employee Punch Form
-  var bTestCaseResult;//Boolean variable to store TestCase result
+  var bTestCaseResult; //Boolean variable to store TestCase result
   
   //Getting Employee whose punch Details are available in Punches Table
   var eEmpLastPunchDetails = SQLQueries.getPunchInOutEmployee();
@@ -269,10 +269,20 @@ function TC_PIN_EMP_004() {
   var sActualErrorMessage; //Stores the error message to be dispalyed   
   var bTestCaseResult; //Boolean variable to store TestCase result 
   
-  var objTestData = {
-                      EmployeeID   : SQLQueries.getValidEmployeeID(),
-                      EmployeeCode : Utility.getRandomValue("ALPHANUMERIC",4)                                          
-                    }; //TestData object to punch in an employee    
+  //Getting Employee whose punch Details are available in Punches Table
+  var eEmpLastPunchDetails = SQLQueries.getPunchInOutEmployee();
+ 
+  //Declaring and initializing Test Data object 
+  var objTestData = { EmployeeID : eEmpLastPunchDetails.sEmployeeID, EmployeeCode : null }; 
+
+  //setting EmployeeID as EmployeeCode after updating via SQL in DB
+  if(SQLQueries.updateEmployeeCode(objTestData.EmployeeID))
+   objTestData.EmployeeCode = Utility.getRandomValue("ALPHANUMERIC",4);
+
+  //Update Last punch Details of the Employee
+  if(eEmpLastPunchDetails.bPunchInOutStatus == 1)
+    SQLQueries.updateEmployeePunchDetails(eEmpLastPunchDetails.sEmployeeGUID,0,eEmpLastPunchDetails.sLastPunchDateTime);
+   
   try {
  
     //Step-1: Launching the POS application and Initialize the MainDialog
@@ -307,7 +317,7 @@ function TC_PIN_EMP_004() {
     TestLog.Message("Step-3: Navigated to EmployeeCode Form and submitted invalid emp code.");
       
     //TestCase Result : verify the Actual Error Message respective to expected error message
-    bTestCaseResult = (sActualErrorMessage === sExpectedErrorMessage);
+    bTestCaseResult = sActualErrorMessage === sExpectedErrorMessage;
     sPassMessage    = "TestCase Passed. Expected error message displayed for PunchIn with Invalid Employee Code";
     sFailMessage    = "TestCase Failed. Unexpected/No error message is displayed for the Invalid Employee Code";
     
@@ -348,10 +358,20 @@ function TC_PIN_EMP_005() {
   var sActualErrorMessage; //Stores the error message to be dispalyed   
   var bTestCaseResult; //Boolean variable to store TestCase result 
       
-  var objTestData = {
-                      EmployeeID   : SQLQueries.getValidEmployeeID(),
-                      EmployeeCode : ""                                          
-                    }; //TestData object to punch in an employee
+  //Getting Employee whose punch Details are available in Punches Table
+  var eEmpLastPunchDetails = SQLQueries.getPunchInOutEmployee();
+ 
+  //Declaring and initializing Test Data object 
+  var objTestData = { EmployeeID : eEmpLastPunchDetails.sEmployeeID, EmployeeCode : null }; 
+
+  //setting EmployeeID as EmployeeCode after updating via SQL in DB
+  if(SQLQueries.updateEmployeeCode(objTestData.EmployeeID))
+   objTestData.EmployeeCode = "";
+
+  //Update Last punch Details of the Employee
+  if(eEmpLastPunchDetails.bPunchInOutStatus == 1)
+    SQLQueries.updateEmployeePunchDetails(eEmpLastPunchDetails.sEmployeeGUID,0,eEmpLastPunchDetails.sLastPunchDateTime);
+   
   try {
 
     //Step-1: Launching the POS application and Initialize the MainDialog
@@ -385,7 +405,7 @@ function TC_PIN_EMP_005() {
     TestLog.Message("Step-3: Navigated to EmployeeCode Form and submitted blank emp code.");
       
     //TestCase Result : verify the Actual Error Message respective to expected error message
-    bTestCaseResult = (sActualErrorMessage === sExpectedErrorMessage);
+    bTestCaseResult = sActualErrorMessage === sExpectedErrorMessage;
     sPassMessage    = "TestCase Passed. Expected error message displayed for PunchIn with Blank/Empty Employee Code";
     sFailMessage    = "TestCase Failed. Unexpected/No error message is displayed for the Blank/Empty Employee Code";
     
@@ -756,6 +776,7 @@ TC_PIN_EMP_009 : Verify Transaction timed out message after clicking PunchIn, no
     //Click Enter button from Navigation panel
     objEmployeeInfoForm.SubmitForm();
     if (objEmployeeInfoForm.lastError.name !== undefined) throw objEmployeeInfoForm.lastError;
+
     TestLog.Message("Step-2 :Clicked Enter Button");
       
     //Step-3: Navigate into MainDialog and check the error message
@@ -765,7 +786,7 @@ TC_PIN_EMP_009 : Verify Transaction timed out message after clicking PunchIn, no
       
     sActualErrorMessage = eMainDialogDetails.Message;
       
-    TestLog.Message("Step-5 :Error Message: "+eMainDialogDetails.Message);  
+    TestLog.Message("Step-3 :Error Message: "+eMainDialogDetails.Message);  
     
     //TestCase Result : verify the Actual Error Message respective to expected error message
     bTestCaseResult = (sActualErrorMessage === sExpectedErrorMessage);
@@ -938,7 +959,7 @@ function TC_PIN_EMP_011() {
     Utility.launchApp();
     objMainDialog = MainDialog.New();
       
-    //Step-2: Navigate into Employee info screen and submit invalid emp ID
+    //Step-2: Navigate into Employee info screen and submit valid emp ID
     //--------------------------------------------------------------------
     objMainDialog.NavigateToPunchInScreen();
     if (objMainDialog.lastError.name !== undefined) throw objMainDialog.lastError;

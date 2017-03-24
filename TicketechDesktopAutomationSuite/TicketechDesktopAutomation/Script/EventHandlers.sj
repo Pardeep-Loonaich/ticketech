@@ -34,13 +34,13 @@ function OnStop(Sender) {
 
 function OnUnexpectedWindow(Sender, Window, LogParams) {
 
-  //TestLog.Warning("Unexpected Window appeared. Refer the attached screen shot");
+  Log.Picture(Sys.Window, "Unexpected Window appeared. Refer the attached screen shot");
 
 }
 
 function OnOverlappingWindow(Sender, Window, OverlappingWindow, LogParams) {
   
-  Log.Picture(Sys.Desktop, "Overlapping Window. Refer the attached screen shot");
+  Log.Picture(Sys.OverlappingWindow, "Overlapping Window. Refer the attached screen shot");
   OverlappingWindow.Minimize();
   Delay(5000);
   Window.SetFocus();

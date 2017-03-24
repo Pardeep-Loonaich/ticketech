@@ -218,6 +218,35 @@ employeeEnrollmentMenuForm.prototype.NavigateToDeleteEnrollmentForm = function (
       
 } //NavigateToDeleteEnrollmentForm
 
+employeeEnrollmentMenuForm.prototype.CancelForm = function () {  
+
+/*--------------------------------------------------------------------------  
+  Method      : CancelForm()
+  
+  Description : This method Clicks Cancel button  
+  
+  Output      : Clicks Cancel button if employeeEnrollmentMenuForm Exists
+--------------------------------------------------------------------------*/  
+  try {
+  
+    this.lastError = {};
+    
+    if (!this.Exists())
+      throw { name        : "Wrapper Exception",
+              description : "Error at employeeEnrollmentMenuForm.CancelForm: The Employe EnrollmentMenu Form does not Exist.",
+              message     : this.dlgEmployeeEnrollmentMenu + " The Employe EnrollmentMenu Form does not Exist." }              
+    
+    this.navigationPanel.ClickCancel();
+    Delay(1000);
+    
+  } //End try
+  
+  catch (exception) {
+    for (prop in exception) this.lastError[prop] = exception[prop];
+    if (this.throwError) throw exception
+  } //End catch
+      
+} //CancelForm
 
 
 function New() {

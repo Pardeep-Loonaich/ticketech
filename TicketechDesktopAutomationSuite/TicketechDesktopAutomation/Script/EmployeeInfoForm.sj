@@ -97,7 +97,7 @@ employeeInfoForm.prototype.InputAndSubmitForm = function (empID) {
     
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
-              description : "Error at formEmployeeInfo.SetEmployeeID: The Employee Info Form does not Exist.",
+              description : "Error at EmployeeInfoForm.SetEmployeeID: The Employee Info Form does not Exist.",
               message     : this.dlgEmployeeInfo + " The Employee Info Form does not Exist." }             
     
     this.employeeInfoScreen.SetEmployeeID(empID);

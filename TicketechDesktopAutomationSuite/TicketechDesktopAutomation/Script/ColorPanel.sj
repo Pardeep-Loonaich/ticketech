@@ -85,8 +85,11 @@ colorPanel.prototype.SelectColor = function (btnColor) {
              description : "Error at colorPanel.Click"+btnColor+": The Color Panel does not Exist.",
              message     : this.pnlColor + " Panel does not Exist." }             
     
-    this.pnlColor.FindChild(["WndCaption","Visible"], [btnColor, true], 2).ClickButton();
-    
+    objColorsPanelButton = this.pnlColor.FindChild(["WndCaption","Visible"], [btnColor, true], 2);                    
+    if(objColorsPanelButton.Exists){
+      objColorsPanelButton.SetFocus();
+      objColorsPanelButton.Keys("[Enter]");
+    }
   } //End try
   
   catch (exception) {

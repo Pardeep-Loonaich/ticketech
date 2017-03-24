@@ -7,10 +7,9 @@
 
 /*************************************************************************
             ---------- Class Definition ----------
-  Name:Employee PrintTimecardForm
-  
-  Description: 
-  
+  Name: EmployeePrintTimecardForm 
+
+  Description:  
   This class has methods and properties to perform the Employee PrintTimecardForm objects. 
   Instance of the class can be created by calling the constructor. 
   To call it from other units used New()method.  
@@ -20,18 +19,18 @@ function employeePrintTimecardForm() {
 
 /*-------------------------------------------------------------------------- 
   Method: employeePrintTimecardForm() 
-  
+
   Description: This method will the Instantiate the employeePrintTimecardForm Wrapper
 ---------------------------------------------------------------------------*/   
   this.lastError = {};
   
-  this.dlgemployeePrintTimecard =  Sys.Process("PosApplication").WaitWinFormsObject("FormEmployeePrintTimecard", 3000); 
+  this.dlgEmployeePrintTimecard =  Sys.Process("PosApplication").WaitWinFormsObject("FormEmployeePrintTimecard", 3000); 
   
-  this.infoScreen = InformationScreen.New();
-  this.employeePrintTimecardScreen = EmployeePrintTimecardScreen.New();
-  this.navigationPanel = NavigationPanel.New();
-  this.printTimecardOptionsPanel= PrintTimecardOptionsPanel.New();
-  this.backPanel= BackPanel.New();
+  this.objInformationScreen = InformationScreen.New();
+  this.objEmployeePrintTimecardScreen = EmployeePrintTimecardScreen.New();
+  this.objNavigationPanel = NavigationPanel.New();
+  this.objPrintTimecardOptionsPanel= PrintTimecardOptionsPanel.New();
+  this.objBackPanel= BackPanel.New();
   
   this.throwError = false; 
     
@@ -46,13 +45,13 @@ employeePrintTimecardForm.prototype.Refresh = function () {
 --------------------------------------------------------------------------------*/  
   try {
   
-    this.dlgemployeePrintTimecard =  Sys.Process("PosApplication").WaitWinFormsObject("FormEmployeePrintTimecard", 3000); 
+    this.dlgEmployeePrintTimecard =  Sys.Process("PosApplication").WaitWinFormsObject("FormEmployeePrintTimecard", 3000); 
   
-    this.infoScreen = InformationScreen.New();
-    this.employeePrintTimecardScreen = EmployeePrintTimecardScreen.New();
-    this.navigationPanel = NavigationPanel.New();
-    this.printTimecardOptionsPanel= PrintTimecardOptionsPanel.New();
-    this.backPanel= BackPanel.New();
+    this.objInformationScreen = InformationScreen.New();
+    this.objEmployeePrintTimecardScreen = EmployeePrintTimecardScreen.New();
+    this.objNavigationPanel = NavigationPanel.New();
+    this.objPrintTimecardOptionsPanel= PrintTimecardOptionsPanel.New();
+    this.objBackPanel= BackPanel.New();
      
   } //End try
   
@@ -77,7 +76,7 @@ employeePrintTimecardForm.prototype.Exists = function () {
   
     this.lastError = {};
 
-    return this.dlgemployeePrintTimecard.Exists;  //Return whether employee PrintTimecardForm exists or not
+    return this.dlgEmployeePrintTimecard.Exists;  //Return whether employee PrintTimecardForm exists or not
   
   } //End try
   
@@ -88,10 +87,10 @@ employeePrintTimecardForm.prototype.Exists = function () {
       
 } //Exists
 
-employeePrintTimecardForm.prototype.InputAndSubmitForm = function (empID) {  
+employeePrintTimecardForm.prototype.InputEmployeeIdAndSubmit = function (empID) {  
 
 /*--------------------------------------------------------------------------
-  Method      : InputAndSubmitForm()
+  Method      : InputEmployeeIdAndSubmit()
   
   Description : This method enters Employee ID  
   
@@ -104,12 +103,12 @@ employeePrintTimecardForm.prototype.InputAndSubmitForm = function (empID) {
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
               description : "Error at formEmployeePrintTimecard.SetEmployeeID: The Employee Print Timecard Form does not Exist.",
-              message     : this.dlgemployeePrintTimecard + " The Employee Print Timecard Form does not Exist." }             
+              message     : this.dlgEmployeePrintTimecard + " The Employee Print Timecard Form does not Exist." }             
     
-    this.employeePrintTimecardScreen.SetEmployeeID(empID);
+    this.objEmployeePrintTimecardScreen.SetEmployeeID(empID);
     Delay(1000);
     
-    this.navigationPanel.ClickEnter();
+    this.objNavigationPanel.ClickEnter();
     Delay(1000);
     
   } //End try
@@ -119,12 +118,12 @@ employeePrintTimecardForm.prototype.InputAndSubmitForm = function (empID) {
     if (this.throwError) throw exception
   } //End catch
       
-} //InputAndSubmitForm
+} //InputEmployeeIdAndSubmit
 
-employeePrintTimecardForm.prototype.InputAndSubmitFormWithErrors = function (empID) {  
+employeePrintTimecardForm.prototype.InputEmployeeIdAndSubmitWithErrors = function (empID) {  
 
 /*--------------------------------------------------------------------------
-  Method      : InputAndSubmitFormWithErrors()
+  Method      : InputEmployeeIdAndSubmitWithErrors()
   
   Description : This method enters Employee ID and click enter button
   
@@ -132,13 +131,13 @@ employeePrintTimecardForm.prototype.InputAndSubmitFormWithErrors = function (emp
 --------------------------------------------------------------------------*/  
   try {
   
-    this.InputAndSubmitForm(empID);
+    this.InputEmployeeIdAndSubmit(empID);
     Delay(1000);
     
     this.Refresh();
     Delay(1000);
     
-    return this.employeePrintTimecardScreen.GetErrorMessage();
+    return this.objEmployeePrintTimecardScreen.GetErrorMessage();
     
   } //End try
   
@@ -147,7 +146,7 @@ employeePrintTimecardForm.prototype.InputAndSubmitFormWithErrors = function (emp
     if (this.throwError) throw exception
   } //End catch
       
-} //InputAndSubmitFormWithErrors
+} //InputEmployeeIdAndSubmitWithErrors
 
 employeePrintTimecardForm.prototype.NavigateToAllEmployees = function () {  
 
@@ -165,10 +164,10 @@ employeePrintTimecardForm.prototype.NavigateToAllEmployees = function () {
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
               description : "Error at formEmployeePrintTimecard.NavigateToAllEmployees: The Employee Print Timecard Form does not Exist.",
-              message     : this.dlgemployeePrintTimecard + " The Employee Print Timecard Form does not Exist." }             
+              message     : this.dlgEmployeePrintTimecard + " The Employee Print Timecard Form does not Exist." }             
     
-    this.printTimecardOptionsPanel.ClickAllEmployees();
-    Delay(1000);
+    
+    return this.objPrintTimecardOptionsPanel.ClickAllEmployees();
         
   } //End try
   

@@ -25,7 +25,7 @@ function employeeCodeForm() {
   
   this.dlgEmployeeCode =  Sys.Process("PosApplication").WaitWinFormsObject("FormEmployeeCode", 3000); 
   
-  this.codeScreen = InformationScreen.New();
+  this.infoScreen = InformationScreen.New();
   this.employeeCodeScreen = EmployeeCodeScreen.New();
   this.navigationPanel = NavigationPanel.New();
   
@@ -41,18 +41,17 @@ employeeCodeForm.prototype.Refresh = function () {
   Description : This method will the re-instantiate the employeeCodeForm Wrapper   
 --------------------------------------------------------------------------------*/  
   try {
-//    Sys.Refresh();
-//    Delay(1000);
-//    
+    
     this.dlgEmployeeCode =  Sys.Process("PosApplication").WaitWinFormsObject("FormEmployeeCode", 3000); 
   
-    this.codeScreen = InformationScreen.New();
+    this.infoScreen = InformationScreen.New();
     this.employeeCodeScreen = EmployeeCodeScreen.New();
     this.navigationPanel = NavigationPanel.New();
         
   } //End try
   
   catch (exception) {
+	TestLog.Messgae("Exception at EmployeeCodeForm.Refresh");
     for (prop in exception) this.lastError[prop] = exception[prop];
     if (this.throwError) throw exception
   } //End catch
@@ -78,6 +77,7 @@ employeeCodeForm.prototype.Exists = function () {
   } //End try
   
   catch (exception) {
+	TestLog.Message("Exception at EmployeeCodeForm.Exists");
     for (prop in exception) this.lastError[prop] = exception[prop];
     if (this.throwError) throw exception
   } //End catch
@@ -87,9 +87,9 @@ employeeCodeForm.prototype.Exists = function () {
 employeeCodeForm.prototype.InputAndSubmitForm = function (code) {  
 
 /*--------------------------------------------------------------------------
-  Method      : SetCode()
+  Method      : InputAndSubmitForm()
   
-  Description : This method enters Employee ID  
+  Description : This method enters Employee Code  
   
   Output      : Enters Code if Employee Code Form Exists
 --------------------------------------------------------------------------*/  
@@ -99,8 +99,8 @@ employeeCodeForm.prototype.InputAndSubmitForm = function (code) {
     
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
-              description : "Error at formEmployeeCode.InputandSubmitForm: The Employee Info Form does not Exist.",
-              message     : this.dlgEmployeeCode + " The Employee Info Form does not Exist." }             
+              description : "Error at FormEmployeeCode.InputAndSubmitForm: The EmployeeCode Form does not Exist.",
+              message     : this.dlgEmployeeCode + " The EmployeeCode Form does not Exist." }             
     
     this.employeeCodeScreen.SetEmployeeCode(code);
     Delay(1000);
@@ -111,6 +111,7 @@ employeeCodeForm.prototype.InputAndSubmitForm = function (code) {
   } //End try
   
   catch (exception) {
+	TestLog.Message("Exception at EmployeeCodeForm.InputAndSubmitForm");
     for (prop in exception) this.lastError[prop] = exception[prop];
     if (this.throwError) throw exception
   } //End catch
@@ -124,12 +125,17 @@ employeeCodeForm.prototype.InputAndSubmitFormWithErrors = function (code) {
   
   Description : This method enters Code and click enter button
   
-  Output      : Enters Emp ID if Employee Code Form and click enter button
+  Output      : Enters invalid Emp Code and clicks enter button
 --------------------------------------------------------------------------*/  
   try {
   
     this.InputAndSubmitForm(code);
     Delay(1000);
+    
+    if(code == null || code == undefined || code == ""){
+      this.employeeCodeScreen.SetEmployeeCode("1");
+      Delay(1000);
+    }
     
     this.Refresh();
     Delay(1000);
@@ -139,6 +145,7 @@ employeeCodeForm.prototype.InputAndSubmitFormWithErrors = function (code) {
   } //End try
   
   catch (exception) {
+	TestLog.Message("Exception at EmployeeCodeForm.InputAndSubmitFormWithErrors");
     for (prop in exception) this.lastError[prop] = exception[prop];
     if (this.throwError) throw exception
   } //End catch

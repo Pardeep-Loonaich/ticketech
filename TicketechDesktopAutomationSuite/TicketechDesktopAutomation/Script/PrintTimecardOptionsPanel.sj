@@ -61,16 +61,26 @@ printTimecardOptionsPanel.prototype.ClickAllEmployees = function () {
   Output      : Clicks Back button if PrintTimecardOptions Panel Exists
 ------------------------------------------------------*/  
   try {
-  
+    
+    bButtonClicked = false;
+    
     this.lastError = {};
     
     if (!this.Exists())
       throw { name        : "Wrapper Exception",
               description : "Error at PrintTimecardOptionsPanel.ClickAllEmployees: The PrintTimecardOptions Panel does not Exist.",
-              message     : this.pnlPrintTimecardOptions + " Panel does not Exist." }             
+              message     : this.pnlPrintTimecardOptions + " Panel does not Exist." } 
+              
+                          
+    objButton = this.pnlPrintTimecardOptions.WaitWinFormsObject("ScreenButton", "ALL EMPLOYEES", 2000);
     
-    this.pnlPrintTimecardOptions.WaitWinFormsObject("ScreenButton", "ALL EMPLOYEES", 1000).ClickButton();
+    if(objButton.Exists){
+      objButton.SetFocus();
+      objButton.ClickButton();   
+      bButtonClicked = true;
+    }
     
+    return bButtonClicked;
   } //End try
   
   catch (exception) {

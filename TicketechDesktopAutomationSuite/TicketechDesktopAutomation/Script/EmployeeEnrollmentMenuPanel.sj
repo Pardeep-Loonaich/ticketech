@@ -121,8 +121,13 @@ employeeEnrollmentMenuPanel.prototype.Click = function (btnName) {
               description : "Error at employeeEnrollmentMenuPanel.Click"+btnName+": The EmployeeEnrollmentMenu Panel does not Exist.",
               message     : this.pnlEmployeeEnrollmentMenu + " Panel does not Exist." }             
     
-    this.pnlEmployeeEnrollmentMenu.FindChild(["Value", "Visible"], [btnName, true], 2).ClickButton();
-    
+    Delay(2000);
+    objButton =  this.pnlEmployeeEnrollmentMenu.FindChild(["Value", "Visible"], [btnName, true], 2);
+    objButton.SetFocus();
+    if(objButton.Focus()){
+      objButton.Keys("[Enter]");
+      Delay(1000);
+    }
   } //End try
   
   catch (exception) {

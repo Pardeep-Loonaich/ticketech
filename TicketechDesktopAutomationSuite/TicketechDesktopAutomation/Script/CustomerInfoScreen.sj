@@ -56,9 +56,9 @@ customerInfoScreen.prototype.SetVehicleTag = function (sVehicleTag) {
 /*-------------------------------------------------------------------------------
   Method      : SetsVehicleTag()
   
-  Description : This method enters the Code in the Customer Info screen
+  Description : This method enters the VehicleTag in the Customer Info screen
   
-  Output      : Enters the Code  in the Customer Info screen 
+  Output      : Enters the VehicleTag  in the Customer Info screen 
 -------------------------------------------------------------------------------*/  
   try {
     
@@ -71,7 +71,6 @@ customerInfoScreen.prototype.SetVehicleTag = function (sVehicleTag) {
     
     if (sVehicleTag!== undefined && sVehicleTag !== null)
        this.scrnCustomerInfo.FindChild("WinFormsControlName", "maskedTextBoxInfo", 3).Keys(sVehicleTag.toString());
-       Log.Message(sVehicleTag);
   } //End try
   
   catch (exception) {

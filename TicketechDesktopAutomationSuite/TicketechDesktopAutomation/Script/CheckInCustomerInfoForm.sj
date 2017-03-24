@@ -45,9 +45,7 @@ checkInCustomerInfoForm.prototype.Refresh = function () {
   Description : This method will the re-instantiate the checkInCustomerInfoForm Wrapper   
 --------------------------------------------------------------------------------*/  
   try {
-//    Sys.Refresh();
-//    Delay(1000);
-//    
+  
     this.dlgCheckInCustomerInfo =  Sys.Process("PosApplication").WaitWinFormsObject("FormCheckInCustomerInfo", 3000); 
   
     this.infoScreen = InformationScreen.New();
@@ -113,8 +111,6 @@ checkInCustomerInfoForm.prototype.InputAndSubmitForm = function (sVehicleTag) {
     this.navigationPanel.ClickEnter();
     Delay(1000);
     
-    this.Refresh();
-    
   } //End try
   
   catch (exception) {
@@ -177,8 +173,6 @@ checkInCustomerInfoForm.prototype.ClickCancel = function (sVehicleTag) {
     this.navigationPanel.ClickCancel();
     Delay(1000);
     
-    this.Refresh();
-    
   } //End try
   
   catch (exception) {
@@ -186,7 +180,8 @@ checkInCustomerInfoForm.prototype.ClickCancel = function (sVehicleTag) {
     if (this.throwError) throw exception
   } //End catch
       
-} //InputandSubmitForm
+} //ClickCancel
+
 
 function New() {
 
